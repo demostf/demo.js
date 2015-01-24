@@ -7,10 +7,11 @@ fs.readFile("snakewater.dem", function (err, data) {
 	var parser = demo.getParser();
 	var head = parser.readHeader();
 	//console.log(parser.readHeader());
-	var message;
-	while (message = parser.readMessage()) {
-		if (message.parse) {
-			message.parse();
-		}
-	}
+	//var message;
+	console.log(parser.parseBody());
+	//while (message = parser.readMessage()) {
+	//	if (message.parse) {
+	//		message.parse();
+	//	}
+	//}
 });

@@ -5,6 +5,12 @@ var BitStream = require('bit-buffer').BitStream;
 
 var Parser = function (steam) {
 	this.stream = steam;
+	this.state = {
+		chat  : [],
+		users : {},
+		deaths: [],
+		rounds: []
+	};
 };
 
 Parser.MessageType = {
@@ -34,12 +40,67 @@ Parser.prototype.readHeader = function () {
 	}
 };
 
+Parser.prototype.parseBody = function () {
+	var message, i;
+	while (message = this.readMessage()) {
+		if (message.parse) {
+			var packets = message.parse();
+			for (i = 0; i < packets.length; i++) {
+				var packet = packets[i];
+				if (!packet) {
+					continue;
+				}
+				switch (packet.packetType) {
+					case 'sayText2':
+						this.state.chat.push({
+							kind: packet.kind,
+							from: packet.from,
+							text: packet.text
+						});
+						break;
+					case 'stringTable':
+						if (packet.tables.userinfo) {
+							for (var j = 0; j < packet.tables.userinfo.length; j++) {
+								if (packet.tables.userinfo[j].extraData) {
+									this.state.users[packet.tables.userinfo[j].text] = packet.tables.userinfo[j].extraData
+								}
+							}
+						}
+						break;
+					case 'gameEvent':
+						switch (packet.event.name) {
+							case 'player_death':
+								// todo get player names, not same id as the name string table
+								var assister = packet.event.values.assister < 32 ? packet.event.values.assister : null;
+								this.state.deaths.push({
+									killer  : packet.event.values.attacker,
+									assister: assister,
+									victim  : packet.event.values.userid,
+									weapon  : packet.event.values.weapon
+								});
+								break;
+							case 'teamplay_round_win':
+								if (packet.event.values.winreason !== 6) {// 6 = timelimit
+									this.state.rounds.push({
+										winner: packet.event.values.team === 2 ? 'red' : 'blue',
+										length: packet.event.values.round_time
+									});
+								}
+						}
+						break;
+				}
+			}
+		}
+	}
+	return this.state;
+};
+
 Parser.prototype.readMessage = function () {
-	console.log();
-	console.log('start message');
-	console.log(this.stream.byteIndex);
+	//console.log();
+	//console.log('start message');
+	//console.log(this.stream.byteIndex);
 	var type = this.stream.readBits(8);
-	console.log(type);
+	//console.log(type);
 	if (type === Parser.MessageType.Stop) {
 		return null;
 	}
@@ -61,7 +122,7 @@ Parser.prototype.readMessage = function () {
 	}
 
 	length = this.stream.readInt32();
-	console.log('message length: ' + length + ' byte');
+	//console.log('message length: ' + length + ' byte');
 	start = this.stream.byteIndex;
 	buffer = this.stream.buffer.slice(start, start + length);
 	this.stream.byteIndex += length;
@@ -77,13 +138,13 @@ Parser.prototype.readMessage = function () {
 		case Parser.MessageType.UserCmd:
 			return true;
 		case Parser.MessageType.DataTables:
-			console.log('datatable');
+			//console.log('datatable');
 			return true;
 		case Parser.MessageType.StringTables:
 			return new StringTable(type, tick, data, length);
 		default:
 			return true;
-			//throw 'Unknown message type: ' + type;
+		//throw 'Unknown message type: ' + type;
 	}
 };
 

@@ -29,7 +29,7 @@ Packet.prototype.parse = function () {
 		var type = this.stream.readBits(6);
 		if (Packet.parsers[type]) {
 			var packet = Packet.parsers[type](this.stream);
-			console.log(packet);
+			//console.log(packet);
 			packets.push(packet);
 		} else {
 			throw 'Unknown packet type ' + type;

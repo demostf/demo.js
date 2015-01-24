@@ -33,7 +33,10 @@ StringTable.prototype.parse = function () {
 		}
 	}
 	//console.log(tables);
-	return tables;
+	return [{
+		packetType: 'stringTable',
+		tables    : tables
+	}];
 };
 
 module.exports = StringTable;
