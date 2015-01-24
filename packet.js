@@ -78,8 +78,22 @@ Packet.getGameEventValue = function (stream, entry) {
 Packet.parsers = {
 	0 : function () {
 	},
+	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
+	4: ParserGenerator.make('stringCmd', 'command{s}'),
+	5 : function (stream) {
+		var count = stream.readBits(8);
+		var vars = {};
+		for (var i = 0; i < count; i++) {
+			vars[stream.readASCIIString()] = stream.readASCIIString();
+		}
+		return {
+			packetType: 'setConVar',
+			vars      : vars
+		}
+	},
 	6 : ParserGenerator.make('sigOnState', 'state{8}count{32}'),
+	7 : ParserGenerator.make('print', 'value{s}'),
 	8 : ParserGenerator.make('serverInfo',
 		'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 		'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
