@@ -494,7 +494,7 @@ Packet.parsers = {
 	},
 	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
-	4: ParserGenerator.make('stringCmd', 'command{s}'),
+	4 : ParserGenerator.make('stringCmd', 'command{s}'),
 	5 : function (stream) {
 		var count = stream.readBits(8);
 		var vars = {};
@@ -553,9 +553,9 @@ Packet.parsers = {
 
 
 		for (var i = 0; i < numEntries; i++) {
-			//data.push(stream.readASCIIString());
-			//stream.readBits(7);
-			//data.push(stream.readASCIIString());
+			data.push(stream.readASCIIString());
+			stream.readBits(7);
+			data.push(stream.readASCIIString());
 			//console.log(stream.readBits(bits + 1));
 			//stream.readBits(1);
 			//data.push(stream.readASCIIString());
@@ -576,10 +576,11 @@ Packet.parsers = {
 		var end = stream._index + length;
 		stream.readBits(7);
 		var strings = [];
-		//for (var i = 0; i < changeEntries; i++) {
-		//	// todo cleanup the 8/16 bits that get read in the string here
-		//	strings.push(stream.readASCIIString());
-		//}
+		for (var i = 0; i < changeEntries; i++) {
+			//	// todo cleanup the 8/16 bits that get read in the string here
+			strings.push(stream.readASCIIString());
+		}
+		//console.log(strings);
 		stream._index = end;
 		//throw false;
 		return {
@@ -606,6 +607,51 @@ Packet.parsers = {
 	},
 	18: ParserGenerator.make('setView', 'index{11}'),
 	19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
+	21: function (stream) {
+		var getCoord = function (stream) {
+			var hasInt = !!stream.readBits(1);
+			var hasFract = !!stream.readBits(1);
+			var value = 0;
+			if (hasInt || hasFract) {
+				var sign = !!stream.readBits(1);
+				if (hasInt) {
+					value += stream.readBits(14) + 1;
+				}
+				if (hasFract) {
+					value += stream.readBits(5) * (1 / 32);
+				}
+				if (sign) {
+					value = -value;
+				}
+			}
+			return value;
+		};
+		var getVecCoord = function (stream) {
+			var hasX = !!stream.readBits(1);
+			var hasY = !!stream.readBits(1);
+			var hasZ = !!stream.readBits(1);
+			return {
+				x: hasX ? getCoord(stream) : 0,
+				y: hasY ? getCoord(stream) : 0,
+				z: hasZ ? getCoord(stream) : 0
+			}
+		};
+		var position = getVecCoord(stream);
+		var textureIndex = stream.readBits(9);
+		if (stream.readBits(1)) {
+			var entIndex = stream.readBits(11);
+			var modelIndex = stream.readBits(12);
+		}
+		var lowPriority = !!stream.readBits(1);
+		return {
+			packetType  : 'BSPDecal',
+			postition   : position,
+			textureIndex: textureIndex,
+			entIndex    : entIndex,
+			modelIndex  : modelIndex,
+			lowPriority : lowPriority
+		}
+	},
 	23: function (stream) {
 		// user message
 		var type = stream.readBits(8);
@@ -660,6 +706,7 @@ Packet.parsers = {
 	},
 	27: ParserGenerator.make('tempEntities', 'count{8}length{17}data{$length}'),
 	28: ParserGenerator.make('preFetch', 'index{14}'),
+	29: ParserGenerator.make('menu', 'type{16}length{16}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}'),//length*8
 	30: function (stream) {
 		// list of game events and parameters
 		var numEvents = stream.readBits(9);
@@ -690,7 +737,9 @@ Packet.parsers = {
 			packetType: 'gameEventList',
 			events    : events
 		}
-	}
+	},
+	31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
+	32: ParserGenerator.make('cmdKeyValues', 'length{32}data{$length}')
 };
 
 Packet.userMessageParsers = {
@@ -991,9 +1040,9 @@ StringTable.prototype.parse = function () {
 			}
 			tables[tableName] = entries;
 			if (this.stream.readBits(1)) {
-				console.log(this.stream.readASCIIString());
+				this.stream.readASCIIString();
 				if (this.stream.readBits(1)) {
-					//throw 'more extra data not implemted';
+					//throw 'more extra data not implemented';
 					var extraDataLength = this.stream.readBits(16);
 					this.stream.readBits(extraDataLength);
 				}

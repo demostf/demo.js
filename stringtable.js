@@ -25,9 +25,9 @@ StringTable.prototype.parse = function () {
 			}
 			tables[tableName] = entries;
 			if (this.stream.readBits(1)) {
-				console.log(this.stream.readASCIIString());
+				this.stream.readASCIIString();
 				if (this.stream.readBits(1)) {
-					//throw 'more extra data not implemted';
+					//throw 'more extra data not implemented';
 					var extraDataLength = this.stream.readBits(16);
 					this.stream.readBits(extraDataLength);
 				}
