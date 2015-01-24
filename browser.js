@@ -44,7 +44,7 @@ var ConsoleCmd = function (type, tick, stream, length) {
 
 ConsoleCmd.prototype.parse = function () {
 	var cmd = this.stream.readASCIIString();
-	console.log("cmd " + cmd);
+	//console.log("cmd " + cmd);
 	return cmd;
 };
 
@@ -492,8 +492,22 @@ Packet.getGameEventValue = function (stream, entry) {
 Packet.parsers = {
 	0 : function () {
 	},
+	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
+	4: ParserGenerator.make('stringCmd', 'command{s}'),
+	5 : function (stream) {
+		var count = stream.readBits(8);
+		var vars = {};
+		for (var i = 0; i < count; i++) {
+			vars[stream.readASCIIString()] = stream.readASCIIString();
+		}
+		return {
+			packetType: 'setConVar',
+			vars      : vars
+		}
+	},
 	6 : ParserGenerator.make('sigOnState', 'state{8}count{32}'),
+	7 : ParserGenerator.make('print', 'value{s}'),
 	8 : ParserGenerator.make('serverInfo',
 		'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 		'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
@@ -960,30 +974,32 @@ var StringTable = function (type, tick, stream, length) {
 StringTable.prototype.parse = function () {
 	var tableCount = this.stream.readBits(8);
 	var tables = {};
-	for (var i = 0; i < tableCount; i++) {
-		var entries = [];
-		var tableName = this.stream.readASCIIString();
-		var entryCount = this.stream.readBits(16);
-		for (var j = 0; j < entryCount; j++) {
-			var entry = {
-				text: this.stream.readASCIIString()
-			};
-			if (this.stream.readBits(1)) {
-				var extraDataLength = this.stream.readBits(16);
-				entry.extraData = this.stream.readASCIIString(extraDataLength);
+	try {
+		for (var i = 0; i < tableCount; i++) {
+			var entries = [];
+			var tableName = this.stream.readASCIIString();
+			var entryCount = this.stream.readBits(16);
+			for (var j = 0; j < entryCount; j++) {
+				var entry = {
+					text: this.stream.readASCIIString()
+				};
+				if (this.stream.readBits(1)) {
+					var extraDataLength = this.stream.readBits(16);
+					entry.extraData = this.stream.readASCIIString(extraDataLength);
+				}
+				entries.push(entry);
 			}
-			entries.push(entry);
-		}
-		tables[tableName] = entries;
-		if (this.stream.readBits(1)) {
-			console.log(this.stream.readASCIIString());
+			tables[tableName] = entries;
 			if (this.stream.readBits(1)) {
-				throw 'more extra data not implemted';
-				var extraDataLength = this.stream.readBits(16);
-				this.stream.readBits(extraDataLength);
+				console.log(this.stream.readASCIIString());
+				if (this.stream.readBits(1)) {
+					//throw 'more extra data not implemted';
+					var extraDataLength = this.stream.readBits(16);
+					this.stream.readBits(extraDataLength);
+				}
 			}
 		}
-	}
+	}catch(e){}
 	//console.log(tables);
 	return [{
 		packetType: 'stringTable',
