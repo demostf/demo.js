@@ -1,7 +1,7 @@
 var Demo = require('./demo');
 var fs = require('fs');
 
-fs.readFile("upward.dem", function (err, data) {
+fs.readFile("gully.dem", function (err, data) {
 	if (err) throw err;
 	var demo = Demo.fromNodeBuffer(data);
 	var parser = demo.getParser();

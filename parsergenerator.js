@@ -11,7 +11,10 @@ Generator.make = function (name, string) {
 		};
 		try {
 			for (var i = 0; i < items.length; i++) {
-				result[items[i][0]] = Generator.readItem(stream, items[i][1], result);
+				var value = Generator.readItem(stream, items[i][1], result);
+				if(items[i][0] !== '_'){
+					result[items[i][0]] = value;
+				}
 			}
 		} catch (e) {
 			throw 'Failed reading pattern ' + string;

@@ -5,39 +5,44 @@ var StringTable = function (type, tick, stream, length) {
 	this.length = length;//length in bytes
 };
 
+StringTable.tables = [];
+
 StringTable.prototype.parse = function () {
 	var tableCount = this.stream.readBits(8);
 	var tables = {};
-	try {
-		for (var i = 0; i < tableCount; i++) {
-			var entries = [];
-			var tableName = this.stream.readASCIIString();
-			var entryCount = this.stream.readBits(16);
-			for (var j = 0; j < entryCount; j++) {
-				var entry = {
-					text: this.stream.readASCIIString()
-				};
-				if (this.stream.readBits(1)) {
-					var extraDataLength = this.stream.readBits(16);
-					entry.extraData = this.stream.readASCIIString(extraDataLength);
-				}
-				entries.push(entry);
-			}
-			tables[tableName] = entries;
+	for (var i = 0; i < tableCount; i++) {
+		var entries = [];
+		var tableName = this.stream.readASCIIString();
+		var entryCount = this.stream.readBits(16);
+		for (var j = 0; j < entryCount; j++) {
+			var entry = {
+				text: this.stream.readASCIIString()
+			};
 			if (this.stream.readBits(1)) {
-				this.stream.readASCIIString();
-				if (this.stream.readBits(1)) {
-					//throw 'more extra data not implemented';
-					var extraDataLength = this.stream.readBits(16);
-					this.stream.readBits(extraDataLength);
-				}
+				var extraDataLength = this.stream.readBits(16);
+				entry.extraData = this.stream.readASCIIString(extraDataLength);
+				//console.log(entry.extraData.length-extraDataLength);
+			}
+			entries.push(entry);
+		}
+		tables[tableName] = entries;
+		//console.log(tables);
+		StringTable.tables.push({
+			name: tableName,
+			entries: entries
+		});
+		if (this.stream.readBits(1)) {
+			this.stream.readASCIIString();
+			if (this.stream.readBits(1)) {
+				//throw 'more extra data not implemented';
+				var extraDataLength = this.stream.readBits(16);
+				this.stream.readBits(extraDataLength);
 			}
 		}
-	}catch(e){}
-	//console.log(tables);
+	}
 	return [{
 		packetType: 'stringTable',
-		tables    : tables
+		tables: tables
 	}];
 };
 

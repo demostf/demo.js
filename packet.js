@@ -1,6 +1,7 @@
 var ParserGenerator = require('./parsergenerator');
+var StringTable = require('./stringtable');
 
-function logBase2(num) {
+function logBase2 (num) {
 	var result = 0;
 	while ((num >>= 1) != 0) {
 		result++;
@@ -50,8 +51,8 @@ Packet.parseGameEvent = function (eventId, stream) {
 		values[entry.name] = Packet.getGameEventValue(stream, entry);
 	}
 	return {
-		name  : eventDescription.name,
-		type  : eventDescription.type,
+		name: eventDescription.name,
+		type: eventDescription.type,
 		values: values
 	};
 };
@@ -76,12 +77,12 @@ Packet.getGameEventValue = function (stream, entry) {
 };
 
 Packet.parsers = {
-	0 : function () {
+	0: function () {
 	},
-	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
-	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
-	4 : ParserGenerator.make('stringCmd', 'command{s}'),
-	5 : function (stream) {
+	2: ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
+	3: ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
+	4: ParserGenerator.make('stringCmd', 'command{s}'),
+	5: function (stream) {
 		var count = stream.readBits(8);
 		var vars = {};
 		for (var i = 0; i < count; i++) {
@@ -89,12 +90,12 @@ Packet.parsers = {
 		}
 		return {
 			packetType: 'setConVar',
-			vars      : vars
+			vars: vars
 		}
 	},
-	6 : ParserGenerator.make('sigOnState', 'state{8}count{32}'),
-	7 : ParserGenerator.make('print', 'value{s}'),
-	8 : ParserGenerator.make('serverInfo',
+	6: ParserGenerator.make('sigOnState', 'state{8}count{32}'),
+	7: ParserGenerator.make('print', 'value{s}'),
+	8: ParserGenerator.make('serverInfo',
 		'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 		'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 		'game{s}map{s}skybox{s}serverName{s}replay{b}'),
@@ -106,8 +107,8 @@ Packet.parsers = {
 			var bits = logBase2(number) + 1;
 			for (var i = 0; i < number; i++) {
 				var entry = {
-					'classId'      : stream.readBits(bits),
-					'className'    : stream.readASCIIString(),
+					'classId': stream.readBits(bits),
+					'className': stream.readASCIIString(),
 					'dataTableName': stream.readASCIIString()
 				};
 				entries.push(entry);
@@ -115,9 +116,9 @@ Packet.parsers = {
 		}
 		return {
 			'packetType': 'classInfo',
-			number      : number,
-			create      : create,
-			entries     : entries
+			number: number,
+			create: create,
+			entries: entries
 		}
 	},
 	11: ParserGenerator.make('setPause', 'paused{b}'),
@@ -129,31 +130,27 @@ Packet.parsers = {
 		var bits = Math.log(maxEntries) / Math.LN2;
 		var numEntries = stream.readBits(bits + 1);
 		var length = stream.readBits(20);
-		var userDataFixedSize = stream.readBits(1);
+		var userDataFixedSize = !!stream.readBits(1);
 		if (userDataFixedSize) {
 			var userSize = stream.readBits(12);
 			var userDataBits = stream.readBits(4);
 		}
-		var data = [];
 		var end = stream._index + length;
 
+		var stringTable = new PacketStringTable(name, maxEntries, bits, userDataFixedSize, userSize || -1, userDataBits || -1, numEntries);
+		stringTable.parse(stream);
+		//console.log(stringTable);
+		//console.log();
+		//console.log(length);
+		//console.log(end - stream._index);
+		//console.log();
+		//throw false;
 
-		for (var i = 0; i < numEntries; i++) {
-			data.push(stream.readASCIIString());
-			stream.readBits(7);
-			data.push(stream.readASCIIString());
-			//console.log(stream.readBits(bits + 1));
-			//stream.readBits(1);
-			//data.push(stream.readASCIIString());
-		}
 		stream._index = end;
-		return {packetType: 'createStringTable'};
-		//return {
-		//	packetType: 'createStringTable',
-		//	name      : name,
-		//	entries   : numEntries,
-		//	data      : data
-		//}
+		return {
+			packetType: 'createStringTable',
+			table: stringTable
+		};
 	},
 	13: function (stream) {
 		var tableId = stream.readBits(5);
@@ -161,20 +158,41 @@ Packet.parsers = {
 		var length = stream.readBits(20);
 		var end = stream._index + length;
 		stream.readBits(7);
-		var strings = [];
-		for (var i = 0; i < changeEntries; i++) {
-			//	// todo cleanup the 8/16 bits that get read in the string here
-			strings.push(stream.readASCIIString());
+		var strings = {};
+		//var table = StringTable.tables[tableId];
+
+		// no idea why but it mostly works
+		var a = stream.readBits(1);
+		var b = stream.readBits(1);
+		if (a && !b) {
+			stream.readBits(12);
+		} else if (!b) {
+			stream.readBits(16);
+		} else {
+			stream.readBits(6);
 		}
+		//console.log(a ? 'a' : '!a')
+		//console.log('table: ' + table.name);
+		//console.log('       ' + table.entries.length + ' entries');
+		for (var i = 0; i < changeEntries; i++) {
+			//console.log(stream.readBits(2));
+			var string = stream.readASCIIString();
+			stream.readBits(16);
+			//todo last entry overflows by 13 (3 bits at the end 13 before next entry?)
+			strings[i] = string;
+		}
+		//throw false;
+		//console.log(changeEntries);
 		//console.log(strings);
+		//console.log(end - stream._index);
 		stream._index = end;
 		//throw false;
 		return {
-			packetType    : 'updateStringTables',
-			tableId       : tableId,
+			packetType: 'updateStringTables',
+			tableId: tableId,
 			changedEntries: changeEntries,
-			length        : length,
-			strings       : strings
+			length: length,
+			strings: strings
 		}
 	},
 	14: ParserGenerator.make('voiceInit', 'coded{s}quality{8}'),
@@ -186,9 +204,9 @@ Packet.parsers = {
 		stream._index += length;
 		return {
 			packetType: 'parseSounds',
-			reliable  : reliable,
-			num       : num,
-			length    : length
+			reliable: reliable,
+			num: num,
+			length: length
 		}
 	},
 	18: ParserGenerator.make('setView', 'index{11}'),
@@ -230,12 +248,12 @@ Packet.parsers = {
 		}
 		var lowPriority = !!stream.readBits(1);
 		return {
-			packetType  : 'BSPDecal',
-			postition   : position,
+			packetType: 'BSPDecal',
+			position: position,
 			textureIndex: textureIndex,
-			entIndex    : entIndex,
-			modelIndex  : modelIndex,
-			lowPriority : lowPriority
+			entIndex: entIndex,
+			modelIndex: modelIndex,
+			lowPriority: lowPriority
 		}
 	},
 	23: function (stream) {
@@ -248,7 +266,7 @@ Packet.parsers = {
 		} else {
 			result = {
 				packetType: 'unknownUserMessage',
-				type      : type
+				type: type
 			}
 		}
 		stream._index = pos + length;
@@ -263,7 +281,7 @@ Packet.parsers = {
 		stream._index = end;
 		return {
 			packetType: 'gameEvent',
-			event     : event
+			event: event
 		}
 	},
 	26: function (stream) {
@@ -280,19 +298,19 @@ Packet.parsers = {
 		var updatedBaseLink = !!stream.readBits(1);
 		stream._index += length;
 		return {
-			packetType     : 'packetEntities',
-			maxEntries     : maxEntries,
-			isDelta        : isDelta,
-			delta          : delta,
-			baseLink       : baseLink,
-			updatedEntries : updatedEntries,
-			length         : length,
+			packetType: 'packetEntities',
+			maxEntries: maxEntries,
+			isDelta: isDelta,
+			delta: delta,
+			baseLink: baseLink,
+			updatedEntries: updatedEntries,
+			length: length,
 			updatedBaseLink: updatedBaseLink
 		}
 	},
-	27: ParserGenerator.make('tempEntities', 'count{8}length{17}data{$length}'),
+	27: ParserGenerator.make('tempEntities', 'count{8}length{17}_{$length}'),
 	28: ParserGenerator.make('preFetch', 'index{14}'),
-	29: ParserGenerator.make('menu', 'type{16}length{16}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}'),//length*8
+	29: ParserGenerator.make('menu', 'type{16}length{16}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}'),//length*8
 	30: function (stream) {
 		// list of game events and parameters
 		var numEvents = stream.readBits(9);
@@ -312,16 +330,16 @@ Packet.parsers = {
 				type = stream.readBits(3);
 			}
 			events[id] = {
-				id     : id,
-				name   : name,
-				type   : type,
+				id: id,
+				name: name,
+				type: type,
 				entries: entries
 			};
 		}
 		Packet.gameEventMap = events;
 		return {
 			packetType: 'gameEventList',
-			events    : events
+			events: events
 		}
 	},
 	31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
@@ -334,64 +352,114 @@ Packet.userMessageParsers = {
 };
 
 var UserMessageType = {
-	Geiger             : 0,
-	Train              : 1,
-	HudText            : 2,
-	SayText            : 3,
-	SayText2           : 4,
-	TextMsg            : 5,
-	ResetHUD           : 6,
-	GameTitle          : 7,
-	ItemPickup         : 8,
-	ShowMenu           : 9,
-	Shake              : 10,
-	Fade               : 11,
-	VGUIMenu           : 12,
-	Rumble             : 13,
-	CloseCaption       : 14,
-	SendAudio          : 15,
-	VoiceMask          : 16,
-	RequestState       : 17,
-	Damage             : 18,
-	HintText           : 19,
-	KeyHintText        : 20,
-	HudMsg             : 21,
-	AmmoDenied         : 22,
-	AchievementEvent   : 23,
-	UpdateRadar        : 24,
-	VoiceSubtitle      : 25,
-	HudNotify          : 26,
-	HudNotifyCustom    : 27,
-	PlayerStatsUpdate  : 28,
-	PlayerIgnited      : 29,
-	PlayerIgnitedInv   : 30,
-	HudArenaNotify     : 31,
-	UpdateAchievement  : 32,
-	TrainingMsg        : 33,
-	TrainingObjective  : 34,
-	DamageDodged       : 35,
-	PlayerJarated      : 36,
-	PlayerExtinguished : 37,
-	PlayerJaratedFade  : 38,
+	Geiger: 0,
+	Train: 1,
+	HudText: 2,
+	SayText: 3,
+	SayText2: 4,
+	TextMsg: 5,
+	ResetHUD: 6,
+	GameTitle: 7,
+	ItemPickup: 8,
+	ShowMenu: 9,
+	Shake: 10,
+	Fade: 11,
+	VGUIMenu: 12,
+	Rumble: 13,
+	CloseCaption: 14,
+	SendAudio: 15,
+	VoiceMask: 16,
+	RequestState: 17,
+	Damage: 18,
+	HintText: 19,
+	KeyHintText: 20,
+	HudMsg: 21,
+	AmmoDenied: 22,
+	AchievementEvent: 23,
+	UpdateRadar: 24,
+	VoiceSubtitle: 25,
+	HudNotify: 26,
+	HudNotifyCustom: 27,
+	PlayerStatsUpdate: 28,
+	PlayerIgnited: 29,
+	PlayerIgnitedInv: 30,
+	HudArenaNotify: 31,
+	UpdateAchievement: 32,
+	TrainingMsg: 33,
+	TrainingObjective: 34,
+	DamageDodged: 35,
+	PlayerJarated: 36,
+	PlayerExtinguished: 37,
+	PlayerJaratedFade: 38,
 	PlayerShieldBlocked: 39,
-	BreakModel         : 40,
-	CheapBreakModel    : 41,
-	BreakModel_Pumpkin : 42,
+	BreakModel: 40,
+	CheapBreakModel: 41,
+	BreakModel_Pumpkin: 42,
 	BreakModelRocketDud: 43,
-	CallVoteFailed     : 44,
-	VoteStart          : 45,
-	VotePass           : 46,
-	VoteFailed         : 47,
-	VoteSetup          : 48,
-	PlayerBonusPoints  : 49,
-	SpawnFlyingBird    : 50,
-	PlayerGodRayEffect : 51,
-	SPHapWeapEvent     : 52,
-	HapDmg             : 53,
-	HapPunch           : 54,
-	HapSetDrag         : 55,
-	HapSet             : 56,
-	HapMeleeContact    : 57
+	CallVoteFailed: 44,
+	VoteStart: 45,
+	VotePass: 46,
+	VoteFailed: 47,
+	VoteSetup: 48,
+	PlayerBonusPoints: 49,
+	SpawnFlyingBird: 50,
+	PlayerGodRayEffect: 51,
+	SPHapWeapEvent: 52,
+	HapDmg: 53,
+	HapPunch: 54,
+	HapSetDrag: 55,
+	HapSet: 56,
+	HapMeleeContact: 57
 };
+
+var PacketStringTable = function (name, maxEntries, entryBits, userDataFixedSize, userDataSize, userDataSizeBits, numEntries) {
+	this.name = name;
+	this.maxEntries = maxEntries;
+	this.entryBits = entryBits;
+	this.userDataFixedSize = userDataFixedSize;
+	this.userDataSize = userDataSize;
+	this.userDataSizeBits = userDataSizeBits;
+	this.numEntries = numEntries;
+	this.id = PacketStringTable.tables.length;
+	this.strings = [];
+	PacketStringTable.tables.push(this);
+};
+
+PacketStringTable.prototype.parse = function (stream) {
+	var entryIndex, lastEntry = -1;
+	for (var i = 0; i < this.numEntries; i++) {
+		entryIndex = lastEntry + 1;
+		this.strings.push(stream.readASCIIString());
+		//if (!stream.readBits(1)) {
+		//	entryIndex = stream.readBits(this.entryBits);
+		//}
+		//lastEntry = entryIndex;
+		//if (entryIndex < 0 || entryIndex >= this.maxEntries) {
+		//	throw 'invalid index';
+		//}
+		//var string = '';
+		//if (stream.readBits(1)) {
+		//	if (stream.readBits(1)) {
+		//		throw 'substr not implented';
+		//	} else {
+		//		string = stream.readASCIIString();
+		//	}
+		//}
+
+		if (stream.readBits(1)) { //user data
+			if (this.userDataFixedSize) {
+				var userData = stream.readBits(this.userDataSizeBits)
+			} else {
+				var bits = stream.readBits(14);
+				userData = stream.readBits(bits);
+			}
+			console.log('userdata: ' + userData);
+		}
+
+		//this.strings.push(string);
+	}
+};
+
+PacketStringTable.tables = [];
 
 module.exports = Packet;
