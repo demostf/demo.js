@@ -2,7 +2,10 @@ var ParserGenerator = require('./parsergenerator');
 var StringTable = require('./stringtable');
 var PacketStringTable = require('./packetstringtable');
 
-function logBase2 (num) {
+// https://code.google.com/p/coldemoplayer/source/browse/branches/2.0/compLexity+Demo+Player/CDP.Source/Messages/?r=219
+// https://github.com/TimePath/hl2-toolkit/tree/master/src/main/java/com/timepath/hl2/io/demo
+
+function logBase2(num) {
 	var result = 0;
 	while ((num >>= 1) != 0) {
 		result++;
@@ -51,8 +54,8 @@ Packet.parseGameEvent = function (eventId, stream) {
 		values[entry.name] = Packet.getGameEventValue(stream, entry);
 	}
 	return {
-		name: eventDescription.name,
-		type: eventDescription.type,
+		name  : eventDescription.name,
+		type  : eventDescription.type,
 		values: values
 	};
 };
@@ -79,12 +82,12 @@ Packet.getGameEventValue = function (stream, entry) {
 };
 
 Packet.parsers = {
-	0: function () {
+	0 : function () {
 	},
-	2: ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
-	3: ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
-	4: ParserGenerator.make('stringCmd', 'command{s}'),
-	5: function (stream) {
+	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
+	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
+	4 : ParserGenerator.make('stringCmd', 'command{s}'),
+	5 : function (stream) {
 		var count = stream.readBits(8);
 		var vars = {};
 		for (var i = 0; i < count; i++) {
@@ -92,12 +95,12 @@ Packet.parsers = {
 		}
 		return {
 			packetType: 'setConVar',
-			vars: vars
+			vars      : vars
 		}
 	},
-	6: ParserGenerator.make('sigOnState', 'state{8}count{32}'),
-	7: ParserGenerator.make('print', 'value{s}'),
-	8: ParserGenerator.make('serverInfo',
+	6 : ParserGenerator.make('sigOnState', 'state{8}count{32}'),
+	7 : ParserGenerator.make('print', 'value{s}'),
+	8 : ParserGenerator.make('serverInfo',
 		'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 		'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 		'game{s}map{s}skybox{s}serverName{s}replay{b}'),
@@ -109,8 +112,8 @@ Packet.parsers = {
 			var bits = logBase2(number) + 1;
 			for (var i = 0; i < number; i++) {
 				var entry = {
-					'classId': stream.readBits(bits),
-					'className': stream.readASCIIString(),
+					'classId'      : stream.readBits(bits),
+					'className'    : stream.readASCIIString(),
 					'dataTableName': stream.readASCIIString()
 				};
 				entries.push(entry);
@@ -118,9 +121,9 @@ Packet.parsers = {
 		}
 		return {
 			'packetType': 'classInfo',
-			number: number,
-			create: create,
-			entries: entries
+			number      : number,
+			create      : create,
+			entries     : entries
 		}
 	},
 	11: ParserGenerator.make('setPause', 'paused{b}'),
@@ -171,7 +174,7 @@ Packet.parsers = {
 		stream._index = end;
 		return {
 			packetType: 'createStringTable',
-			table: stringTable
+			table     : stringTable
 		};
 	},
 	13: function (stream) {
@@ -210,11 +213,11 @@ Packet.parsers = {
 		stream._index = end;
 		//throw false;
 		return {
-			packetType: 'updateStringTables',
-			tableId: tableId,
+			packetType    : 'updateStringTables',
+			tableId       : tableId,
 			changedEntries: changeEntries,
-			length: length,
-			strings: strings
+			length        : length,
+			strings       : strings
 		}
 	},
 	14: ParserGenerator.make('voiceInit', 'codec{s}quality{8}'),
@@ -226,9 +229,9 @@ Packet.parsers = {
 		stream._index += length;
 		return {
 			packetType: 'parseSounds',
-			reliable: reliable,
-			num: num,
-			length: length
+			reliable  : reliable,
+			num       : num,
+			length    : length
 		}
 	},
 	18: ParserGenerator.make('setView', 'index{11}'),
@@ -270,12 +273,12 @@ Packet.parsers = {
 		}
 		var lowPriority = !!stream.readBits(1);
 		return {
-			packetType: 'BSPDecal',
-			position: position,
+			packetType  : 'BSPDecal',
+			position    : position,
 			textureIndex: textureIndex,
-			entIndex: entIndex,
-			modelIndex: modelIndex,
-			lowPriority: lowPriority
+			entIndex    : entIndex,
+			modelIndex  : modelIndex,
+			lowPriority : lowPriority
 		}
 	},
 	23: function (stream) {
@@ -288,7 +291,7 @@ Packet.parsers = {
 		} else {
 			result = {
 				packetType: 'unknownUserMessage',
-				type: type
+				type      : type
 			}
 		}
 		console.log(result);
@@ -305,7 +308,7 @@ Packet.parsers = {
 		stream._index = end;
 		return {
 			packetType: 'gameEvent',
-			event: event
+			event     : event
 		}
 	},
 	26: function (stream) {
@@ -323,13 +326,13 @@ Packet.parsers = {
 		var updatedBaseLink = !!stream.readBits(1);
 		stream._index += length;
 		return {
-			packetType: 'packetEntities',
-			maxEntries: maxEntries,
-			isDelta: isDelta,
-			delta: delta,
-			baseLink: baseLink,
-			updatedEntries: updatedEntries,
-			length: length,
+			packetType     : 'packetEntities',
+			maxEntries     : maxEntries,
+			isDelta        : isDelta,
+			delta          : delta,
+			baseLink       : baseLink,
+			updatedEntries : updatedEntries,
+			length         : length,
 			updatedBaseLink: updatedBaseLink
 		}
 	},
@@ -355,16 +358,16 @@ Packet.parsers = {
 				type = stream.readBits(3);
 			}
 			events[id] = {
-				id: id,
-				name: name,
-				type: type,
+				id     : id,
+				name   : name,
+				type   : type,
 				entries: entries
 			};
 		}
 		Packet.gameEventMap = events;
 		return {
 			packetType: 'gameEventList',
-			events: events
+			events    : events
 		}
 	},
 	31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
@@ -372,69 +375,107 @@ Packet.parsers = {
 };
 
 Packet.userMessageParsers = {
-	4: ParserGenerator.make('sayText2', 'client{8}raw{8}kind{s}from{s}text{s}'),
+	4: function (stream) {
+		var client = stream.readBits(8);
+		var raw = stream.readBits(8);
+		var pos = stream._index;
+		var from, text, kind, arg1, arg2;
+		if (stream.readBits(8) === 1) {
+			var first = stream.readBits(8);
+			if (first === 7) {
+				var color = stream.readASCIIString(6);
+			} else {
+				stream._index = pos + 8;
+			}
+			text = stream.readASCIIString();
+			if (text.substr(0, 6) === '*DEAD*') {
+				// grave talk is in the format '*DEAD* \u0003$from\u0001:    $text'
+				var start = text.indexOf('\u0003');
+				var end = text.indexOf('\u0001');
+				from = text.substr(start + 1, end - start - 1);
+				text = text.substr(end + 5);
+				kind = 'TF_Chat_AllDead';
+			}
+		} else {
+			stream._index = pos;
+			kind = stream.readASCIIString();
+			from = stream.readASCIIString();
+			text = stream.readASCIIString();
+			stream.readASCIIString();
+			stream.readASCIIString();
+		}
+		return {
+			packetType: 'sayText2',
+			client    : client,
+			raw       : raw,
+			kind      : kind,
+			from      : from,
+			text      : text
+		}
+	},
+	//4: ParserGenerator.make('sayText2', 'client{8}raw{8}kind{s}from{s}text{s}arg1{s}arg2{s}'),
 	5: ParserGenerator.make('textMsg', 'destType{8}text{s}')
 };
 
 var UserMessageType = {
-	Geiger: 0,
-	Train: 1,
-	HudText: 2,
-	SayText: 3,
-	SayText2: 4,
-	TextMsg: 5,
-	ResetHUD: 6,
-	GameTitle: 7,
-	ItemPickup: 8,
-	ShowMenu: 9,
-	Shake: 10,
-	Fade: 11,
-	VGUIMenu: 12,
-	Rumble: 13,
-	CloseCaption: 14,
-	SendAudio: 15,
-	VoiceMask: 16,
-	RequestState: 17,
-	Damage: 18,
-	HintText: 19,
-	KeyHintText: 20,
-	HudMsg: 21,
-	AmmoDenied: 22,
-	AchievementEvent: 23,
-	UpdateRadar: 24,
-	VoiceSubtitle: 25,
-	HudNotify: 26,
-	HudNotifyCustom: 27,
-	PlayerStatsUpdate: 28,
-	PlayerIgnited: 29,
-	PlayerIgnitedInv: 30,
-	HudArenaNotify: 31,
-	UpdateAchievement: 32,
-	TrainingMsg: 33,
-	TrainingObjective: 34,
-	DamageDodged: 35,
-	PlayerJarated: 36,
-	PlayerExtinguished: 37,
-	PlayerJaratedFade: 38,
+	Geiger             : 0,
+	Train              : 1,
+	HudText            : 2,
+	SayText            : 3,
+	SayText2           : 4,
+	TextMsg            : 5,
+	ResetHUD           : 6,
+	GameTitle          : 7,
+	ItemPickup         : 8,
+	ShowMenu           : 9,
+	Shake              : 10,
+	Fade               : 11,
+	VGUIMenu           : 12,
+	Rumble             : 13,
+	CloseCaption       : 14,
+	SendAudio          : 15,
+	VoiceMask          : 16,
+	RequestState       : 17,
+	Damage             : 18,
+	HintText           : 19,
+	KeyHintText        : 20,
+	HudMsg             : 21,
+	AmmoDenied         : 22,
+	AchievementEvent   : 23,
+	UpdateRadar        : 24,
+	VoiceSubtitle      : 25,
+	HudNotify          : 26,
+	HudNotifyCustom    : 27,
+	PlayerStatsUpdate  : 28,
+	PlayerIgnited      : 29,
+	PlayerIgnitedInv   : 30,
+	HudArenaNotify     : 31,
+	UpdateAchievement  : 32,
+	TrainingMsg        : 33,
+	TrainingObjective  : 34,
+	DamageDodged       : 35,
+	PlayerJarated      : 36,
+	PlayerExtinguished : 37,
+	PlayerJaratedFade  : 38,
 	PlayerShieldBlocked: 39,
-	BreakModel: 40,
-	CheapBreakModel: 41,
-	BreakModel_Pumpkin: 42,
+	BreakModel         : 40,
+	CheapBreakModel    : 41,
+	BreakModel_Pumpkin : 42,
 	BreakModelRocketDud: 43,
-	CallVoteFailed: 44,
-	VoteStart: 45,
-	VotePass: 46,
-	VoteFailed: 47,
-	VoteSetup: 48,
-	PlayerBonusPoints: 49,
-	SpawnFlyingBird: 50,
-	PlayerGodRayEffect: 51,
-	SPHapWeapEvent: 52,
-	HapDmg: 53,
-	HapPunch: 54,
-	HapSetDrag: 55,
-	HapSet: 56,
-	HapMeleeContact: 57
+	CallVoteFailed     : 44,
+	VoteStart          : 45,
+	VotePass           : 46,
+	VoteFailed         : 47,
+	VoteSetup          : 48,
+	PlayerBonusPoints  : 49,
+	SpawnFlyingBird    : 50,
+	PlayerGodRayEffect : 51,
+	SPHapWeapEvent     : 52,
+	HapDmg             : 53,
+	HapPunch           : 54,
+	HapSetDrag         : 55,
+	HapSet             : 56,
+	HapMeleeContact    : 57
 };
 
 module.exports = Packet;
