@@ -1,6 +1,7 @@
 var Packet = require('./packet');
 var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
+var DataTable = require('./datatable');
 var BitStream = require('bit-buffer').BitStream;
 
 var Parser = function (steam) {
@@ -136,10 +137,10 @@ Parser.prototype.readMessage = function () {
 		case Parser.MessageType.ConsoleCmd:
 			return new ConsoleCmd(type, tick, data, length);
 		case Parser.MessageType.UserCmd:
+			console.log('usercmd');
 			return true;
 		case Parser.MessageType.DataTables:
-			//console.log('datatable');
-			return true;
+			return new DataTable(type, tick, data, length);
 		case Parser.MessageType.StringTables:
 			return new StringTable(type, tick, data, length);
 		default:

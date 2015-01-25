@@ -1,5 +1,6 @@
 var ParserGenerator = require('./parsergenerator');
 var StringTable = require('./stringtable');
+var PacketStringTable = require('./packetstringtable');
 
 function logBase2 (num) {
 	var result = 0;
@@ -44,7 +45,6 @@ Packet.parseGameEvent = function (eventId, stream) {
 		return 'unknown';
 	}
 	var eventDescription = this.gameEventMap[eventId];
-	//console.log(eventDescription);
 	var values = {};
 	for (var i = 0; i < eventDescription.entries.length; i++) {
 		var entry = eventDescription.entries[i];
@@ -72,7 +72,9 @@ Packet.getGameEventValue = function (stream, entry) {
 		case 6:
 			return !!stream.readBits(1);
 		case 7:
-			return 'local value'
+			return 'local value';
+		default:
+			throw 'invalid game event type';
 	}
 };
 
@@ -127,7 +129,7 @@ Packet.parsers = {
 		// https://coldemoplayer.googlecode.com/svn/branches/2.0/code/plugins/CDP.Source/Messages/SvcCreateStringTable.cs
 		var name = stream.readASCIIString();
 		var maxEntries = stream.readBits(16);
-		var bits = Math.log(maxEntries) / Math.LN2;
+		var bits = logBase2(maxEntries);
 		var numEntries = stream.readBits(bits + 1);
 		var length = stream.readBits(20);
 		var userDataFixedSize = !!stream.readBits(1);
@@ -140,10 +142,30 @@ Packet.parsers = {
 		var stringTable = new PacketStringTable(name, maxEntries, bits, userDataFixedSize, userSize || -1, userDataBits || -1, numEntries);
 		stringTable.parse(stream);
 		//console.log(stringTable);
+		//console.log(stream.readBits(6));
+		//console.log(stream.readASCIIString());
+		//maxEntries = stream.readBits(16);
+		//console.log(maxEntries);
+		//bits = logBase2(maxEntries);
+		//numEntries = stream.readBits(bits + 1);
+		//console.log('entries: ' + numEntries);
+		//console.log(stream.readBits(175));
+		//for (var i = 0; i < numEntries; i++) {
+		//	console.log(stream.readBits(6));
+		//	console.log(stream.readASCIIString());
+		//}
+		//console.log(stream.readASCIIString());
+		//console.log(stream.readASCIIString());
 		//console.log();
 		//console.log(length);
 		//console.log(end - stream._index);
 		//console.log();
+		//throw false;
+
+		//if((end/8)> 50515){
+		//	console.log(stringTable);
+		//	throw 'found';
+		//}
 		//throw false;
 
 		stream._index = end;
@@ -195,8 +217,8 @@ Packet.parsers = {
 			strings: strings
 		}
 	},
-	14: ParserGenerator.make('voiceInit', 'coded{s}quality{8}'),
-	15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}data{$length}'),
+	14: ParserGenerator.make('voiceInit', 'codec{s}quality{8}'),
+	15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}_{$length}'),
 	17: function (stream) {
 		var reliable = !!stream.readBits(1);
 		var num = (reliable) ? 1 : stream.readBits(8);
@@ -269,6 +291,8 @@ Packet.parsers = {
 				type: type
 			}
 		}
+		console.log(result);
+		console.log(((pos + length) - stream._index) + ' bits left');
 		stream._index = pos + length;
 		return result;
 	},
@@ -285,6 +309,7 @@ Packet.parsers = {
 		}
 	},
 	26: function (stream) {
+		// todo
 		var maxEntries = stream.readBits(11);
 		var isDelta = !!stream.readBits(1);
 		if (isDelta) {
@@ -411,55 +436,5 @@ var UserMessageType = {
 	HapSet: 56,
 	HapMeleeContact: 57
 };
-
-var PacketStringTable = function (name, maxEntries, entryBits, userDataFixedSize, userDataSize, userDataSizeBits, numEntries) {
-	this.name = name;
-	this.maxEntries = maxEntries;
-	this.entryBits = entryBits;
-	this.userDataFixedSize = userDataFixedSize;
-	this.userDataSize = userDataSize;
-	this.userDataSizeBits = userDataSizeBits;
-	this.numEntries = numEntries;
-	this.id = PacketStringTable.tables.length;
-	this.strings = [];
-	PacketStringTable.tables.push(this);
-};
-
-PacketStringTable.prototype.parse = function (stream) {
-	var entryIndex, lastEntry = -1;
-	for (var i = 0; i < this.numEntries; i++) {
-		entryIndex = lastEntry + 1;
-		this.strings.push(stream.readASCIIString());
-		//if (!stream.readBits(1)) {
-		//	entryIndex = stream.readBits(this.entryBits);
-		//}
-		//lastEntry = entryIndex;
-		//if (entryIndex < 0 || entryIndex >= this.maxEntries) {
-		//	throw 'invalid index';
-		//}
-		//var string = '';
-		//if (stream.readBits(1)) {
-		//	if (stream.readBits(1)) {
-		//		throw 'substr not implented';
-		//	} else {
-		//		string = stream.readASCIIString();
-		//	}
-		//}
-
-		if (stream.readBits(1)) { //user data
-			if (this.userDataFixedSize) {
-				var userData = stream.readBits(this.userDataSizeBits)
-			} else {
-				var bits = stream.readBits(14);
-				userData = stream.readBits(bits);
-			}
-			console.log('userdata: ' + userData);
-		}
-
-		//this.strings.push(string);
-	}
-};
-
-PacketStringTable.tables = [];
 
 module.exports = Packet;
