@@ -26,7 +26,6 @@ StringTable.prototype.parse = function () {
 			entries.push(entry);
 		}
 		tables[tableName] = entries;
-		//console.log(tables);
 		StringTable.tables.push({
 			name: tableName,
 			entries: entries
@@ -40,6 +39,7 @@ StringTable.prototype.parse = function () {
 			}
 		}
 	}
+	//console.log(tables);
 	return [{
 		packetType: 'stringTable',
 		tables: tables
