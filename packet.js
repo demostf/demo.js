@@ -404,6 +404,11 @@ Packet.userMessageParsers = {
 			stream.readASCIIString();
 			stream.readASCIIString();
 		}
+		// cleanup color codes
+		text = text.replace('\u0001', '');
+		while ((pos = text.indexOf('\u0007')) !== -1) {
+			text = text.slice(0, pos) + text.slice(pos + 7);
+		}
 		return {
 			packetType: 'sayText2',
 			client    : client,
