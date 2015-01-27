@@ -29,7 +29,7 @@ Generator.readItem = function (stream, description, data) {
 		return !!stream.readBits(1);
 	} else if (description[0] === 's') {
 		if (description.length === 1) {
-			return stream.readASCIIString();
+			return stream.readUTF8String();
 		} else {
 			length = parseInt(description.substr(1), 10);
 			return stream.readASCIIString(length);

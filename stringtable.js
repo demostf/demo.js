@@ -16,11 +16,11 @@ StringTable.prototype.parse = function () {
 		var entryCount = this.stream.readBits(16);
 		for (var j = 0; j < entryCount; j++) {
 			var entry = {
-				text: this.stream.readASCIIString()
+				text: this.stream.readUTF8String()
 			};
 			if (this.stream.readBits(1)) {
 				var extraDataLength = this.stream.readBits(16);
-				entry.extraData = this.stream.readASCIIString(extraDataLength);
+				entry.extraData = this.stream.readUTF8String(extraDataLength);
 				//console.log(entry.extraData.length-extraDataLength);
 			}
 			entries.push(entry);

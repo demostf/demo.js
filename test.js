@@ -7,6 +7,6 @@ fs.readFile("gully.dem", function (err, data) {
 	var parser = demo.getParser();
 	var head = parser.readHeader();
 	//console.log(parser.readHeader());
-	parser.parseBody()
-	//console.log(parser.parseBody());
+	//parser.parseBody()
+	console.log(parser.parseBody());
 });

@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "bit-buffer": "0.0.3",
-    "buffer": "^3.0.1"
+    "bit-buffer": "icewind1991/bit-buffer"
   }
 }

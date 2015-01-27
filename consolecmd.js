@@ -6,7 +6,7 @@ var ConsoleCmd = function (type, tick, stream, length) {
 };
 
 ConsoleCmd.prototype.parse = function () {
-	var cmd = this.stream.readASCIIString();
+	var cmd = this.stream.readUTF8String();
 	//console.log("cmd " + cmd);
 	return cmd;
 };

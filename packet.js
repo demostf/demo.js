@@ -63,7 +63,7 @@ Packet.parseGameEvent = function (eventId, stream) {
 Packet.getGameEventValue = function (stream, entry) {
 	switch (entry.type) {
 		case 1:
-			return stream.readASCIIString();
+			return stream.readUTF8String();
 		case 2:
 			return stream.readFloat32();
 		case 3:
@@ -91,7 +91,7 @@ Packet.parsers = {
 		var count = stream.readBits(8);
 		var vars = {};
 		for (var i = 0; i < count; i++) {
-			vars[stream.readASCIIString()] = stream.readASCIIString();
+			vars[stream.readUTF8String()] = stream.readUTF8String();
 		}
 		return {
 			packetType: 'setConVar',
@@ -294,8 +294,8 @@ Packet.parsers = {
 				type      : type
 			}
 		}
-		console.log(result);
-		console.log(((pos + length) - stream._index) + ' bits left');
+		//console.log(result);
+		//console.log(((pos + length) - stream._index) + ' bits left');
 		stream._index = pos + length;
 		return result;
 	},
@@ -383,11 +383,11 @@ Packet.userMessageParsers = {
 		if (stream.readBits(8) === 1) {
 			var first = stream.readBits(8);
 			if (first === 7) {
-				var color = stream.readASCIIString(6);
+				var color = stream.readUTF8String(6);
 			} else {
 				stream._index = pos + 8;
 			}
-			text = stream.readASCIIString();
+			text = stream.readUTF8String();
 			if (text.substr(0, 6) === '*DEAD*') {
 				// grave talk is in the format '*DEAD* \u0003$from\u0001:    $text'
 				var start = text.indexOf('\u0003');
@@ -398,9 +398,9 @@ Packet.userMessageParsers = {
 			}
 		} else {
 			stream._index = pos;
-			kind = stream.readASCIIString();
-			from = stream.readASCIIString();
-			text = stream.readASCIIString();
+			kind = stream.readUTF8String();
+			from = stream.readUTF8String();
+			text = stream.readUTF8String();
 			stream.readASCIIString();
 			stream.readASCIIString();
 		}
