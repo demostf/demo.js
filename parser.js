@@ -42,7 +42,7 @@ Parser.prototype.readHeader = function () {
 };
 
 Parser.prototype.parseBody = function () {
-	var message, i;
+	var message, i, tick = 0;
 	while (message = this.readMessage()) {
 		if (message.parse) {
 			var packets = message.parse();
@@ -52,11 +52,15 @@ Parser.prototype.parseBody = function () {
 					continue;
 				}
 				switch (packet.packetType) {
+					case 'netTick':
+						tick = packet.tick;
+						break;
 					case 'sayText2':
 						this.state.chat.push({
 							kind: packet.kind,
 							from: packet.from,
-							text: packet.text
+							text: packet.text,
+							tick: tick
 						});
 						break;
 					case 'stringTable':
@@ -77,14 +81,16 @@ Parser.prototype.parseBody = function () {
 									killer  : packet.event.values.attacker,
 									assister: assister,
 									victim  : packet.event.values.userid,
-									weapon  : packet.event.values.weapon
+									weapon  : packet.event.values.weapon,
+									tick    : tick
 								});
 								break;
 							case 'teamplay_round_win':
 								if (packet.event.values.winreason !== 6) {// 6 = timelimit
 									this.state.rounds.push({
-										winner: packet.event.values.team === 2 ? 'red' : 'blue',
-										length: packet.event.values.round_time
+										winner  : packet.event.values.team === 2 ? 'red' : 'blue',
+										length  : packet.event.values.round_time,
+										end_tick: tick
 									});
 								}
 						}
