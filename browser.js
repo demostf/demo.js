@@ -34,7 +34,7 @@ function handleFileSelect(evt) {
 	}
 }
 
-},{"./demo":3}],2:[function(require,module,exports){
+},{"./demo":4}],2:[function(require,module,exports){
 var ConsoleCmd = function (type, tick, stream, length) {
 	this.type = type;
 	this.tick = tick;
@@ -43,7 +43,7 @@ var ConsoleCmd = function (type, tick, stream, length) {
 };
 
 ConsoleCmd.prototype.parse = function () {
-	var cmd = this.stream.readASCIIString();
+	var cmd = this.stream.readUTF8String();
 	//console.log("cmd " + cmd);
 	return cmd;
 };
@@ -51,6 +51,23 @@ ConsoleCmd.prototype.parse = function () {
 module.exports = ConsoleCmd;
 
 },{}],3:[function(require,module,exports){
+var DataTable = function (type, tick, stream, length) {
+	this.type = type;
+	this.tick = tick;
+	this.stream = stream;
+	this.length = length;//length in bytes
+};
+
+DataTable.prototype.parse = function () {
+	//while (this.stream.byteIndex < this.length) {
+		//console.log(this.stream.readASCIIString());
+	//}
+	return [];
+};
+
+module.exports = DataTable;
+
+},{}],4:[function(require,module,exports){
 var BitStream = require('bit-buffer').BitStream;
 var Parser = require('./parser');
 
@@ -82,7 +99,7 @@ Demo.fromPath = function (path) {
 
 module.exports = Demo;
 
-},{"./parser":6,"bit-buffer":4}],4:[function(require,module,exports){
+},{"./parser":8,"bit-buffer":5}],5:[function(require,module,exports){
 (function (Buffer){
 (function (root) {
 
@@ -201,6 +218,9 @@ BitView.prototype.setBits = function (offset, value, bits) {
 	}
 };
 
+BitView.prototype.getBoolean = function (offset) {
+	return this.getBits(offset, 1, false) !== 0;
+};
 BitView.prototype.getInt8 = function (offset) {
 	return this.getBits(offset, 8, true);
 };
@@ -230,6 +250,9 @@ BitView.prototype.getFloat64 = function (offset) {
 	return BitView._scratch.getFloat64(0);
 };
 
+BitView.prototype.setBoolean = function (offset, value) {
+	this.setBits(offset, value ? 1 : 0, 1);
+};
 BitView.prototype.setInt8  =
 BitView.prototype.setUint8 = function (offset, value) {
 	this.setBits(offset, value, 8);
@@ -277,6 +300,14 @@ var writer = function (name, size) {
 };
 
 function readASCIIString(stream, bytes) {
+	return readString(stream, bytes, false);
+}
+
+function readUTF8String(stream, bytes) {
+	return readString(stream, bytes, true);
+}
+
+function readString(stream, bytes, utf8) {
 	var i = 0;
 	var chars = [];
 	var append = true;
@@ -295,7 +326,6 @@ function readASCIIString(stream, bytes) {
 				break;
 			}
 		}
-
 		if (append) {
 			chars.push(c);
 		}
@@ -303,10 +333,16 @@ function readASCIIString(stream, bytes) {
 		i++;
 	}
 
-	// Convert char code array back to string.
-	return chars.map(function (x) {
-		return String.fromCharCode(x);
-	}).join('');
+	var string = String.fromCharCode.apply(null, chars);
+	if (utf8) {
+		try {
+			return decodeURIComponent(escape(string)); // https://stackoverflow.com/a/17192845
+		} catch (e) {
+			return string;
+		}
+	} else {
+		return string;
+	}
 }
 
 function writeASCIIString(stream, string, bytes) {
@@ -315,6 +351,43 @@ function writeASCIIString(stream, string, bytes) {
 	for (var i = 0; i < length; i++) {
 		stream.writeUint8(i < string.length ? string.charCodeAt(i) : 0x00);
 	}
+}
+
+function writeUTF8String(stream, string, bytes) {
+	var byteArray = stringToByteArray(string);
+
+	var length = bytes || byteArray.length + 1;  // + 1 for NULL
+	for (var i = 0; i < length; i++) {
+		stream.writeUint8(i < byteArray.length ? byteArray[i] : 0x00);
+	}
+}
+
+function stringToByteArray(str) { // https://gist.github.com/volodymyr-mykhailyk/2923227
+	var b = [], i, unicode;
+	for (i = 0; i < str.length; i++) {
+		unicode = str.charCodeAt(i);
+		// 0x00000000 - 0x0000007f -> 0xxxxxxx
+		if (unicode <= 0x7f) {
+			b.push(unicode);
+			// 0x00000080 - 0x000007ff -> 110xxxxx 10xxxxxx
+		} else if (unicode <= 0x7ff) {
+			b.push((unicode >> 6) | 0xc0);
+			b.push((unicode & 0x3F) | 0x80);
+			// 0x00000800 - 0x0000ffff -> 1110xxxx 10xxxxxx 10xxxxxx
+		} else if (unicode <= 0xffff) {
+			b.push((unicode >> 12) | 0xe0);
+			b.push(((unicode >> 6) & 0x3f) | 0x80);
+			b.push((unicode & 0x3f) | 0x80);
+			// 0x00010000 - 0x001fffff -> 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+		} else {
+			b.push((unicode >> 18) | 0xf0);
+			b.push(((unicode >> 12) & 0x3f) | 0x80);
+			b.push(((unicode >> 6) & 0x3f) | 0x80);
+			b.push((unicode & 0x3f) | 0x80);
+		}
+	}
+
+	return b;
 }
 
 var BitStream = function (source, byteOffset, byteLength) {
@@ -366,6 +439,7 @@ BitStream.prototype.writeBits = function (value, bits) {
 	this._index += bits;
 };
 
+BitStream.prototype.readBoolean = reader('getBoolean', 1);
 BitStream.prototype.readInt8 = reader('getInt8', 8);
 BitStream.prototype.readUint8 = reader('getUint8', 8);
 BitStream.prototype.readInt16 = reader('getInt16', 16);
@@ -375,6 +449,7 @@ BitStream.prototype.readUint32 = reader('getUint32', 32);
 BitStream.prototype.readFloat32 = reader('getFloat32', 32);
 BitStream.prototype.readFloat64 = reader('getFloat64', 64);
 
+BitStream.prototype.writeBoolean = writer('setBoolean', 1);
 BitStream.prototype.writeInt8 = writer('setInt8', 8);
 BitStream.prototype.writeUint8 = writer('setUint8', 8);
 BitStream.prototype.writeInt16 = writer('setInt16', 16);
@@ -388,8 +463,16 @@ BitStream.prototype.readASCIIString = function (bytes) {
 	return readASCIIString(this, bytes);
 };
 
+BitStream.prototype.readUTF8String = function (bytes) {
+	return readUTF8String(this, bytes);
+};
+
 BitStream.prototype.writeASCIIString = function (string, bytes) {
 	writeASCIIString(this, string, bytes);
+};
+
+BitStream.prototype.writeUTF8String = function (string, bytes) {
+	writeUTF8String(this, string, bytes);
 };
 
 // AMD / RequireJS
@@ -410,9 +493,15 @@ else if (typeof module !== 'undefined' && module.exports) {
 }
 
 }(this));
+
 }).call(this,require("buffer").Buffer)
-},{"buffer":9}],5:[function(require,module,exports){
+},{"buffer":11}],6:[function(require,module,exports){
 var ParserGenerator = require('./parsergenerator');
+var StringTable = require('./stringtable');
+var PacketStringTable = require('./packetstringtable');
+
+// https://code.google.com/p/coldemoplayer/source/browse/branches/2.0/compLexity+Demo+Player/CDP.Source/Messages/?r=219
+// https://github.com/TimePath/hl2-toolkit/tree/master/src/main/java/com/timepath/hl2/io/demo
 
 function logBase2(num) {
 	var result = 0;
@@ -457,7 +546,6 @@ Packet.parseGameEvent = function (eventId, stream) {
 		return 'unknown';
 	}
 	var eventDescription = this.gameEventMap[eventId];
-	//console.log(eventDescription);
 	var values = {};
 	for (var i = 0; i < eventDescription.entries.length; i++) {
 		var entry = eventDescription.entries[i];
@@ -473,7 +561,7 @@ Packet.parseGameEvent = function (eventId, stream) {
 Packet.getGameEventValue = function (stream, entry) {
 	switch (entry.type) {
 		case 1:
-			return stream.readASCIIString();
+			return stream.readUTF8String();
 		case 2:
 			return stream.readFloat32();
 		case 3:
@@ -485,7 +573,9 @@ Packet.getGameEventValue = function (stream, entry) {
 		case 6:
 			return !!stream.readBits(1);
 		case 7:
-			return 'local value'
+			return 'local value';
+		default:
+			throw 'invalid game event type';
 	}
 };
 
@@ -499,7 +589,7 @@ Packet.parsers = {
 		var count = stream.readBits(8);
 		var vars = {};
 		for (var i = 0; i < count; i++) {
-			vars[stream.readASCIIString()] = stream.readASCIIString();
+			vars[stream.readUTF8String()] = stream.readUTF8String();
 		}
 		return {
 			packetType: 'setConVar',
@@ -540,34 +630,50 @@ Packet.parsers = {
 		// https://coldemoplayer.googlecode.com/svn/branches/2.0/code/plugins/CDP.Source/Messages/SvcCreateStringTable.cs
 		var name = stream.readASCIIString();
 		var maxEntries = stream.readBits(16);
-		var bits = Math.log(maxEntries) / Math.LN2;
+		var bits = logBase2(maxEntries);
 		var numEntries = stream.readBits(bits + 1);
 		var length = stream.readBits(20);
-		var userDataFixedSize = stream.readBits(1);
+		var userDataFixedSize = !!stream.readBits(1);
 		if (userDataFixedSize) {
 			var userSize = stream.readBits(12);
 			var userDataBits = stream.readBits(4);
 		}
-		var data = [];
 		var end = stream._index + length;
 
-
-		for (var i = 0; i < numEntries; i++) {
-			data.push(stream.readASCIIString());
-			stream.readBits(7);
-			data.push(stream.readASCIIString());
-			//console.log(stream.readBits(bits + 1));
-			//stream.readBits(1);
-			//data.push(stream.readASCIIString());
-		}
-		stream._index = end;
-		return {packetType: 'createStringTable'};
-		//return {
-		//	packetType: 'createStringTable',
-		//	name      : name,
-		//	entries   : numEntries,
-		//	data      : data
+		var stringTable = new PacketStringTable(name, maxEntries, bits, userDataFixedSize, userSize || -1, userDataBits || -1, numEntries);
+		stringTable.parse(stream);
+		//console.log(stringTable);
+		//console.log(stream.readBits(6));
+		//console.log(stream.readASCIIString());
+		//maxEntries = stream.readBits(16);
+		//console.log(maxEntries);
+		//bits = logBase2(maxEntries);
+		//numEntries = stream.readBits(bits + 1);
+		//console.log('entries: ' + numEntries);
+		//console.log(stream.readBits(175));
+		//for (var i = 0; i < numEntries; i++) {
+		//	console.log(stream.readBits(6));
+		//	console.log(stream.readASCIIString());
 		//}
+		//console.log(stream.readASCIIString());
+		//console.log(stream.readASCIIString());
+		//console.log();
+		//console.log(length);
+		//console.log(end - stream._index);
+		//console.log();
+		//throw false;
+
+		//if((end/8)> 50515){
+		//	console.log(stringTable);
+		//	throw 'found';
+		//}
+		//throw false;
+
+		stream._index = end;
+		return {
+			packetType: 'createStringTable',
+			table     : stringTable
+		};
 	},
 	13: function (stream) {
 		var tableId = stream.readBits(5);
@@ -575,12 +681,33 @@ Packet.parsers = {
 		var length = stream.readBits(20);
 		var end = stream._index + length;
 		stream.readBits(7);
-		var strings = [];
-		for (var i = 0; i < changeEntries; i++) {
-			//	// todo cleanup the 8/16 bits that get read in the string here
-			strings.push(stream.readASCIIString());
+		var strings = {};
+		//var table = StringTable.tables[tableId];
+
+		// no idea why but it mostly works
+		var a = stream.readBits(1);
+		var b = stream.readBits(1);
+		if (a && !b) {
+			stream.readBits(12);
+		} else if (!b) {
+			stream.readBits(16);
+		} else {
+			stream.readBits(6);
 		}
+		//console.log(a ? 'a' : '!a')
+		//console.log('table: ' + table.name);
+		//console.log('       ' + table.entries.length + ' entries');
+		for (var i = 0; i < changeEntries; i++) {
+			//console.log(stream.readBits(2));
+			var string = stream.readASCIIString();
+			stream.readBits(16);
+			//todo last entry overflows by 13 (3 bits at the end 13 before next entry?)
+			strings[i] = string;
+		}
+		//throw false;
+		//console.log(changeEntries);
 		//console.log(strings);
+		//console.log(end - stream._index);
 		stream._index = end;
 		//throw false;
 		return {
@@ -591,8 +718,8 @@ Packet.parsers = {
 			strings       : strings
 		}
 	},
-	14: ParserGenerator.make('voiceInit', 'coded{s}quality{8}'),
-	15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}data{$length}'),
+	14: ParserGenerator.make('voiceInit', 'codec{s}quality{8}'),
+	15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}_{$length}'),
 	17: function (stream) {
 		var reliable = !!stream.readBits(1);
 		var num = (reliable) ? 1 : stream.readBits(8);
@@ -645,7 +772,7 @@ Packet.parsers = {
 		var lowPriority = !!stream.readBits(1);
 		return {
 			packetType  : 'BSPDecal',
-			postition   : position,
+			position    : position,
 			textureIndex: textureIndex,
 			entIndex    : entIndex,
 			modelIndex  : modelIndex,
@@ -665,6 +792,8 @@ Packet.parsers = {
 				type      : type
 			}
 		}
+		//console.log(result);
+		//console.log(((pos + length) - stream._index) + ' bits left');
 		stream._index = pos + length;
 		return result;
 	},
@@ -681,6 +810,7 @@ Packet.parsers = {
 		}
 	},
 	26: function (stream) {
+		// todo
 		var maxEntries = stream.readBits(11);
 		var isDelta = !!stream.readBits(1);
 		if (isDelta) {
@@ -704,9 +834,9 @@ Packet.parsers = {
 			updatedBaseLink: updatedBaseLink
 		}
 	},
-	27: ParserGenerator.make('tempEntities', 'count{8}length{17}data{$length}'),
+	27: ParserGenerator.make('tempEntities', 'count{8}length{17}_{$length}'),
 	28: ParserGenerator.make('preFetch', 'index{14}'),
-	29: ParserGenerator.make('menu', 'type{16}length{16}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}data{$length}'),//length*8
+	29: ParserGenerator.make('menu', 'type{16}length{16}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}'),//length*8
 	30: function (stream) {
 		// list of game events and parameters
 		var numEvents = stream.readBits(9);
@@ -743,7 +873,51 @@ Packet.parsers = {
 };
 
 Packet.userMessageParsers = {
-	4: ParserGenerator.make('sayText2', 'client{8}raw{8}kind{s}from{s}text{s}'),
+	4: function (stream) {
+		var client = stream.readBits(8);
+		var raw = stream.readBits(8);
+		var pos = stream._index;
+		var from, text, kind, arg1, arg2;
+		if (stream.readBits(8) === 1) {
+			var first = stream.readBits(8);
+			if (first === 7) {
+				var color = stream.readUTF8String(6);
+			} else {
+				stream._index = pos + 8;
+			}
+			text = stream.readUTF8String();
+			if (text.substr(0, 6) === '*DEAD*') {
+				// grave talk is in the format '*DEAD* \u0003$from\u0001:    $text'
+				var start = text.indexOf('\u0003');
+				var end = text.indexOf('\u0001');
+				from = text.substr(start + 1, end - start - 1);
+				text = text.substr(end + 5);
+				kind = 'TF_Chat_AllDead';
+			}
+		} else {
+			stream._index = pos;
+			kind = stream.readUTF8String();
+			from = stream.readUTF8String();
+			text = stream.readUTF8String();
+			stream.readASCIIString();
+			stream.readASCIIString();
+		}
+		// cleanup color codes
+		text = text.replace(/\u0001/g, '');
+		text = text.replace(/\u0003/g, '');
+		while ((pos = text.indexOf('\u0007')) !== -1) {
+			text = text.slice(0, pos) + text.slice(pos + 7);
+		}
+		return {
+			packetType: 'sayText2',
+			client    : client,
+			raw       : raw,
+			kind      : kind,
+			from      : from,
+			text      : text
+		}
+	},
+	//4: ParserGenerator.make('sayText2', 'client{8}raw{8}kind{s}from{s}text{s}arg1{s}arg2{s}'),
 	5: ParserGenerator.make('textMsg', 'destType{8}text{s}')
 };
 
@@ -810,10 +984,64 @@ var UserMessageType = {
 
 module.exports = Packet;
 
-},{"./parsergenerator":7}],6:[function(require,module,exports){
+},{"./packetstringtable":7,"./parsergenerator":9,"./stringtable":10}],7:[function(require,module,exports){
+var PacketStringTable = function (name, maxEntries, entryBits, userDataFixedSize, userDataSize, userDataSizeBits, numEntries) {
+	this.name = name;
+	this.maxEntries = maxEntries;
+	this.entryBits = entryBits;
+	this.userDataFixedSize = userDataFixedSize;
+	this.userDataSize = userDataSize;
+	this.userDataSizeBits = userDataSizeBits;
+	this.numEntries = numEntries;
+	this.id = PacketStringTable.tables.length;
+	this.strings = [];
+	PacketStringTable.tables.push(this);
+};
+
+PacketStringTable.prototype.parse = function (stream) {
+	var entryIndex, lastEntry = -1;
+	for (var i = 0; i < this.numEntries; i++) {
+		entryIndex = lastEntry + 1;
+		this.strings.push(stream.readASCIIString());
+		//if (!stream.readBits(1)) {
+		//	entryIndex = stream.readBits(this.entryBits);
+		//}
+		//lastEntry = entryIndex;
+		//if (entryIndex < 0 || entryIndex >= this.maxEntries) {
+		//	throw 'invalid index';
+		//}
+		//var string = '';
+		//if (stream.readBits(1)) {
+		//	if (stream.readBits(1)) {
+		//		throw 'substr not implented';
+		//	} else {
+		//		string = stream.readASCIIString();
+		//	}
+		//}
+
+		if (stream.readBits(1)) { //user data
+			if (this.userDataFixedSize) {
+				var userData = stream.readBits(this.userDataSizeBits)
+			} else {
+				var bits = stream.readBits(14);
+				userData = stream.readBits(bits);
+			}
+			console.log('userdata: ' + userData);
+		}
+
+		//this.strings.push(string);
+	}
+};
+
+PacketStringTable.tables = [];
+
+module.exports = PacketStringTable;
+
+},{}],8:[function(require,module,exports){
 var Packet = require('./packet');
 var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
+var DataTable = require('./datatable');
 var BitStream = require('bit-buffer').BitStream;
 
 var Parser = function (steam) {
@@ -854,7 +1082,7 @@ Parser.prototype.readHeader = function () {
 };
 
 Parser.prototype.parseBody = function () {
-	var message, i;
+	var message, i, tick = 0;
 	while (message = this.readMessage()) {
 		if (message.parse) {
 			var packets = message.parse();
@@ -864,11 +1092,15 @@ Parser.prototype.parseBody = function () {
 					continue;
 				}
 				switch (packet.packetType) {
+					case 'netTick':
+						tick = packet.tick;
+						break;
 					case 'sayText2':
 						this.state.chat.push({
 							kind: packet.kind,
 							from: packet.from,
-							text: packet.text
+							text: packet.text,
+							tick: tick
 						});
 						break;
 					case 'stringTable':
@@ -889,14 +1121,16 @@ Parser.prototype.parseBody = function () {
 									killer  : packet.event.values.attacker,
 									assister: assister,
 									victim  : packet.event.values.userid,
-									weapon  : packet.event.values.weapon
+									weapon  : packet.event.values.weapon,
+									tick    : tick
 								});
 								break;
 							case 'teamplay_round_win':
 								if (packet.event.values.winreason !== 6) {// 6 = timelimit
 									this.state.rounds.push({
-										winner: packet.event.values.team === 2 ? 'red' : 'blue',
-										length: packet.event.values.round_time
+										winner  : packet.event.values.team === 2 ? 'red' : 'blue',
+										length  : packet.event.values.round_time,
+										end_tick: tick
 									});
 								}
 						}
@@ -949,10 +1183,10 @@ Parser.prototype.readMessage = function () {
 		case Parser.MessageType.ConsoleCmd:
 			return new ConsoleCmd(type, tick, data, length);
 		case Parser.MessageType.UserCmd:
+			console.log('usercmd');
 			return true;
 		case Parser.MessageType.DataTables:
-			//console.log('datatable');
-			return true;
+			return new DataTable(type, tick, data, length);
 		case Parser.MessageType.StringTables:
 			return new StringTable(type, tick, data, length);
 		default:
@@ -963,7 +1197,7 @@ Parser.prototype.readMessage = function () {
 
 module.exports = Parser;
 
-},{"./consolecmd":2,"./packet":5,"./stringtable":8,"bit-buffer":4}],7:[function(require,module,exports){
+},{"./consolecmd":2,"./datatable":3,"./packet":6,"./stringtable":10,"bit-buffer":5}],9:[function(require,module,exports){
 var Generator = {};
 
 Generator.make = function (name, string) {
@@ -977,7 +1211,10 @@ Generator.make = function (name, string) {
 		};
 		try {
 			for (var i = 0; i < items.length; i++) {
-				result[items[i][0]] = Generator.readItem(stream, items[i][1], result);
+				var value = Generator.readItem(stream, items[i][1], result);
+				if(items[i][0] !== '_'){
+					result[items[i][0]] = value;
+				}
 			}
 		} catch (e) {
 			throw 'Failed reading pattern ' + string;
@@ -992,7 +1229,7 @@ Generator.readItem = function (stream, description, data) {
 		return !!stream.readBits(1);
 	} else if (description[0] === 's') {
 		if (description.length === 1) {
-			return stream.readASCIIString();
+			return stream.readUTF8String();
 		} else {
 			length = parseInt(description.substr(1), 10);
 			return stream.readASCIIString(length);
@@ -1012,7 +1249,7 @@ Generator.readItem = function (stream, description, data) {
 
 module.exports = Generator;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var StringTable = function (type, tick, stream, length) {
 	this.type = type;
 	this.tick = tick;
@@ -1020,45 +1257,50 @@ var StringTable = function (type, tick, stream, length) {
 	this.length = length;//length in bytes
 };
 
+StringTable.tables = [];
+
 StringTable.prototype.parse = function () {
 	var tableCount = this.stream.readBits(8);
 	var tables = {};
-	try {
-		for (var i = 0; i < tableCount; i++) {
-			var entries = [];
-			var tableName = this.stream.readASCIIString();
-			var entryCount = this.stream.readBits(16);
-			for (var j = 0; j < entryCount; j++) {
-				var entry = {
-					text: this.stream.readASCIIString()
-				};
-				if (this.stream.readBits(1)) {
-					var extraDataLength = this.stream.readBits(16);
-					entry.extraData = this.stream.readASCIIString(extraDataLength);
-				}
-				entries.push(entry);
-			}
-			tables[tableName] = entries;
+	for (var i = 0; i < tableCount; i++) {
+		var entries = [];
+		var tableName = this.stream.readASCIIString();
+		var entryCount = this.stream.readBits(16);
+		for (var j = 0; j < entryCount; j++) {
+			var entry = {
+				text: this.stream.readUTF8String()
+			};
 			if (this.stream.readBits(1)) {
-				this.stream.readASCIIString();
-				if (this.stream.readBits(1)) {
-					//throw 'more extra data not implemented';
-					var extraDataLength = this.stream.readBits(16);
-					this.stream.readBits(extraDataLength);
-				}
+				var extraDataLength = this.stream.readBits(16);
+				entry.extraData = this.stream.readUTF8String(extraDataLength);
+				//console.log(entry.extraData.length-extraDataLength);
+			}
+			entries.push(entry);
+		}
+		tables[tableName] = entries;
+		StringTable.tables.push({
+			name: tableName,
+			entries: entries
+		});
+		if (this.stream.readBits(1)) {
+			this.stream.readASCIIString();
+			if (this.stream.readBits(1)) {
+				//throw 'more extra data not implemented';
+				var extraDataLength = this.stream.readBits(16);
+				this.stream.readBits(extraDataLength);
 			}
 		}
-	}catch(e){}
+	}
 	//console.log(tables);
 	return [{
 		packetType: 'stringTable',
-		tables    : tables
+		tables: tables
 	}];
 };
 
 module.exports = StringTable;
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2376,7 +2618,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":10,"ieee754":11,"is-array":12}],10:[function(require,module,exports){
+},{"base64-js":12,"ieee754":13,"is-array":14}],12:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -2502,7 +2744,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -2588,7 +2830,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 /**
  * isArray

@@ -10,7 +10,8 @@ var Parser = function (steam) {
 		chat  : [],
 		users : {},
 		deaths: [],
-		rounds: []
+		rounds: [],
+		intervalPerTick: 0
 	};
 };
 
@@ -54,6 +55,9 @@ Parser.prototype.parseBody = function () {
 				switch (packet.packetType) {
 					case 'netTick':
 						tick = packet.tick;
+						break;
+					case 'serverInfo':
+						this.state.intervalPerTick = packet.intervalPerTick;
 						break;
 					case 'sayText2':
 						this.state.chat.push({

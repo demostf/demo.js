@@ -4,6 +4,8 @@ var PacketStringTable = require('./packetstringtable');
 
 // https://code.google.com/p/coldemoplayer/source/browse/branches/2.0/compLexity+Demo+Player/CDP.Source/Messages/?r=219
 // https://github.com/TimePath/hl2-toolkit/tree/master/src/main/java/com/timepath/hl2/io/demo
+// https://github.com/stgn/netdecode/blob/master/Packet.cs
+// https://github.com/LestaD/SourceEngine2007/blob/master/src_main/common/netmessages.cpp
 
 function logBase2(num) {
 	var result = 0;
@@ -128,50 +130,8 @@ Packet.parsers = {
 	},
 	11: ParserGenerator.make('setPause', 'paused{b}'),
 	12: function (stream) {
-		//todo
-		// https://coldemoplayer.googlecode.com/svn/branches/2.0/code/plugins/CDP.Source/Messages/SvcCreateStringTable.cs
-		var name = stream.readASCIIString();
-		var maxEntries = stream.readBits(16);
-		var bits = logBase2(maxEntries);
-		var numEntries = stream.readBits(bits + 1);
-		var length = stream.readBits(20);
-		var userDataFixedSize = !!stream.readBits(1);
-		if (userDataFixedSize) {
-			var userSize = stream.readBits(12);
-			var userDataBits = stream.readBits(4);
-		}
-		var end = stream._index + length;
-
-		var stringTable = new PacketStringTable(name, maxEntries, bits, userDataFixedSize, userSize || -1, userDataBits || -1, numEntries);
-		stringTable.parse(stream);
-		//console.log(stringTable);
-		//console.log(stream.readBits(6));
-		//console.log(stream.readASCIIString());
-		//maxEntries = stream.readBits(16);
-		//console.log(maxEntries);
-		//bits = logBase2(maxEntries);
-		//numEntries = stream.readBits(bits + 1);
-		//console.log('entries: ' + numEntries);
-		//console.log(stream.readBits(175));
-		//for (var i = 0; i < numEntries; i++) {
-		//	console.log(stream.readBits(6));
-		//	console.log(stream.readASCIIString());
-		//}
-		//console.log(stream.readASCIIString());
-		//console.log(stream.readASCIIString());
-		//console.log();
-		//console.log(length);
-		//console.log(end - stream._index);
-		//console.log();
-		//throw false;
-
-		//if((end/8)> 50515){
-		//	console.log(stringTable);
-		//	throw 'found';
-		//}
-		//throw false;
-
-		stream._index = end;
+		var stringTable = new PacketStringTable(stream);
+		stringTable.parse();
 		return {
 			packetType: 'createStringTable',
 			table     : stringTable
@@ -199,13 +159,13 @@ Packet.parsers = {
 		//console.log(a ? 'a' : '!a')
 		//console.log('table: ' + table.name);
 		//console.log('       ' + table.entries.length + ' entries');
-		for (var i = 0; i < changeEntries; i++) {
-			//console.log(stream.readBits(2));
-			var string = stream.readASCIIString();
-			stream.readBits(16);
-			//todo last entry overflows by 13 (3 bits at the end 13 before next entry?)
-			strings[i] = string;
-		}
+		//for (var i = 0; i < changeEntries; i++) {
+		//	//console.log(stream.readBits(2));
+		//	var string = stream.readASCIIString();
+		//	stream.readBits(16);
+		//	//todo last entry overflows by 13 (3 bits at the end 13 before next entry?)
+		//	strings[i] = string;
+		//}
 		//throw false;
 		//console.log(changeEntries);
 		//console.log(strings);
