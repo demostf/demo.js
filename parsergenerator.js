@@ -12,12 +12,12 @@ Generator.make = function (name, string) {
 		try {
 			for (var i = 0; i < items.length; i++) {
 				var value = Generator.readItem(stream, items[i][1], result);
-				if(items[i][0] !== '_'){
+				if (items[i][0] !== '_') {
 					result[items[i][0]] = value;
 				}
 			}
 		} catch (e) {
-			throw 'Failed reading pattern ' + string;
+			throw 'Failed reading pattern ' + string + '. ' + e;
 		}
 		return result;
 	}

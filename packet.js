@@ -31,6 +31,10 @@ Object.defineProperty(Packet.prototype, 'bitsLeft', {
 });
 
 Packet.prototype.parse = function () {
+	//var table = new PacketStringTable(this.stream);
+	//table.searchIds();
+	//return [];
+
 	var packets = [];
 	while (this.bitsLeft > 6) { // last 6 bits for NOOP
 		var type = this.stream.readBits(6);
@@ -138,6 +142,14 @@ Packet.parsers = {
 		};
 	},
 	13: function (stream) {
+		var stringTable = new PacketStringTable(stream);
+		stringTable.parse();
+		return {
+			packetType: 'createStringTable',
+			table     : stringTable
+		};
+
+
 		var tableId = stream.readBits(5);
 		var changeEntries = stream.readBits(1) ? stream.readBits(16) : 1;
 		var length = stream.readBits(20);

@@ -7,12 +7,14 @@ var BitStream = require('bit-buffer').BitStream;
 var Parser = function (steam) {
 	this.stream = steam;
 	this.state = {
-		chat  : [],
-		users : {},
-		deaths: [],
-		rounds: [],
+		chat           : [],
+		users          : {},
+		deaths         : [],
+		rounds         : [],
 		intervalPerTick: 0
 	};
+	this.packets = [];
+	this.strings = {};
 };
 
 Parser.MessageType = {
@@ -49,6 +51,9 @@ Parser.prototype.parseBody = function () {
 			var packets = message.parse();
 			for (i = 0; i < packets.length; i++) {
 				var packet = packets[i];
+				if (packet) {
+					this.packets.push(packet);
+				}
 				if (!packet) {
 					continue;
 				}
@@ -103,6 +108,7 @@ Parser.prototype.parseBody = function () {
 			}
 		}
 	}
+	this.strings = StringTable.tables;
 	return this.state;
 };
 

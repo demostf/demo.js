@@ -1,5 +1,12 @@
 {
-  "dependencies": {
-    "bit-buffer": "icewind1991/bit-buffer"
-  }
+	"name": "demos.js",
+	"description": "A parser for TF2 demo files",
+	"version": "0.1.0",
+	"bin": {
+		"demo-analyse": "./bin/analyse.js"
+	},
+	"dependencies": {
+		"bit-buffer": "icewind1991/bit-buffer",
+		"minimist": "1.1.x"
+	}
 }
