@@ -117,14 +117,16 @@ Parser.prototype.parseBody = function () {
 								break;
 							case 'player_spawn':
 								userId = packet.event.values.userid;
-								if (!this.state.users[userId].team) { //only register first spawn
-									this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
+								if (this.state.users[userId]) {
+									if (!this.state.users[userId].team) { //only register first spawn
+										this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
+									}
+									var classId = packet.event.values.class;
+									if (!this.state.users[userId].classes[classId]) {
+										this.state.users[userId].classes[classId] = 0;
+									}
+									this.state.users[userId].classes[classId]++;
 								}
-								var classId = packet.event.values.class;
-								if (!this.state.users[userId].classes[classId]) {
-									this.state.users[userId].classes[classId] = 0;
-								}
-								this.state.users[userId].classes[classId]++;
 								break;
 						}
 						break;
