@@ -86,7 +86,8 @@ Parser.prototype.parseBody = function () {
 									this.state.users[userId] = {
 										name   : name,
 										userId : userId,
-										steamId: steamId
+										steamId: steamId,
+										classes: {}
 									}
 								}
 							}
@@ -113,6 +114,18 @@ Parser.prototype.parseBody = function () {
 										end_tick: tick
 									});
 								}
+								break;
+							case 'player_spawn':
+								userId = packet.event.values.userid;
+								if (!this.state.users[userId].team) { //only register first spawn
+									this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
+								}
+								var classId = packet.event.values.class;
+								if (!this.state.users[userId].classes[classId]) {
+									this.state.users[userId].classes[classId] = 0;
+								}
+								this.state.users[userId].classes[classId]++;
+								break;
 						}
 						break;
 				}
