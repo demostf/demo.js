@@ -76,7 +76,14 @@ Parser.prototype.parseBody = function () {
 						if (packet.tables.userinfo) {
 							for (var j = 0; j < packet.tables.userinfo.length; j++) {
 								if (packet.tables.userinfo[j].extraData) {
-									this.state.users[packet.tables.userinfo[j].text] = packet.tables.userinfo[j].extraData
+									var name = packet.tables.userinfo[j].extraData[0];
+									var steamId = packet.tables.userinfo[j].extraData[2];
+									var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
+									this.state.users[userId] = {
+										name   : name,
+										userId: userId,
+										steamId: steamId
+									}
 								}
 							}
 						}

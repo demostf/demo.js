@@ -7,7 +7,7 @@ var DataTable = function (type, tick, stream, length) {
 
 DataTable.prototype.parse = function () {
 	//while (this.stream.byteIndex < this.length) {
-		//console.log(this.stream.readASCIIString());
+	//	console.log(this.stream.readASCIIString());
 	//}
 	return [];
 };

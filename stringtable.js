@@ -21,12 +21,7 @@ StringTable.prototype.parse = function () {
 			};
 			if (this.stream.readBits(1)) {
 				extraDataLength = this.stream.readBits(16);
-				//if (tableName === 'userinfo') {
-				//	entry.extraData = this.parsePlayerInfo(extraDataLength);
-				//} else {
-					entry.extraData = this.stream.readUTF8String(extraDataLength);
-				//}
-				//console.log(entry.extraData.length-extraDataLength);
+				entry.extraData = this.readExtraData(extraDataLength);
 			}
 			entries.push(entry);
 		}
@@ -56,16 +51,31 @@ StringTable.prototype.parsePlayerInfo = function (length) {
 	var name = this.stream.readUTF8String(128);
 	console.log(length);
 	//if (name === 'Icewind') {
-		console.log(name);
-		var userId = this.stream.readBits(32);
-		console.log(userId);
-		var guid = this.stream.readASCIIString(33);
-		console.log('guid: ' + guid);
-		//console.log(this.stream.readASCIIString(33));
-		//console.log(this.stream.readASCIIString());
-		//throw false;
+	console.log(name);
+	var userId = this.stream.readBits(32);
+	console.log(userId);
+	var guid = this.stream.readASCIIString(33);
+	console.log('guid: ' + guid);
+	//console.log(this.stream.readASCIIString(33));
+	//console.log(this.stream.readASCIIString());
+	//throw false;
 	//}
 	this.stream._index = pos + (length * 8);
+};
+
+StringTable.prototype.readExtraData = function (length) {
+	var end = this.stream._index + (length * 8);
+	var data = [];
+	//console.log(this.stream.readUTF8String());
+	data.push(this.stream.readUTF8String());
+	while (this.stream._index < end) {
+		var string = this.stream.readUTF8String();
+		if (string) {
+			data.push(string);
+		}
+	}
+	this.stream._index = end;
+	return data;
 };
 
 module.exports = StringTable;

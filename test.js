@@ -8,5 +8,5 @@ fs.readFile("process.dem", function (err, data) {
 	var head = parser.readHeader();
 	//console.log(head);
 	var body = parser.parseBody()
-	//console.log(body);
+	console.log(body.users);
 });
