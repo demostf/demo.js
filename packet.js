@@ -39,7 +39,7 @@ Packet.prototype.parse = function () {
 	while (this.bitsLeft > 6) { // last 6 bits for NOOP
 		var type = this.stream.readBits(6);
 		if (Packet.parsers[type]) {
-			var packet = Packet.parsers[type](this.stream);
+			var packet = Packet.parsers[type].call(this, this.stream);
 			//console.log(packet);
 			packets.push(packet);
 		} else {
@@ -59,6 +59,7 @@ Packet.parseGameEvent = function (eventId, stream) {
 		var entry = eventDescription.entries[i];
 		values[entry.name] = Packet.getGameEventValue(stream, entry);
 	}
+	//console.log(eventDescription.name);
 	return {
 		name  : eventDescription.name,
 		type  : eventDescription.type,
@@ -93,7 +94,7 @@ Packet.parsers = {
 	2 : ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 	3 : ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
 	4 : ParserGenerator.make('stringCmd', 'command{s}'),
-	5 : function (stream) {
+	5 : function (stream) { // setconvar
 		var count = stream.readBits(8);
 		var vars = {};
 		for (var i = 0; i < count; i++) {
@@ -110,7 +111,7 @@ Packet.parsers = {
 		'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 		'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 		'game{s}map{s}skybox{s}serverName{s}replay{b}'),
-	10: function (stream) {
+	10: function (stream) { //classInfo
 		var number = stream.readBits(16);
 		var create = !!stream.readBits(1);
 		var entries = [];
@@ -135,18 +136,18 @@ Packet.parsers = {
 	11: ParserGenerator.make('setPause', 'paused{b}'),
 	12: function (stream) {
 		var stringTable = new PacketStringTable(stream);
-		stringTable.parse();
+		var tables = stringTable.parse();
 		return {
 			packetType: 'createStringTable',
-			table     : stringTable
+			table     : tables
 		};
 	},
-	13: function (stream) {
+	13: function (stream) { //updatestringTable
 		var stringTable = new PacketStringTable(stream);
-		stringTable.parse();
+		var tables = stringTable.parse();
 		return {
-			packetType: 'createStringTable',
-			table     : stringTable
+			packetType: 'updateStringTable',
+			table     : tables
 		};
 
 
@@ -168,20 +169,6 @@ Packet.parsers = {
 		} else {
 			stream.readBits(6);
 		}
-		//console.log(a ? 'a' : '!a')
-		//console.log('table: ' + table.name);
-		//console.log('       ' + table.entries.length + ' entries');
-		//for (var i = 0; i < changeEntries; i++) {
-		//	//console.log(stream.readBits(2));
-		//	var string = stream.readASCIIString();
-		//	stream.readBits(16);
-		//	//todo last entry overflows by 13 (3 bits at the end 13 before next entry?)
-		//	strings[i] = string;
-		//}
-		//throw false;
-		//console.log(changeEntries);
-		//console.log(strings);
-		//console.log(end - stream._index);
 		stream._index = end;
 		//throw false;
 		return {
@@ -194,7 +181,7 @@ Packet.parsers = {
 	},
 	14: ParserGenerator.make('voiceInit', 'codec{s}quality{8}'),
 	15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}_{$length}'),
-	17: function (stream) {
+	17: function (stream) { //parseSounds
 		var reliable = !!stream.readBits(1);
 		var num = (reliable) ? 1 : stream.readBits(8);
 		var length = (reliable) ? stream.readBits(8) : stream.readBits(16);
@@ -208,7 +195,7 @@ Packet.parsers = {
 	},
 	18: ParserGenerator.make('setView', 'index{11}'),
 	19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
-	21: function (stream) {
+	21: function (stream) { //BSPDecal
 		var getCoord = function (stream) {
 			var hasInt = !!stream.readBits(1);
 			var hasFract = !!stream.readBits(1);
@@ -253,7 +240,7 @@ Packet.parsers = {
 			lowPriority : lowPriority
 		}
 	},
-	23: function (stream) {
+	23: function (stream) { // user message
 		// user message
 		var type = stream.readBits(8);
 		var length = stream.readBits(11);
@@ -272,7 +259,7 @@ Packet.parsers = {
 		return result;
 	},
 	24: ParserGenerator.make('entityMessage', 'index{11}id{9}length{11}data{$length}'),
-	25: function (stream) {
+	25: function (stream) { //game event
 		var length = stream.readBits(11);
 		var end = stream._index + length;
 		var eventId = stream.readBits(9);
@@ -283,7 +270,7 @@ Packet.parsers = {
 			event     : event
 		}
 	},
-	26: function (stream) {
+	26: function (stream) { //packetEntities
 		// todo
 		var maxEntries = stream.readBits(11);
 		var isDelta = !!stream.readBits(1);
@@ -311,7 +298,7 @@ Packet.parsers = {
 	27: ParserGenerator.make('tempEntities', 'count{8}length{17}_{$length}'),
 	28: ParserGenerator.make('preFetch', 'index{14}'),
 	29: ParserGenerator.make('menu', 'type{16}length{16}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}'),//length*8
-	30: function (stream) {
+	30: function (stream) { //gameEventList
 		// list of game events and parameters
 		var numEvents = stream.readBits(9);
 		var length = stream.readBits(20);

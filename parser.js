@@ -11,6 +11,7 @@ var Parser = function (steam) {
 		users          : {},
 		deaths         : [],
 		rounds         : [],
+		startTick      : 0,
 		intervalPerTick: 0
 	};
 	this.packets = [];
@@ -59,6 +60,9 @@ Parser.prototype.parseBody = function () {
 				}
 				switch (packet.packetType) {
 					case 'netTick':
+						if (this.state.startTick === 0) {
+							this.state.startTick = packet.tick;
+						}
 						tick = packet.tick;
 						break;
 					case 'serverInfo':
@@ -81,7 +85,7 @@ Parser.prototype.parseBody = function () {
 									var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
 									this.state.users[userId] = {
 										name   : name,
-										userId: userId,
+										userId : userId,
 										steamId: steamId
 									}
 								}
