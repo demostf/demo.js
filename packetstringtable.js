@@ -18,8 +18,11 @@ var PacketStringTable = function (stream) {
 PacketStringTable.prototype.parse = function () {
 	//todo
 	// https://coldemoplayer.googlecode.com/svn/branches/2.0/code/plugins/CDP.Source/Messages/SvcCreateStringTable.cs
-
-	return this.searchIds();
+	this.stream._index = this.stream._view._view.length * 8;
+	return {
+		packetType: 'stringTableTODO'
+	};
+	//return this.searchIds();
 };
 
 PacketStringTable.prototype.parsePlayerInfo = function () {
