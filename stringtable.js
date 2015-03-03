@@ -16,9 +16,16 @@ StringTable.prototype.parse = function () {
 		var tableName = this.stream.readASCIIString();
 		var entryCount = this.stream.readBits(16);
 		for (var j = 0; j < entryCount; j++) {
-			var entry = {
-				text: this.stream.readUTF8String()
-			};
+			try {
+				var entry = {
+					text: this.stream.readUTF8String()
+				};
+			} catch (e){
+				return [{
+					packetType: 'stringTable',
+					tables    : tables
+				}];
+			}
 			if (this.stream.readBits(1)) {
 				extraDataLength = this.stream.readBits(16);
 				entry.extraData = this.readExtraData(extraDataLength);
@@ -69,7 +76,11 @@ StringTable.prototype.readExtraData = function (length) {
 	//console.log(this.stream.readUTF8String());
 	data.push(this.stream.readUTF8String());
 	while (this.stream._index < end) {
-		var string = this.stream.readUTF8String();
+		try {
+			var string = this.stream.readUTF8String();
+		} catch (e) {
+			return data;
+		}
 		if (string) {
 			data.push(string);
 		}

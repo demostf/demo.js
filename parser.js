@@ -179,7 +179,7 @@ Parser.prototype.readMessage = function () {
 		case Parser.MessageType.ConsoleCmd:
 			return new ConsoleCmd(type, tick, data, length);
 		case Parser.MessageType.UserCmd:
-			console.log('usercmd');
+			//console.log('usercmd');
 			return true;
 		case Parser.MessageType.DataTables:
 			return new DataTable(type, tick, data, length);
