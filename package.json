@@ -1,13 +1,14 @@
 {
-	"name": "tf2-demo",
-	"description": "A parser for TF2 demo files",
-	"version": "0.1.0",
-	"bin": {
-		"demo-analyse": "./bin/analyse.js"
-	},
-	"main": "demo.js",
-	"dependencies": {
-		"bit-buffer": "icewind1991/bit-buffer",
-		"minimist": "1.1.x"
-	}
+  "name": "tf2-demo",
+  "description": "A parser for TF2 demo files",
+  "version": "0.1.0",
+  "bin": {
+    "demo-analyse": "./bin/analyse.js"
+  },
+  "main": "demo.js",
+  "dependencies": {
+    "bit-buffer": "icewind1991/bit-buffer",
+    "buffertools": "^2.1.2",
+    "minimist": "1.1.x"
+  }
 }
