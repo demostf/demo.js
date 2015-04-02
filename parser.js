@@ -7,8 +7,8 @@ var DataTable = require('./datatable');
 var BitStream = require('bit-buffer').BitStream;
 var EventEmitter = require('events').EventEmitter;
 
-var Parser = function (steam) {
-	this.stream = steam;
+var Parser = function (stream) {
+	this.stream = stream;
 	this.state = new State();
 	this.packets = [];
 	this.strings = {};
@@ -57,6 +57,7 @@ Parser.prototype.parseBody = function () {
 		this.handleMessage(message);
 	}
 	this.strings = StringTable.tables;
+	this.emit('done', this.state.get());
 	return this.state.get();
 };
 
