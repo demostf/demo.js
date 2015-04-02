@@ -1,5 +1,6 @@
 var util = require('util');
 var Packet = require('./packet');
+var State = require('./state');
 var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
 var DataTable = require('./datatable');
@@ -8,18 +9,13 @@ var EventEmitter = require('events').EventEmitter;
 
 var Parser = function (steam) {
 	this.stream = steam;
-	this.state = {
-		tick           : 0,
-		chat           : [],
-		users          : {},
-		deaths         : [],
-		rounds         : [],
-		startTick      : 0,
-		intervalPerTick: 0
-	};
+	this.state = new State();
 	this.packets = [];
 	this.strings = {};
-	this.on('packet', this.updateState.bind(this));
+	this.on('packet', this.state.updateState.bind(this.state));
+	this.on('packet', function (packet) {
+		this.packets.push(packet);
+	});
 };
 
 util.inherits(Parser, EventEmitter);
@@ -36,28 +32,32 @@ Parser.MessageType = {
 };
 
 Parser.prototype.readHeader = function () {
+	return this.parseHeader(this.stream);
+};
+
+Parser.prototype.parseHeader = function (stream) {
 	return {
-		'type'    : this.stream.readASCIIString(8),
-		'version' : this.stream.readInt32(),
-		'protocol': this.stream.readInt32(),
-		'server'  : this.stream.readASCIIString(260),
-		'nick'    : this.stream.readASCIIString(260),
-		'map'     : this.stream.readASCIIString(260),
-		'game'    : this.stream.readASCIIString(260),
-		'duration': this.stream.readFloat32(),
-		'ticks'   : this.stream.readInt32(),
-		'frames'  : this.stream.readInt32(),
-		'sigon'   : this.stream.readInt32()
+		'type'    : stream.readASCIIString(8),
+		'version' : stream.readInt32(),
+		'protocol': stream.readInt32(),
+		'server'  : stream.readASCIIString(260),
+		'nick'    : stream.readASCIIString(260),
+		'map'     : stream.readASCIIString(260),
+		'game'    : stream.readASCIIString(260),
+		'duration': stream.readFloat32(),
+		'ticks'   : stream.readInt32(),
+		'frames'  : stream.readInt32(),
+		'sigon'   : stream.readInt32()
 	}
 };
 
 Parser.prototype.parseBody = function () {
-	var message, i;
+	var message;
 	while (message = this.readMessage(this.stream)) {
 		this.handleMessage(message);
 	}
 	this.strings = StringTable.tables;
-	return this.state;
+	return this.state.get();
 };
 
 Parser.prototype.parseMessage = function (buffer, type, tick, length) {
@@ -84,100 +84,22 @@ Parser.prototype.parseMessage = function (buffer, type, tick, length) {
 Parser.prototype.handleMessage = function (message) {
 	if (message.parse) {
 		var packets = message.parse();
-		for (i = 0; i < packets.length; i++) {
+		for (var i = 0; i < packets.length; i++) {
 			var packet = packets[i];
 			if (packet) {
 				this.emit('packet', packet);
-				this.packets.push(packet);
 			}
 		}
 	}
 };
 
-Parser.prototype.updateState = function (packet) {
-	switch (packet.packetType) {
-		case 'netTick':
-			if (this.state.startTick === 0) {
-				this.state.startTick = packet.tick;
-			}
-			this.state.tick = packet.tick;
-			break;
-		case 'serverInfo':
-			this.state.intervalPerTick = packet.intervalPerTick;
-			break;
-		case 'sayText2':
-			this.state.chat.push({
-				kind: packet.kind,
-				from: packet.from,
-				text: packet.text,
-				tick: this.state.tick
-			});
-			break;
-		case 'stringTable':
-			if (packet.tables.userinfo) {
-				for (var j = 0; j < packet.tables.userinfo.length; j++) {
-					if (packet.tables.userinfo[j].extraData) {
-						var name = packet.tables.userinfo[j].extraData[0];
-						var steamId = packet.tables.userinfo[j].extraData[2];
-						var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
-						this.state.users[userId] = {
-							name   : name,
-							userId : userId,
-							steamId: steamId,
-							classes: {}
-						}
-					}
-				}
-			}
-			break;
-		case 'gameEvent':
-			switch (packet.event.name) {
-				case 'player_death':
-					// todo get player names, not same id as the name string table
-					var assister = packet.event.values.assister < 32 ? packet.event.values.assister : null;
-					this.state.deaths.push({
-						killer  : packet.event.values.attacker,
-						assister: assister,
-						victim  : packet.event.values.userid,
-						weapon  : packet.event.values.weapon,
-						tick    : this.state.tick
-					});
-					break;
-				case 'teamplay_round_win':
-					if (packet.event.values.winreason !== 6) {// 6 = timelimit
-						this.state.rounds.push({
-							winner  : packet.event.values.team === 2 ? 'red' : 'blue',
-							length  : packet.event.values.round_time,
-							end_tick: this.state.tick
-						});
-					}
-					break;
-				case 'player_spawn':
-					userId = packet.event.values.userid;
-					if (this.state.users[userId]) {
-						if (!this.state.users[userId].team) { //only register first spawn
-							this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
-						}
-						var classId = packet.event.values.class;
-						if (!this.state.users[userId].classes[classId]) {
-							this.state.users[userId].classes[classId] = 0;
-						}
-						this.state.users[userId].classes[classId]++;
-					}
-					break;
-			}
-			break;
-	}
-};
-
 Parser.prototype.readMessage = function (stream) {
 	var type = stream.readBits(8);
-	//console.log(type);
 	if (type === Parser.MessageType.Stop) {
 		return null;
 	}
 	var tick = stream.readInt32();
-	var data, start, length, buffer;
+	var start, length, buffer;
 
 	switch (type) {
 		case Parser.MessageType.Sigon:
