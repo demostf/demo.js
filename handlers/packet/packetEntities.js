@@ -35,7 +35,7 @@ function readPVS(stream) {
 	return pvs;
 }
 
-module.exports = function (stream) { //26: packetEntities
+module.exports = function (stream, events, entities) { //26: packetEntities
 	// todo
 	var maxEntries = stream.readBits(11);
 	var isDelta = !!stream.readBits(1);
@@ -49,7 +49,6 @@ module.exports = function (stream) { //26: packetEntities
 	var length = stream.readBits(20);
 	var updatedBaseLink = !!stream.readBits(1);
 	var end = stream._index + length;
-	var entities = [];
 	//console.log('max: ' + maxEntries);
 	//var entityId = -1;
 	//
@@ -78,4 +77,4 @@ module.exports = function (stream) { //26: packetEntities
 		packetType: 'packetEntities',
 		entities  : entities
 	};
-}
+};

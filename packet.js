@@ -26,10 +26,11 @@ Packet.prototype.parse = function () {
 	//return [];
 
 	var packets = [];
+	var entities = [];
 	while (this.bitsLeft > 6) { // last 6 bits for NOOP
 		var type = this.stream.readBits(6);
 		if (Packet.parsers[type]) {
-			var packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap);
+			var packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap, entities);
 			//console.log(packet);
 			packets.push(packet);
 		} else {
@@ -63,7 +64,7 @@ Packet.parsers = {
 	19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
 	21: require('./handlers/packet/bspDecal'),
 	23: require('./handlers/packet/userMessage'),
-	24: ParserGenerator.make('entityMessage', 'index{11}id{9}length{11}data{$length}'),
+	24: require('./handlers/packet/entityMessage'),
 	25: require('./handlers/packet/gameEvent'),
 	26: require('./handlers/packet/packetEntities'),
 	27: ParserGenerator.make('tempEntities', 'count{8}length{17}_{$length}'),
