@@ -53,6 +53,15 @@ State.prototype.updateState = function (packet) {
 				case 'player_death':
 					// todo get player names, not same id as the name string table
 					var assister = packet.event.values.assister < 32 ? packet.event.values.assister : null;
+					if (assister > 256) {
+						assister -= 256;
+					}
+					if (packet.event.values.attacker > 256) {
+						packet.event.values.attacker -= 256;
+					}
+					if (packet.event.values.userid > 256) {
+						packet.event.values.userid -= 256;
+					}
 					this.state.deaths.push({
 						killer  : packet.event.values.attacker,
 						assister: assister,
