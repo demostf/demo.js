@@ -40,12 +40,9 @@ State.prototype.updateState = function (packet) {
 						var name = packet.tables.userinfo[j].extraData[0];
 						var steamId = packet.tables.userinfo[j].extraData[2];
 						var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
-						this.state.users[userId] = {
-							name   : name,
-							userId : userId,
-							steamId: steamId,
-							classes: {}
-						}
+						this.initUser(userId);
+						this.state.users[userId].name= name;
+						this.state.users[userId].steamId = steamId;
 					}
 				}
 			}
@@ -74,6 +71,7 @@ State.prototype.updateState = function (packet) {
 					break;
 				case 'player_spawn':
 					userId = packet.event.values.userid;
+					this.initUser(userId);
 					if (this.state.users[userId]) {
 						if (!this.state.users[userId].team) { //only register first spawn
 							this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
@@ -87,6 +85,17 @@ State.prototype.updateState = function (packet) {
 					break;
 			}
 			break;
+	}
+};
+
+State.prototype.initUser = function (userId) {
+	if (!this.state.users[userId]) {
+		this.state.users[userId] = {
+			name   : null,
+			userId : userId,
+			steamId: null,
+			classes: {}
+		}
 	}
 };
 
