@@ -15,6 +15,7 @@ State.prototype.get = function () {
 };
 
 State.prototype.updateState = function (packet) {
+	var userState;
 	switch (packet.packetType) {
 		case 'netTick':
 			if (this.state.startTick === 0) {
@@ -40,9 +41,9 @@ State.prototype.updateState = function (packet) {
 						var name = packet.tables.userinfo[j].extraData[0];
 						var steamId = packet.tables.userinfo[j].extraData[2];
 						var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
-						this.initUser(userId);
-						this.state.users[userId].name= name;
-						this.state.users[userId].steamId = steamId;
+						userState = this.getUserState(userId);
+						userState.name = name;
+						userState.steamId = steamId;
 					}
 				}
 			}
@@ -71,24 +72,27 @@ State.prototype.updateState = function (packet) {
 					break;
 				case 'player_spawn':
 					userId = packet.event.values.userid;
-					this.initUser(userId);
-					if (this.state.users[userId]) {
-						if (!this.state.users[userId].team) { //only register first spawn
-							this.state.users[userId].team = packet.event.values.team === 2 ? 'red' : 'blue'
-						}
-						var classId = packet.event.values.class;
-						if (!this.state.users[userId].classes[classId]) {
-							this.state.users[userId].classes[classId] = 0;
-						}
-						this.state.users[userId].classes[classId]++;
+					userState = this.getUserState(userId);
+					if (!userState.team) { //only register first spawn
+						userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
 					}
+					var classId = packet.event.values.class;
+					if (!userState.classes[classId]) {
+						userState.classes[classId] = 0;
+					}
+					userState.classes[classId]++;
 					break;
 			}
 			break;
 	}
 };
 
-State.prototype.initUser = function (userId) {
+State.prototype.getUserState = function (userId) {
+	// no clue why it does this
+	// only seems to be the case with per user ready
+	if (userId > 256) {
+		userId -= 256;
+	}
 	if (!this.state.users[userId]) {
 		this.state.users[userId] = {
 			name   : null,
@@ -97,6 +101,7 @@ State.prototype.initUser = function (userId) {
 			classes: {}
 		}
 	}
+	return this.state.users[userId];
 };
 
 module.exports = State;
