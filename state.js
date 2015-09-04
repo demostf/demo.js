@@ -51,15 +51,15 @@ State.prototype.updateState = function (packet) {
 		case 'gameEvent':
 			switch (packet.event.name) {
 				case 'player_death':
-					if (packet.event.values.assister > 256 && packet.event.values.assister < 512) {
+					while (packet.event.values.assister > 256 && packet.event.values.assister < (1024 * 16)) {
 						packet.event.values.assister -= 256;
 					}
 					var assister = packet.event.values.assister < 256 ? packet.event.values.assister : null;
 					// todo get player names, not same id as the name string table
-					if (packet.event.values.attacker > 256) {
+					while (packet.event.values.attacker > 256) {
 						packet.event.values.attacker -= 256;
 					}
-					if (packet.event.values.userid > 256) {
+					while (packet.event.values.userid > 256) {
 						packet.event.values.userid -= 256;
 					}
 					this.state.deaths.push({
@@ -99,7 +99,7 @@ State.prototype.updateState = function (packet) {
 State.prototype.getUserState = function (userId) {
 	// no clue why it does this
 	// only seems to be the case with per user ready
-	if (userId > 256) {
+	while (userId > 256) {
 		userId -= 256;
 	}
 	if (!this.state.users[userId]) {
