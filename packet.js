@@ -5,11 +5,12 @@ var ParserGenerator = require('./parsergenerator');
 // https://github.com/stgn/netdecode/blob/master/Packet.cs
 // https://github.com/LestaD/SourceEngine2007/blob/master/src_main/common/netmessages.cpp
 
-var Packet = function (type, tick, stream, length) {
+var Packet = function (type, tick, stream, length, viewOrigin) {
 	this.type = type;
 	this.tick = tick;
 	this.stream = stream;
 	this.length = length;//length in bytes
+	this.viewOrigin = viewOrigin;
 };
 
 Packet.gameEventMap = {};
@@ -31,6 +32,9 @@ Packet.prototype.parse = function () {
 		var type = this.stream.readBits(6);
 		if (Packet.parsers[type]) {
 			var packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap, entities);
+			if (packet) {
+				packet.viewOrigin = this.viewOrigin;
+			}
 			//console.log(packet);
 			packets.push(packet);
 		} else {

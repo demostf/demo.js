@@ -4,6 +4,7 @@ var State = require('./state');
 var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
 var DataTable = require('./datatable');
+var UserCmd = require('./usercmd');
 var BitStream = require('bit-buffer').BitStream;
 var EventEmitter = require('events').EventEmitter;
 
@@ -61,18 +62,17 @@ Parser.prototype.parseBody = function () {
 	return this.state.get();
 };
 
-Parser.prototype.parseMessage = function (buffer, type, tick, length) {
+Parser.prototype.parseMessage = function (buffer, type, tick, length, viewOrigin) {
 	var data = new BitStream(buffer);
 
 	switch (type) {
 		case Parser.MessageType.Sigon:
 		case Parser.MessageType.Packet:
-			return new Packet(type, tick, data, length);
+			return new Packet(type, tick, data, length, viewOrigin);
 		case Parser.MessageType.ConsoleCmd:
 			return new ConsoleCmd(type, tick, data, length);
 		case Parser.MessageType.UserCmd:
-			//console.log('usercmd');
-			return true;
+			return new UserCmd(type, tick, data, length, this.viewOrigin, this.viewAngles);
 		case Parser.MessageType.DataTables:
 			return new DataTable(type, tick, data, length);
 		case Parser.MessageType.StringTables:
@@ -102,10 +102,28 @@ Parser.prototype.readMessage = function (stream) {
 	var tick = stream.readInt32();
 	var start, length, buffer;
 
+	var viewOrigin = [];
+	var viewAngles = [];
+
 	switch (type) {
 		case Parser.MessageType.Sigon:
 		case Parser.MessageType.Packet:
-			stream.byteIndex += 0x54; // command/sequence info
+			this.stream.readInt32(); // flags
+			for (var j = 0; j < 2; j++) {
+				viewOrigin[j] = [];
+				viewAngles[j] = [];
+				for (var i = 0; i < 3; i++) {
+					viewOrigin[j][i] = this.stream.readInt32();
+				}
+				for (i = 0; i < 3; i++) {
+					viewAngles[j][i] = this.stream.readInt32();
+				}
+				for (i = 0; i < 3; i++) {
+					this.stream.readInt32(); // local viewAngles
+				}
+			}
+			this.stream.readInt32(); // sequence in
+			this.stream.readInt32(); // sequence out
 			break;
 		case Parser.MessageType.UserCmd:
 			stream.byteIndex += 0x04; // unknown / outgoing sequence
@@ -120,7 +138,7 @@ Parser.prototype.readMessage = function (stream) {
 	start = stream.byteIndex;
 	buffer = stream.buffer.slice(start, start + length);
 	stream.byteIndex += length;
-	return this.parseMessage(buffer, type, tick, length);
+	return this.parseMessage(buffer, type, tick, length, viewOrigin);
 };
 
 module.exports = Parser;
