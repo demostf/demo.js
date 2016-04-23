@@ -30,12 +30,12 @@ fs.readFile(argv._[0], function (err, data) {
 		echo(head);
 		return;
 	}
-	var body = parser.parseBody();
+	var match = parser.parseBody();
 	if (argv.dump) {
-		echo(parser.packets);
+		echo(parser.match.packets);
 	} else if (argv.strings) {
-		echo(parser.strings);
+		echo(parser.match.strings);
 	} else {
-		echo(body);
+		echo(match.getState());
 	}
 });

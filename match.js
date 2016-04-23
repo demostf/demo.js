@@ -1,33 +1,40 @@
-var State = function () {
+var Match = function () {
 	this.tick = 0;
-	this.state = {
-		chat           : [],
-		users          : {},
-		deaths         : [],
-		rounds         : [],
-		startTick      : 0,
-		intervalPerTick: 0
+	this.chat = [];
+	this.users = {};
+	this.deaths = [];
+	this.rounds = [];
+	this.startTick = 0;
+	this.intervalPerTick = 0;
+	this.entities = [];
+	this.stringTables = [];
+};
+
+Match.prototype.getState = function () {
+	return {
+		'chat'           : this.chat,
+		'users'          : this.users,
+		'deaths'         : this.deaths,
+		'rounds'         : this.rounds,
+		'startTick'      : this.startTick,
+		'intervalPerTick': this.intervalPerTick
 	};
 };
 
-State.prototype.get = function () {
-	return this.state;
-};
-
-State.prototype.updateState = function (packet) {
+Match.prototype.handlePacket = function (packet) {
 	var userState;
 	switch (packet.packetType) {
 		case 'netTick':
-			if (this.state.startTick === 0) {
-				this.state.startTick = packet.tick;
+			if (this.startTick === 0) {
+				this.startTick = packet.tick;
 			}
 			this.tick = packet.tick;
 			break;
 		case 'serverInfo':
-			this.state.intervalPerTick = packet.intervalPerTick;
+			this.intervalPerTick = packet.intervalPerTick;
 			break;
 		case 'sayText2':
-			this.state.chat.push({
+			this.chat.push({
 				kind: packet.kind,
 				from: packet.from,
 				text: packet.text,
@@ -62,7 +69,7 @@ State.prototype.updateState = function (packet) {
 					while (packet.event.values.userid > 256) {
 						packet.event.values.userid -= 256;
 					}
-					this.state.deaths.push({
+					this.deaths.push({
 						killer  : packet.event.values.attacker,
 						assister: assister,
 						victim  : packet.event.values.userid,
@@ -72,7 +79,7 @@ State.prototype.updateState = function (packet) {
 					break;
 				case 'teamplay_round_win':
 					if (packet.event.values.winreason !== 6) {// 6 = timelimit
-						this.state.rounds.push({
+						this.rounds.push({
 							winner  : packet.event.values.team === 2 ? 'red' : 'blue',
 							length  : packet.event.values.round_time,
 							end_tick: this.tick
@@ -96,21 +103,21 @@ State.prototype.updateState = function (packet) {
 	}
 };
 
-State.prototype.getUserState = function (userId) {
+Match.prototype.getUserState = function (userId) {
 	// no clue why it does this
 	// only seems to be the case with per user ready
 	while (userId > 256) {
 		userId -= 256;
 	}
-	if (!this.state.users[userId]) {
-		this.state.users[userId] = {
+	if (!this.users[userId]) {
+		this.users[userId] = {
 			name   : null,
 			userId : userId,
 			steamId: null,
 			classes: {}
 		}
 	}
-	return this.state.users[userId];
+	return this.users[userId];
 };
 
-module.exports = State;
+module.exports = Match;

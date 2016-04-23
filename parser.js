@@ -1,19 +1,18 @@
 var util = require('util');
 var Packet = require('./packet');
-var State = require('./state');
 var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
 var DataTable = require('./datatable');
 var UserCmd = require('./usercmd');
 var BitStream = require('bit-buffer').BitStream;
 var EventEmitter = require('events').EventEmitter;
+var Match = require('./match');
 
 var Parser = function (stream) {
 	this.stream = stream;
-	this.state = new State();
 	this.packets = [];
-	this.strings = {};
-	this.on('packet', this.state.updateState.bind(this.state));
+	this.match = new Match();
+	this.on('packet', this.match.handlePacket.bind(this.match));
 	this.on('packet', function (packet) {
 		this.packets.push(packet);
 	});
@@ -54,29 +53,28 @@ Parser.prototype.parseHeader = function (stream) {
 
 Parser.prototype.parseBody = function () {
 	var message;
-	while (message = this.readMessage(this.stream)) {
+	while (message = this.readMessage(this.stream, this.match)) {
 		this.handleMessage(message);
 	}
-	this.strings = StringTable.tables;
-	this.emit('done', this.state.get());
-	return this.state.get();
+	this.emit('done', this.match);
+	return this.match;
 };
 
-Parser.prototype.parseMessage = function (buffer, type, tick, length, viewOrigin) {
+Parser.prototype.parseMessage = function (buffer, type, tick, length, viewOrigin, match) {
 	var data = new BitStream(buffer);
 
 	switch (type) {
 		case Parser.MessageType.Sigon:
 		case Parser.MessageType.Packet:
-			return new Packet(type, tick, data, length, viewOrigin);
+			return new Packet(type, tick, data, length, viewOrigin, match);
 		case Parser.MessageType.ConsoleCmd:
-			return new ConsoleCmd(type, tick, data, length);
+			return new ConsoleCmd(type, tick, data, length, match);
 		case Parser.MessageType.UserCmd:
-			return new UserCmd(type, tick, data, length, this.viewOrigin, this.viewAngles);
+			return new UserCmd(type, tick, data, length, match);
 		case Parser.MessageType.DataTables:
-			return new DataTable(type, tick, data, length);
+			return new DataTable(type, tick, data, length, match);
 		case Parser.MessageType.StringTables:
-			return new StringTable(type, tick, data, length);
+			return new StringTable(type, tick, data, length, match);
 		default:
 			return true;
 	}
@@ -94,7 +92,7 @@ Parser.prototype.handleMessage = function (message) {
 	}
 };
 
-Parser.prototype.readMessage = function (stream) {
+Parser.prototype.readMessage = function (stream, match) {
 	var type = stream.readBits(8);
 	if (type === Parser.MessageType.Stop) {
 		return null;
@@ -138,7 +136,7 @@ Parser.prototype.readMessage = function (stream) {
 	start = stream.byteIndex;
 	buffer = stream.buffer.slice(start, start + length);
 	stream.byteIndex += length;
-	return this.parseMessage(buffer, type, tick, length, viewOrigin);
+	return this.parseMessage(buffer, type, tick, length, viewOrigin, match);
 };
 
 module.exports = Parser;

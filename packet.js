@@ -5,12 +5,13 @@ var ParserGenerator = require('./parsergenerator');
 // https://github.com/stgn/netdecode/blob/master/Packet.cs
 // https://github.com/LestaD/SourceEngine2007/blob/master/src_main/common/netmessages.cpp
 
-var Packet = function (type, tick, stream, length, viewOrigin) {
+var Packet = function (type, tick, stream, length, viewOrigin, match) {
 	this.type = type;
 	this.tick = tick;
 	this.stream = stream;
 	this.length = length;//length in bytes
 	this.viewOrigin = viewOrigin;
+	this.match = match;
 };
 
 Packet.gameEventMap = {};

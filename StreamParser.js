@@ -1,12 +1,11 @@
 var util = require('util');
 var Parser = require('./parser');
-var State = require('./state');
 var BitStream = require('bit-buffer').BitStream;
 
 var StreamParser = function (stream) {
 	this.stream = stream;
-	this.state = new State();
-	this.on('packet', this.state.updateState.bind(this.state));
+	this.match = new Match();
+	this.on('packet', this, match.handlePacket.bind(this.match));
 	this.header = null;
 	this.buffer = new Buffer(0);
 };
@@ -27,7 +26,7 @@ StreamParser.prototype.eatBuffer = function (length) {
 StreamParser.prototype.start = function () {
 	this.stream.on('data', this.handleData.bind(this));
 	this.stream.on('end', function () {
-		this.emit('done', this.state.get());
+		this.emit('done', this.match);
 	}.bind(this));
 };
 

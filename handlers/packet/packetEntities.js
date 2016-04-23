@@ -36,6 +36,7 @@ function readPVS(stream) {
 }
 
 module.exports = function (stream, events, entities) { //26: packetEntities
+	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// todo
 	var maxEntries = stream.readBits(11);
 	var isDelta = !!stream.readBits(1);
@@ -50,15 +51,15 @@ module.exports = function (stream, events, entities) { //26: packetEntities
 	var updatedBaseLink = !!stream.readBits(1);
 	var end = stream._index + length;
 	//console.log('max: ' + maxEntries);
-	//var entityId = -1;
-	//
-	//for (var i = 0; i < updatedEntries; i++) {
-	//	entityId = readIndex(stream, entityId);
-	//	var pvs = readPVS(stream);
-	//	if (pvs = PVS.PRESERVE) {
-	//
-	//	}
-	//}
+	var entityId = -1;
+
+	for (var i = 0; i < updatedEntries; i++) {
+		entityId = readIndex(stream, entityId);
+		var pvs = readPVS(stream);
+		if (pvs = PVS.PRESERVE) {
+
+		}
+	}
 	stream._index = end;
 	//var ent = {
 	//	packetType     : 'packetEntities',

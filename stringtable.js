@@ -1,11 +1,10 @@
-var StringTable = function (type, tick, stream, length) {
+var StringTable = function (type, tick, stream, length, match) {
 	this.type = type;
 	this.tick = tick;
 	this.stream = stream;
 	this.length = length;//length in bytes
+	this.match = match;
 };
-
-StringTable.tables = [];
 
 StringTable.prototype.parse = function () {
 	var tableCount = this.stream.readBits(8);
@@ -33,7 +32,7 @@ StringTable.prototype.parse = function () {
 			entries.push(entry);
 		}
 		tables[tableName] = entries;
-		StringTable.tables.push({
+		this.match.stringTables.push({
 			name   : tableName,
 			entries: entries
 		});

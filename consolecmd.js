@@ -1,8 +1,9 @@
-var ConsoleCmd = function (type, tick, stream, length) {
+var ConsoleCmd = function (type, tick, stream, length, match) {
 	this.type = type;
 	this.tick = tick;
 	this.stream = stream;
 	this.length = length;//length in bytes
+	this.match = match;
 };
 
 ConsoleCmd.prototype.parse = function () {
