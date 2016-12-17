@@ -18,7 +18,7 @@ function readIndex(stream, baseIndex) {
 	return baseIndex + encodedIndex + 1;
 }
 
-function readPVS(stream) {
+function readPVSType(stream) {
 	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L24
 	var pvs;
 	var hi = stream.readBoolean();
@@ -35,8 +35,14 @@ function readPVS(stream) {
 	return pvs;
 }
 
+function readEnterPVS(stream, entityId) {
+
+}
+
 module.exports = function (stream, events, entities) { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
+	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
+	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
 	// todo
 	var maxEntries = stream.readBits(11);
 	var isDelta = !!stream.readBits(1);
@@ -55,9 +61,9 @@ module.exports = function (stream, events, entities) { //26: packetEntities
 
 	for (var i = 0; i < updatedEntries; i++) {
 		entityId = readIndex(stream, entityId);
-		var pvs = readPVS(stream);
+		var pvs = readPVSType(stream);
 		if (pvs = PVS.PRESERVE) {
-
+			var entity = readEnterPVS(stream, entityId)
 		}
 	}
 	stream._index = end;
