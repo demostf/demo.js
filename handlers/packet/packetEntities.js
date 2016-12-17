@@ -1,22 +1,11 @@
+var clone = require('clone');
+
 var PVS = {
 	PRESERVE: 0,
 	ENTER   : 1,
 	LEAVE   : 2,
-	DELETE  : 3
+	DELETE  : 4
 };
-
-
-function readIndex(stream, baseIndex) {
-	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L15
-	var encodedIndex = stream.readBits(6);
-	if (encodedIndex & 0x30) {
-		var a = (encodedIndex >> 4) & 3;
-		var b = (a == 3) ? 16 : 0;
-		var i = stream.readBits(4 * a + b) << 4;
-		encodedIndex = i | (encodedIndex & 0x0f);
-	}
-	return baseIndex + encodedIndex + 1;
-}
 
 function readPVSType(stream) {
 	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L24
@@ -35,14 +24,44 @@ function readPVSType(stream) {
 	return pvs;
 }
 
-function readEnterPVS(stream, entityId) {
+function readEnterPVS(stream, entityId, match, baseLine) {
+	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
+	var serverClass = match.serverClasses[stream.readBits(match.classBits)];
+	var sendTable = match.getSendTable(serverClass.dataTable);
+	var serialNumber = stream.readBits(10);
 
+	var entity = (match.entities[entityId]) ? match.entities[entityId] : new Entity(match, serverClass, sendTable, entityId, serialNumber);
+
+	var decodedBaseLine = match.instanceBaselines[baseLine][entityId];
+	if (decodedBaseLine) {
+		for (var i = 0; i < decodedBaseLine.length; i++) {
+			var newProp = decodedBaseLine[i];
+			if (!entity.getPropByDefinition(newProp.definition)) {
+				entity.props.push(newProp.clone(entity));
+			}
+		}
+	} else {
+		var staticBaseLine = match.staticBaseLines[serverClass.id];
+		if (staticBaseLine) {
+			var streamStart = staticBaseLine._index;
+			applyEntityUpdate(entity, staticBaseLine);
+			staticBaseLine._index = streamStart;
+		}
+	}
+	return entity;
 }
 
-module.exports = function (stream, events, entities) { //26: packetEntities
+function readLeavePVS(match, entityId, shouldDelete) {
+	if (shouldDelete) {
+		match.entities[entityId] = null;
+	}
+}
+
+module.exports = function (stream, events, entities, match) { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
+	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs
 	// todo
 	var maxEntries = stream.readBits(11);
 	var isDelta = !!stream.readBits(1);
@@ -51,31 +70,68 @@ module.exports = function (stream, events, entities) { //26: packetEntities
 	} else {
 		delta = null;
 	}
-	var baseLink = !!stream.readBits(1);
+	var baseLine = stream.readBits(1);
 	var updatedEntries = stream.readBits(11);
 	var length = stream.readBits(20);
-	var updatedBaseLink = !!stream.readBits(1);
+	var updatedBaseLine = stream.readBoolean();
 	var end = stream._index + length;
-	//console.log('max: ' + maxEntries);
 	var entityId = -1;
 
-	for (var i = 0; i < updatedEntries; i++) {
-		entityId = readIndex(stream, entityId);
-		var pvs = readPVSType(stream);
-		if (pvs = PVS.PRESERVE) {
-			var entity = readEnterPVS(stream, entityId)
+	if (updatedBaseLine) {
+		if (baseLine === 0) {
+			match.instanceBaselines[1] = match.instanceBaselines[0];
+			match.instanceBaselines[0] = new Array((1 << 11)); // array of SendPropDefinition with size MAX_EDICTS
+		} else {
+			match.instanceBaselines[0] = match.instanceBaselines[1];
+			match.instanceBaselines[1] = new Array((1 << 11)); // array of SendPropDefinition with size MAX_EDICTS
 		}
 	}
+
+	for (var i = 0; i < updatedEntries; i++) {
+		entityId+= 1 + readUBitVar(stream);
+		var pvs = readPVSType(stream);
+		if (pvs === PVS.ENTER) {
+			var entity = readEnterPVS(stream, entityId, match, baseLine);
+			applyEntityUpdate(entity, stream);
+			match.entities[entityId] = entity;
+
+			if (updatedBaseLine) {
+				match.instanceBaselines[baseLine][entityId] = [].concat(entity.props);
+			}
+			entity.inPVS = true;
+		} else if (pvs === PVS.PRESERVE) {
+			entity = match.entities[entityId];
+			if (!entity) {
+				console.log(entityId, match.entities.length);
+				throw new Error("unknown entity");
+			}
+			applyEntityUpdate(entity, stream);
+		} else {
+			entity = match.entities[entityId];
+			if (entity) {
+				entity.inPVS = false;
+			}
+			readLeavePVS(match, entityId, pvs === PVS.DELETE);
+		}
+	}
+
+	if (isDelta) {
+		while (stream.readBoolean()) {
+			var ent = stream.readBits(11);
+			match.entities[ent] = null;
+		}
+	}
+
 	stream._index = end;
 	//var ent = {
 	//	packetType     : 'packetEntities',
 	//	maxEntries     : maxEntries,
 	//	isDelta        : isDelta,
 	//	delta          : delta,
-	//	baseLink       : baseLink,
+	//	baseLine       : baseLine,
 	//	updatedEntries : updatedEntries,
 	//	length         : length,
-	//	updatedBaseLink: updatedBaseLink
+	//	updatedBaseLine: updatedBaseLine
 	//};
 	//console.log(ent);
 	//console.log(entities);
@@ -84,4 +140,79 @@ module.exports = function (stream, events, entities) { //26: packetEntities
 		packetType: 'packetEntities',
 		entities  : entities
 	};
+};
+
+var readFieldIndex = function (stream, lastIndex) {
+	if (!stream.readBoolean()) {
+		return -1;
+	}
+	var diff = readUBitVar(stream);
+	return lastIndex + diff + 1;
+};
+
+var applyEntityUpdate = function (entity, stream) {
+	var index = -1;
+	var allProps = entity.sendTable.flattenedProps;
+	while ((index = readFieldIndex(stream, index)) != -1) {
+		if (index > 4096) {
+			throw new Error('prop index out of bounds');
+		}
+		var propDefinition = allProps[index];
+		var existingProp = entity.getPropByDefinition(propDefinition);
+		var prop;
+		if (existingProp) {
+			prop = existingProp;
+		} else {
+			prop = new SentProp(propDefinition);
+		}
+		prop.value = propDefinition.decode(stream);
+
+		if (!existingProp) {
+			entity.props.push(prop);
+		}
+	}
+	return entity;
+};
+
+var readUBitVar = function (stream) {
+	switch (stream.readBits(2)) {
+		case 0:
+			return stream.readBits(4);
+		case 1:
+			return stream.readBits(8);
+		case 2:
+			return stream.readBits(12);
+		case 3:
+			return stream.readBits(32);
+	}
+};
+
+var Entity = function (match, serverClass, sentTable, entityIndex, serialNumber) {
+	this.match = match;
+	this.serverClass = serverClass;
+	this.sendTable = sentTable;
+	this.entityIndex = entityIndex;
+	this.serialNumber = serialNumber;
+	this.props = [];
+	this.inPVS = false;
+};
+
+Entity.prototype.getPropByDefinition = function (definition) {
+	for (var i = 0; i < this.props; i++) {
+		if (this.props[i].definition === definition) {
+			return this.props[i];
+		}
+	}
+	return null;
+};
+
+var SentProp = function (definition) {
+	this.definition = definition;
+	this.value = null;
+};
+
+SentProp.prototype.clone = function () {
+	var prop = new SentProp(this.definition);
+	prop.value = clone(this.value);
+	return prop;
 };

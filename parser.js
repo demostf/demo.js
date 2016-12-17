@@ -1,3 +1,4 @@
+var toBuffer = require('typedarray-to-buffer')
 var util = require('util');
 var Packet = require('./packet');
 var ConsoleCmd = require('./consolecmd');
@@ -134,7 +135,7 @@ Parser.prototype.readMessage = function (stream, match) {
 
 	length = stream.readInt32();
 	start = stream.byteIndex;
-	buffer = stream.buffer.slice(start, start + length);
+	buffer = toBuffer(stream._view._view.slice(start, start + length));
 	stream.byteIndex += length;
 	return this.parseMessage(buffer, type, tick, length, viewOrigin, match);
 };

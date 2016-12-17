@@ -1,3 +1,5 @@
+var BitStream = require('bit-buffer').BitStream;
+
 var StringTable = function (type, tick, stream, length, match) {
 	this.type = type;
 	this.tick = tick;
@@ -7,13 +9,14 @@ var StringTable = function (type, tick, stream, length, match) {
 };
 
 StringTable.prototype.parse = function () {
-	var tableCount = this.stream.readBits(8);
+	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
+	var tableCount = this.stream.readUint8();
 	var tables = {};
 	var extraDataLength;
 	for (var i = 0; i < tableCount; i++) {
 		var entries = [];
 		var tableName = this.stream.readASCIIString();
-		var entryCount = this.stream.readBits(16);
+		var entryCount = this.stream.readUint16();
 		for (var j = 0; j < entryCount; j++) {
 			try {
 				var entry = {
@@ -26,8 +29,12 @@ StringTable.prototype.parse = function () {
 				}];
 			}
 			if (this.stream.readBits(1)) {
-				extraDataLength = this.stream.readBits(16);
-				entry.extraData = this.readExtraData(extraDataLength);
+				extraDataLength = this.stream.readUint16();
+				if (tableName === 'instancebaseline') {
+					this.match.staticBaseLines[parseInt(entry.text, 10)] = this.stream.readBitStream(8 * extraDataLength);
+				} else {
+					entry.extraData = this.readExtraData(extraDataLength);
+				}
 			}
 			entries.push(entry);
 		}
@@ -50,23 +57,6 @@ StringTable.prototype.parse = function () {
 		packetType: 'stringTable',
 		tables    : tables
 	}];
-};
-
-StringTable.prototype.parsePlayerInfo = function (length) {
-	var pos = this.stream._index;
-	var name = this.stream.readUTF8String(128);
-	console.log(length);
-	//if (name === 'Icewind') {
-	console.log(name);
-	var userId = this.stream.readBits(32);
-	console.log(userId);
-	var guid = this.stream.readASCIIString(33);
-	console.log('guid: ' + guid);
-	//console.log(this.stream.readASCIIString(33));
-	//console.log(this.stream.readASCIIString());
-	//throw false;
-	//}
-	this.stream._index = pos + (length * 8);
 };
 
 StringTable.prototype.readExtraData = function (length) {

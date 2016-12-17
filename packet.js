@@ -32,7 +32,7 @@ Packet.prototype.parse = function () {
 	while (this.bitsLeft > 6) { // last 6 bits for NOOP
 		var type = this.stream.readBits(6);
 		if (Packet.parsers[type]) {
-			var packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap, entities);
+			var packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap, entities, this.match);
 			if (packet) {
 				packet.viewOrigin = this.viewOrigin;
 			}

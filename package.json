@@ -7,8 +7,10 @@
   },
   "main": "demo.js",
   "dependencies": {
-    "bit-buffer": "icewind1991/bit-buffer",
+    "bit-buffer": "icewind1991/bit-buffer#readBitStream",
+    "clone": "^2.1.0",
     "minimist": "1.1.x",
-    "smart-buffer": "^1.0.1"
+    "smart-buffer": "^1.0.1",
+    "typedarray-to-buffer": "^3.1.2"
   }
 }

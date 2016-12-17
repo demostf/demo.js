@@ -10,12 +10,24 @@ var Match = function () {
 	this.stringTables = [];
 	this.sendTables = [];
 	this.serverClasses = [];
+	this.entities = [];
+	this.instanceBaselines = [[],[]];
+	this.staticBaseLines = [];
 };
 
 Match.prototype.getSendTable = function (name) {
 	for (var i = 0; i < this.sendTables.length; i++) {
 		if (this.sendTables[i].name === name) {
 			return this.sendTables[i];
+		}
+	}
+	return null;
+};
+
+Match.prototype.getStringTable = function (name) {
+	for (var i = 0; i < this.stringTables.length; i++) {
+		if (this.stringTables[i].name === name) {
+			return this.stringTables[i];
 		}
 	}
 	return null;
@@ -130,5 +142,11 @@ Match.prototype.getUserState = function (userId) {
 	}
 	return this.users[userId];
 };
+
+Object.defineProperty(Match.prototype, 'classBits', {
+	get: function () {
+		return Math.ceil(Math.log(this.serverClasses.length) * Math.LOG2E)
+	}
+});
 
 module.exports = Match;
