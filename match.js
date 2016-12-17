@@ -8,6 +8,17 @@ var Match = function () {
 	this.intervalPerTick = 0;
 	this.entities = [];
 	this.stringTables = [];
+	this.sendTables = [];
+	this.serverClasses = [];
+};
+
+Match.prototype.getSendTable = function (name) {
+	for (var i = 0; i < this.sendTables.length; i++) {
+		if (this.sendTables[i].name === name) {
+			return this.sendTables[i];
+		}
+	}
+	return null;
 };
 
 Match.prototype.getState = function () {
