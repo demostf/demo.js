@@ -14,6 +14,7 @@
     "typedarray-to-buffer": "^3.1.2"
   },
   "devDependencies": {
+    "@types/node": "^6.0.52",
     "babel-preset-es2015-node6": "^0.4.0"
   }
 }

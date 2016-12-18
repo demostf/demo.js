@@ -1,6 +1,6 @@
 import {SendPropParser} from '../../Parser/SendPropParser';
 import {Entity} from '../../Data/Entity';
-import {SentProp} from '../../Data/SendProp';
+import {SendProp} from '../../Data/SendProp';
 
 var PVS = {
 	PRESERVE: 0,
@@ -169,7 +169,7 @@ var applyEntityUpdate = function (entity, stream) {
 		if (existingProp) {
 			prop = existingProp;
 		} else {
-			prop = new SentProp(propDefinition);
+			prop = new SendProp(propDefinition);
 		}
 		prop.value = SendPropParser.decode(propDefinition, stream);
 		console.log(prop);

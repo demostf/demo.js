@@ -1,5 +1,6 @@
 import {SendTable} from './Data/SendTable';
 import {SendPropDefinition} from './Data/SendPropDefinition';
+import {ServerClass} from './Data/ServerClass';
 
 var DataTableParser = function (type, tick, stream, length, match) {
 	this.type = type;
@@ -102,12 +103,6 @@ DataTableParser.prototype.parse = function () {
 	}
 
 	return tables;
-};
-
-var ServerClass = function (id, name, dataTable) {
-	this.id = id;
-	this.name = name;
-	this.dataTable = dataTable;
 };
 
 module.exports = DataTableParser;

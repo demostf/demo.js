@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "clone": "registry:dt/clone#0.1.11+20160428043022"
+  }
+}
