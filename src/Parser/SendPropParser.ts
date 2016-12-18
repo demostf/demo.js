@@ -34,6 +34,7 @@ export class SendPropParser {
 			case SendPropType.DPT_Array:
 				return SendPropParser.readArray(propDefinition, stream);
 		}
+		throw new Error('Unknown property type');
 	}
 
 	static readInt(propDefinition: SendPropDefinition, stream: BitStream) {

@@ -1,7 +1,10 @@
-module.exports = function (stream) { // 4: SayText2
+import {Packet} from "../../Data/Packet";
+import {BitStream} from 'bit-buffer';
+
+export function SayText2(stream: BitStream): Packet { // 4: SayText2
 	var client = stream.readBits(8);
-	var raw = stream.readBits(8);
-	var pos = stream._index;
+	var raw    = stream.readBits(8);
+	var pos    = stream._index;
 	var from, text, kind, arg1, arg2;
 	if (stream.readBits(8) === 1) {
 		var first = stream.readBits(8);
@@ -14,16 +17,16 @@ module.exports = function (stream) { // 4: SayText2
 		if (text.substr(0, 6) === '*DEAD*') {
 			// grave talk is in the format '*DEAD* \u0003$from\u0001:    $text'
 			var start = text.indexOf('\u0003');
-			var end = text.indexOf('\u0001');
-			from = text.substr(start + 1, end - start - 1);
-			text = text.substr(end + 5);
-			kind = 'TF_Chat_AllDead';
+			var end   = text.indexOf('\u0001');
+			from      = text.substr(start + 1, end - start - 1);
+			text      = text.substr(end + 5);
+			kind      = 'TF_Chat_AllDead';
 		}
 	} else {
 		stream._index = pos;
-		kind = stream.readUTF8String();
-		from = stream.readUTF8String();
-		text = stream.readUTF8String();
+		kind          = stream.readUTF8String();
+		from          = stream.readUTF8String();
+		text          = stream.readUTF8String();
 		stream.readASCIIString();
 		stream.readASCIIString();
 	}
@@ -35,10 +38,10 @@ module.exports = function (stream) { // 4: SayText2
 	}
 	return {
 		packetType: 'sayText2',
-		client    : client,
-		raw       : raw,
-		kind      : kind,
-		from      : from,
-		text      : text
+		client:     client,
+		raw:        raw,
+		kind:       kind,
+		from:       from,
+		text:       text
 	}
 };

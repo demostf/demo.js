@@ -11,7 +11,7 @@ export class SendProp {
 		this.value = null;
 	}
 
-	clone() {
+	clone():SendProp {
 		const prop = new SendProp(this.definition);
 		prop.value = clone(this.value);
 		return prop;

@@ -6,18 +6,18 @@ import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from "../../Data/GameEvent";
 import {Match} from "../../Data/Match";
 
-var PVS = {
-	PRESERVE: 0,
-	ENTER: 1,
-	LEAVE: 2,
-	DELETE: 4
-};
+enum PVS {
+	PRESERVE = 0,
+	ENTER    = 1,
+	LEAVE    = 2,
+	DELETE   = 4
+}
 
-function readPVSType(stream) {
+function readPVSType(stream: BitStream): number {
 	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L24
-	var pvs;
-	var hi = stream.readBoolean();
-	var low = stream.readBoolean();
+	let pvs;
+	const hi  = stream.readBoolean();
+	const low = stream.readBoolean();
 	if (low && !hi) {
 		pvs = PVS.ENTER;
 	} else if (!(hi || low)) {
@@ -30,27 +30,33 @@ function readPVSType(stream) {
 	return pvs;
 }
 
-function readEnterPVS(stream, entityId, match, baseLine) {
+function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number):Entity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
-	var serverClass = match.serverClasses[stream.readBits(match.classBits)];
+	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
 	console.log(serverClass);
-	var sendTable = match.getSendTable(serverClass.dataTable);
-	var serialNumber = stream.readBits(10);
+	const sendTable    = match.getSendTable(serverClass.dataTable);
+	const serialNumber = stream.readBits(10);
+	if (!sendTable) {
+		throw new Error('Unknown SendTable for serverclass');
+	}
 
-	var entity = (match.entities[entityId]) ? match.entities[entityId] : new Entity(serverClass, sendTable, entityId, serialNumber);
+	let entity = match.entities[entityId];
+	if (!entity) {
+		entity = new Entity(serverClass, sendTable, entityId, serialNumber);
+	}
 
-	var decodedBaseLine = match.instanceBaselines[baseLine][entityId];
+	const decodedBaseLine = match.instanceBaselines[baseLine][entityId];
 	if (decodedBaseLine) {
-		for (var i = 0; i < decodedBaseLine.length; i++) {
-			var newProp = decodedBaseLine[i];
+		for (let i = 0; i < decodedBaseLine.length; i++) {
+			const newProp = decodedBaseLine[i];
 			if (!entity.getPropByDefinition(newProp.definition)) {
-				entity.props.push(newProp.clone(entity));
+				entity.props.push(newProp.clone());
 			}
 		}
 	} else {
-		var staticBaseLine = match.staticBaseLines[serverClass.id];
+		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
-			var streamStart = staticBaseLine._index;
+			const streamStart = staticBaseLine._index;
 			applyEntityUpdate(entity, staticBaseLine);
 			staticBaseLine._index = streamStart;
 		}
@@ -70,24 +76,20 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs
 	// todo
-	var maxEntries = stream.readBits(11);
-	var isDelta = !!stream.readBits(1);
-	if (isDelta) {
-		var delta = stream.readInt32();
-	} else {
-		delta = null;
-	}
-	var baseLine = stream.readBits(1);
-	var updatedEntries = stream.readBits(11);
-	var length = stream.readBits(20);
-	var updatedBaseLine = stream.readBoolean();
-	var end = stream._index + length;
-	var entityId = -1;
+	const maxEntries      = stream.readBits(11);
+	const isDelta         = !!stream.readBits(1);
+	const delta           = (isDelta) ? stream.readInt32() : null;
+	const baseLine        = stream.readBits(1);
+	const updatedEntries  = stream.readBits(11);
+	const length          = stream.readBits(20);
+	const updatedBaseLine = stream.readBoolean();
+	const end             = stream._index + length;
+	let entityId          = -1
 
 	stream._index = end;
 	return {
 		packetType: 'packetEntities',
-		entities: entities
+		entities:   entities
 	};
 
 	if (updatedBaseLine) {
@@ -100,29 +102,31 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 		}
 	}
 
-	for (var i = 0; i < updatedEntries; i++) {
-		var diff = readUBitVar(stream);
-		console.log(diff);
+	for (let i = 0; i < updatedEntries; i++) {
+		const diff = readUBitVar(stream);
 		entityId += 1 + diff;
-		var pvs = readPVSType(stream);
+		const pvs  = readPVSType(stream);
 		if (pvs === PVS.ENTER) {
-			var entity = readEnterPVS(stream, entityId, match, baseLine);
+			const entity = readEnterPVS(stream, entityId, match, baseLine);
 			applyEntityUpdate(entity, stream);
 			match.entities[entityId] = entity;
 
 			if (updatedBaseLine) {
-				match.instanceBaselines[baseLine][entityId] = [].concat(entity.props);
+				const newBaseLine:SendProp[] = [];
+				newBaseLine.concat(entity.props);
+				match.instanceBaselines[baseLine][entityId] = newBaseLine;
 			}
 			entity.inPVS = true;
 		} else if (pvs === PVS.PRESERVE) {
-			entity = match.entities[entityId];
-			if (!entity) {
+			const entity = match.entities[entityId];
+			if (entity) {
+				applyEntityUpdate(entity, stream);
+			} else {
 				console.log(entityId, match.entities.length);
 				throw new Error("unknown entity");
 			}
-			applyEntityUpdate(entity, stream);
 		} else {
-			entity = match.entities[entityId];
+			const entity = match.entities[entityId];
 			if (entity) {
 				entity.inPVS = false;
 			}
@@ -132,7 +136,7 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 
 	if (isDelta) {
 		while (stream.readBoolean()) {
-			var ent = stream.readBits(11);
+			const ent           = stream.readBits(11);
 			match.entities[ent] = null;
 		}
 	}
@@ -140,29 +144,29 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 	stream._index = end;
 	return {
 		packetType: 'packetEntities',
-		entities: entities
+		entities:   entities
 	};
-};
+}
 
-var readFieldIndex = function (stream, lastIndex) {
+const readFieldIndex = function (stream: BitStream, lastIndex: number): number {
 	if (!stream.readBoolean()) {
 		return -1;
 	}
-	var diff = readUBitVar(stream);
+	const diff = readUBitVar(stream);
 	return lastIndex + diff + 1;
 };
 
-var applyEntityUpdate = function (entity, stream) {
-	var index = -1;
-	var allProps = entity.sendTable.flattenedProps;
+const applyEntityUpdate = function (entity: Entity, stream: BitStream): Entity {
+	let index      = -1;
+	const allProps = entity.sendTable.flattenedProps;
 	while ((index = readFieldIndex(stream, index)) != -1) {
 		if (index > 4096) {
 			throw new Error('prop index out of bounds');
 		}
 		console.log(index);
-		var propDefinition = allProps[index];
-		var existingProp = entity.getPropByDefinition(propDefinition);
-		var prop;
+		const propDefinition = allProps[index];
+		const existingProp   = entity.getPropByDefinition(propDefinition);
+		let prop;
 		if (existingProp) {
 			prop = existingProp;
 		} else {
@@ -178,7 +182,7 @@ var applyEntityUpdate = function (entity, stream) {
 	return entity;
 };
 
-var readUBitVar = function (stream) {
+const readUBitVar = function (stream: BitStream): number {
 	switch (stream.readBits(2)) {
 		case 0:
 			return stream.readBits(4);
@@ -189,4 +193,5 @@ var readUBitVar = function (stream) {
 		case 3:
 			return stream.readBits(32);
 	}
+	throw new Error('Invalid var bit');
 };

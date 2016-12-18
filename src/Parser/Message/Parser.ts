@@ -1,5 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {Match} from '../../Data/Match';
+import {Packet} from "../../Data/Packet";
+import {SendTable} from "../../Data/SendTable";
 
 export abstract class Parser {
 	type: any;
@@ -16,5 +18,5 @@ export abstract class Parser {
 		this.match = match;
 	}
 
-	abstract parse();
+	abstract parse():Packet[]|string|SendTable[];
 }

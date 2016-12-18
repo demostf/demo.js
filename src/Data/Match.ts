@@ -2,6 +2,7 @@ import {Entity} from "./Entity";
 import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {StringTable} from "./StringTable";
+import {SendProp} from "./SendProp";
 export class Match {
 	tick: number;
 	chat: any[];
@@ -10,11 +11,11 @@ export class Match {
 	rounds: any[];
 	startTick: number;
 	intervalPerTick: number;
-	entities: Entity[];
+	entities: (Entity|null)[];
 	stringTables: StringTable[];
 	serverClasses: ServerClass[];
 	sendTables: SendTable[];
-	instanceBaselines: any[][];
+	instanceBaselines: SendProp[][][];
 	staticBaseLines: any[];
 
 	constructor() {
