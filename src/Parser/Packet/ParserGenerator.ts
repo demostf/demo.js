@@ -1,7 +1,7 @@
-var Generator = {};
+import {Parser} from './Parser';
 
-Generator.make = function (name, string) {
-	var parts = string.substr(0, string.length - 1).split('}');//remove leading } to prevent empty part
+export function make(name: string, definition: string): Parser {
+	var parts = definition.substr(0, definition.length - 1).split('}');//remove leading } to prevent empty part
 	var items = parts.map(function (part) {
 		return part.split('{');
 	});
@@ -11,19 +11,19 @@ Generator.make = function (name, string) {
 		};
 		try {
 			for (var i = 0; i < items.length; i++) {
-				var value = Generator.readItem(stream, items[i][1], result);
+				var value = readItem(stream, items[i][1], result);
 				if (items[i][0] !== '_') {
 					result[items[i][0]] = value;
 				}
 			}
 		} catch (e) {
-			throw 'Failed reading pattern ' + string + '. ' + e;
+			throw 'Failed reading pattern ' + definition + '. ' + e;
 		}
 		return result;
 	}
-};
+}
 
-Generator.readItem = function (stream, description, data) {
+const readItem = function (stream, description, data) {
 	var length;
 	if (description[0] === 'b') {
 		return !!stream.readBits(1);
@@ -46,5 +46,3 @@ Generator.readItem = function (stream, description, data) {
 		return stream.readBits(parseInt(description, 10), true);
 	}
 };
-
-module.exports = Generator;

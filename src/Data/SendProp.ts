@@ -1,9 +1,10 @@
 import * as clone from 'clone';
 import {SendPropDefinition} from "./SendPropDefinition";
+import {Vector} from "./Vector";
 
 export class SendProp {
 	definition: SendPropDefinition;
-	value: any;
+	value: SendPropValue|null;
 
 	constructor(definition: SendPropDefinition) {
 		this.definition = definition;
@@ -17,3 +18,5 @@ export class SendProp {
 	}
 }
 
+export type SendPropArrayValue = Vector | number | string;
+export type SendPropValue = Vector | number | string | SendPropArrayValue[];

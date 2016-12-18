@@ -1,12 +1,16 @@
 import {SendPropParser} from '../../Parser/SendPropParser';
 import {Entity} from '../../Data/Entity';
 import {SendProp} from '../../Data/SendProp';
+import {Packet} from "../../Data/Packet";
+import {BitStream} from 'bit-buffer';
+import {GameEventDefinition} from "../../Data/GameEvent";
+import {Match} from "../../Data/Match";
 
 var PVS = {
 	PRESERVE: 0,
-	ENTER   : 1,
-	LEAVE   : 2,
-	DELETE  : 4
+	ENTER: 1,
+	LEAVE: 2,
+	DELETE: 4
 };
 
 function readPVSType(stream) {
@@ -60,7 +64,7 @@ function readLeavePVS(match, entityId, shouldDelete) {
 	}
 }
 
-module.exports = function (stream, events, entities, match) { //26: packetEntities
+export function PacketEntities(stream: BitStream, events: GameEventDefinition[], entities: Entity[], match: Match): Packet { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -79,6 +83,12 @@ module.exports = function (stream, events, entities, match) { //26: packetEntiti
 	var updatedBaseLine = stream.readBoolean();
 	var end = stream._index + length;
 	var entityId = -1;
+
+	stream._index = end;
+	return {
+		packetType: 'packetEntities',
+		entities: entities
+	};
 
 	if (updatedBaseLine) {
 		if (baseLine === 0) {
@@ -128,22 +138,9 @@ module.exports = function (stream, events, entities, match) { //26: packetEntiti
 	}
 
 	stream._index = end;
-	//var ent = {
-	//	packetType     : 'packetEntities',
-	//	maxEntries     : maxEntries,
-	//	isDelta        : isDelta,
-	//	delta          : delta,
-	//	baseLine       : baseLine,
-	//	updatedEntries : updatedEntries,
-	//	length         : length,
-	//	updatedBaseLine: updatedBaseLine
-	//};
-	//console.log(ent);
-	//console.log(entities);
-	//process.exit();
 	return {
 		packetType: 'packetEntities',
-		entities  : entities
+		entities: entities
 	};
 };
 

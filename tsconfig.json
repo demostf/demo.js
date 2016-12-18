@@ -5,10 +5,10 @@
 			"es2015.promise",
 			"es5"
 		],
-		"emitDecoratorMetadata": true,
 		"module": "commonjs",
 		"target": "ES5",
 		"outDir": "build",
-		"rootDir": "src"
+		"rootDir": "src",
+		"strictNullChecks": true
 	}
 }

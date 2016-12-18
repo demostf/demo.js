@@ -1,8 +1,10 @@
-import {SendPropDefinition} from '../Data/SendPropDefinition';
+import {SendPropDefinition, SendPropType, SendPropFlag} from '../Data/SendPropDefinition';
 import {Vector} from "../Data/Vector";
+import {BitStream} from "bit-buffer";
+import {SendPropValue, SendPropArrayValue} from "../Data/SendProp";
 
 
-const readBitVar = function (stream, signed) {
+const readBitVar = function (stream: BitStream, signed: boolean): number {
 	switch (stream.readBits(2)) {
 		case 0:
 			return stream.readBits(4, signed);
@@ -13,78 +15,86 @@ const readBitVar = function (stream, signed) {
 		case 3:
 			return stream.readBits(32, signed);
 	}
+	return 0;
 };
 
 export class SendPropParser {
-	static decode(propDefinition, stream) {
+	static decode(propDefinition: SendPropDefinition, stream: BitStream): SendPropValue {
 		switch (propDefinition.type) {
-			case SendPropDefinition.types.DPT_Int:
+			case SendPropType.DPT_Int:
 				return SendPropParser.readInt(propDefinition, stream);
-			case SendPropDefinition.types.DPT_Vector:
+			case SendPropType.DPT_Vector:
 				return SendPropParser.readVector(propDefinition, stream);
-			case SendPropDefinition.types.DPT_VectorXY:
+			case SendPropType.DPT_VectorXY:
 				return SendPropParser.readVectorXY(propDefinition, stream);
-			case SendPropDefinition.types.DPT_Float:
+			case SendPropType.DPT_Float:
 				return SendPropParser.readFloat(propDefinition, stream);
-			case SendPropDefinition.types.DPT_String:
+			case SendPropType.DPT_String:
 				return SendPropParser.readString(stream);
-			case SendPropDefinition.types.DPT_Array:
+			case SendPropType.DPT_Array:
 				return SendPropParser.readArray(propDefinition, stream);
 		}
 	}
 
-	static readInt(propDefinition, stream) {
-		if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_VARINT)) {
-			return readBitVar(stream, !propDefinition.hasFlag(SendPropDefinition.flags.SPROP_UNSIGNED));
+	static readInt(propDefinition: SendPropDefinition, stream: BitStream) {
+		if (propDefinition.hasFlag(SendPropFlag.SPROP_VARINT)) {
+			return readBitVar(stream, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		} else {
-			return stream.readBits(propDefinition.bitCount, !propDefinition.hasFlag(SendPropDefinition.flags.SPROP_UNSIGNED));
+			return stream.readBits(propDefinition.bitCount, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		}
 	}
 
-	static readArray(propDefinition, stream) {
+	static readArray(propDefinition: SendPropDefinition, stream: BitStream): SendPropArrayValue[] {
 		let maxElements = propDefinition.numElements;
 		let numBits = 1;
 		while ((maxElements >>= 1) != 0)
 			numBits++;
 
 		const count = stream.readBits(numBits);
-		const values = [];
+		const values: SendPropArrayValue[] = [];
+		if (!propDefinition.arrayProperty) {
+			throw new Error('Array of undefniend type');
+		}
 		for (let i = 0; i < count; i++) {
-			values.push(SendPropParser.decode(propDefinition.arrayProperty, stream));
+			const value = SendPropParser.decode(propDefinition.arrayProperty, stream);
+			if (value instanceof Array) {
+				throw new Error('Nested arrays not supported');
+			}
+			values.push();
 		}
 		return values;
 	}
 
-	static readString(stream) {
+	static readString(stream: BitStream): string {
 		const length = stream.readBits(9);
 		return stream.readASCIIString(length);
 	}
 
-	static readVector(propDefinition, stream) {
+	static readVector(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
-		const z = (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_NORMAL)) ? SendPropParser.readFloat(propDefinition, stream) : 0;
+		const z = (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) ? SendPropParser.readFloat(propDefinition, stream) : 0;
 		return new Vector(x, y, z);
 	}
 
-	static readVectorXY(propDefinition, stream) {
+	static readVectorXY(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
 		return new Vector(x, y, 0);
 	}
 
-	static readFloat(propDefinition, stream) {
-		if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_COORD)) {
+	static readFloat(propDefinition: SendPropDefinition, stream: BitStream): number {
+		if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD)) {
 			throw new Error("not implemented");
-		} else if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_COORD_MP)) {
+		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP)) {
 			return SendPropParser.readBitCoord(stream, false, false);
-		} else if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_COORD_MP_LOWPRECISION)) {
+		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_LOWPRECISION)) {
 			return SendPropParser.readBitCoord(stream, false, true);
-		} else if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_COORD_MP_INTEGRAL)) {
+		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_INTEGRAL)) {
 			return SendPropParser.readBitCoord(stream, true, false);
-		} else if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_NOSCALE)) {
+		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NOSCALE)) {
 			return stream.readFloat32();
-		} else if (propDefinition.hasFlag(SendPropDefinition.flags.SPROP_NORMAL)) {
+		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) {
 			throw new Error("not implemented");
 		} else {
 			const raw = stream.readBits(propDefinition.bitCount);
@@ -93,7 +103,7 @@ export class SendPropParser {
 		}
 	}
 
-	static readBitCoord(stream, isIntegral, isLowPrecision) {
+	static readBitCoord(stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
 		let value = 0;
 		let isNegative = false;
 		const inBounds = stream.readBoolean();
