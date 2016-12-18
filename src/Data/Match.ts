@@ -17,22 +17,23 @@ export class Match {
 	sendTables: SendTable[];
 	instanceBaselines: SendProp[][][];
 	staticBaseLines: any[];
+	_classBits: number = 0
 
 	constructor() {
-		this.tick = 0;
-		this.chat = [];
-		this.users = {};
-		this.deaths = [];
-		this.rounds = [];
-		this.startTick = 0;
-		this.intervalPerTick = 0;
-		this.entities = [];
-		this.stringTables = [];
-		this.sendTables = [];
-		this.serverClasses = [];
-		this.entities = [];
+		this.tick              = 0;
+		this.chat              = [];
+		this.users             = {};
+		this.deaths            = [];
+		this.rounds            = [];
+		this.startTick         = 0;
+		this.intervalPerTick   = 0;
+		this.entities          = [];
+		this.stringTables      = [];
+		this.sendTables        = [];
+		this.serverClasses     = [];
+		this.entities          = [];
 		this.instanceBaselines = [[], []];
-		this.staticBaseLines = [];
+		this.staticBaseLines   = [];
 	}
 
 	getSendTable(name) {
@@ -55,11 +56,11 @@ export class Match {
 
 	getState() {
 		return {
-			'chat': this.chat,
-			'users': this.users,
-			'deaths': this.deaths,
-			'rounds': this.rounds,
-			'startTick': this.startTick,
+			'chat':            this.chat,
+			'users':           this.users,
+			'deaths':          this.deaths,
+			'rounds':          this.rounds,
+			'startTick':       this.startTick,
 			'intervalPerTick': this.intervalPerTick
 		};
 	}
@@ -88,11 +89,11 @@ export class Match {
 				if (packet.tables.userinfo) {
 					for (var j = 0; j < packet.tables.userinfo.length; j++) {
 						if (packet.tables.userinfo[j].extraData) {
-							var name = packet.tables.userinfo[j].extraData[0];
-							var steamId = packet.tables.userinfo[j].extraData[2];
-							var userId = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
-							userState = this.getUserState(userId);
-							userState.name = name;
+							var name          = packet.tables.userinfo[j].extraData[0];
+							var steamId       = packet.tables.userinfo[j].extraData[2];
+							var userId        = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
+							userState         = this.getUserState(userId);
+							userState.name    = name;
 							userState.steamId = steamId;
 						}
 					}
@@ -113,24 +114,24 @@ export class Match {
 							packet.event.values.userid -= 256;
 						}
 						this.deaths.push({
-							killer: packet.event.values.attacker,
+							killer:   packet.event.values.attacker,
 							assister: assister,
-							victim: packet.event.values.userid,
-							weapon: packet.event.values.weapon,
-							tick: this.tick
+							victim:   packet.event.values.userid,
+							weapon:   packet.event.values.weapon,
+							tick:     this.tick
 						});
 						break;
 					case 'teamplay_round_win':
 						if (packet.event.values.winreason !== 6) {// 6 = timelimit
 							this.rounds.push({
-								winner: packet.event.values.team === 2 ? 'red' : 'blue',
-								length: packet.event.values.round_time,
+								winner:   packet.event.values.team === 2 ? 'red' : 'blue',
+								length:   packet.event.values.round_time,
 								end_tick: this.tick
 							});
 						}
 						break;
 					case 'player_spawn':
-						userId = packet.event.values.userid;
+						userId    = packet.event.values.userid;
 						userState = this.getUserState(userId);
 						if (!userState.team) { //only register first spawn
 							userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
@@ -154,8 +155,8 @@ export class Match {
 		}
 		if (!this.users[userId]) {
 			this.users[userId] = {
-				name: null,
-				userId: userId,
+				name:    null,
+				userId:  userId,
 				steamId: null,
 				classes: {}
 			}

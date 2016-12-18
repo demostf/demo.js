@@ -41,7 +41,7 @@ export function BSPDecal(stream: BitStream): Packet { // 21: BSPDecal
 	}
 	const lowPriority = !!stream.readBits(1);
 	return {
-		packetType: 'BSPDecal',
+		packetType: 'bspDecal',
 		position: position,
 		textureIndex: textureIndex,
 		entIndex: entIndex,

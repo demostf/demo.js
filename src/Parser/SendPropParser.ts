@@ -47,14 +47,14 @@ export class SendPropParser {
 
 	static readArray(propDefinition: SendPropDefinition, stream: BitStream): SendPropArrayValue[] {
 		let maxElements = propDefinition.numElements;
-		let numBits = 1;
+		let numBits     = 1;
 		while ((maxElements >>= 1) != 0)
 			numBits++;
 
-		const count = stream.readBits(numBits);
+		const count                        = stream.readBits(numBits);
 		const values: SendPropArrayValue[] = [];
 		if (!propDefinition.arrayProperty) {
-			throw new Error('Array of undefniend type');
+			throw new Error('Array of undefined type');
 		}
 		for (let i = 0; i < count; i++) {
 			const value = SendPropParser.decode(propDefinition.arrayProperty, stream);
@@ -88,24 +88,24 @@ export class SendPropParser {
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD)) {
 			throw new Error("not implemented");
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP)) {
-			return SendPropParser.readBitCoord(stream, false, false);
+			return SendPropParser.readBitCoord(propDefinition, stream, false, false);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_LOWPRECISION)) {
-			return SendPropParser.readBitCoord(stream, false, true);
+			return SendPropParser.readBitCoord(propDefinition, stream, false, true);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_INTEGRAL)) {
-			return SendPropParser.readBitCoord(stream, true, false);
+			return SendPropParser.readBitCoord(propDefinition, stream, true, false);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NOSCALE)) {
 			return stream.readFloat32();
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) {
 			throw new Error("not implemented");
 		} else {
-			const raw = stream.readBits(propDefinition.bitCount);
+			const raw        = stream.readBits(propDefinition.bitCount);
 			const percentage = raw / ((1 << propDefinition.bitCount) - 1);
 			return propDefinition.lowValue + (propDefinition.highValue - propDefinition.lowValue) * percentage;
 		}
 	}
 
-	static readBitCoord(stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
-		let value = 0;
+	static readBitCoord(propDefinition: SendPropDefinition, stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
+		let value      = 0;
 		let isNegative = false;
 		const inBounds = stream.readBoolean();
 
@@ -131,6 +131,7 @@ export class SendPropParser {
 				} else {
 					value = stream.readBits(14) + 1;
 					if (value < (1 << 11)) {
+						console.log(propDefinition, value);
 						throw new Error("Something's fishy...");
 					}
 				}

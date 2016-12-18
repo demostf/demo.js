@@ -8,22 +8,22 @@ export class DataTable extends Parser {
 		// https://github.com/LestaD/SourceEngine2007/blob/43a5c90a5ada1e69ca044595383be67f40b33c61/src_main/engine/dt_common_eng.cpp#L356
 		// https://github.com/LestaD/SourceEngine2007/blob/43a5c90a5ada1e69ca044595383be67f40b33c61/src_main/engine/dt_recv_eng.cpp#L310
 		// https://github.com/PazerOP/DemoLib/blob/master/DemoLib/Commands/DemoDataTablesCommand.cs
-		var tables:SendTable[] = [];
-		var i, j;
+		let tables:SendTable[] = [];
+		let i, j;
 		while (this.stream.readBoolean()) {
-			var needsDecoder = this.stream.readBoolean();
-			var tableName = this.stream.readASCIIString();
-			var numProps = this.stream.readBits(10);
-			var table = new SendTable(tableName);
+			const needsDecoder = this.stream.readBoolean();
+			const tableName = this.stream.readASCIIString();
+			const numProps = this.stream.readBits(10);
+			const table = new SendTable(tableName);
 
 			// get props metadata
-			var arrayElementProp;
+			let arrayElementProp;
 			for (i = 0; i < numProps; i++) {
-				var propType = this.stream.readBits(5);
-				var propName = this.stream.readASCIIString();
-				var nFlagsBits = 16; // might be 11 (old?), 13 (new?), 16(networked) or 17(??)
-				var flags = this.stream.readBits(nFlagsBits);
-				var prop = new SendPropDefinition(propType, propName, flags);
+				const propType = this.stream.readBits(5);
+				const propName = this.stream.readASCIIString();
+				const nFlagsBits = 16; // might be 11 (old?), 13 (new?), 16(networked) or 17(??)
+				const flags = this.stream.readBits(nFlagsBits);
+				const prop = new SendPropDefinition(propType, propName, flags, tableName);
 				if (propType === SendPropType.DPT_DataTable) {
 					prop.excludeDTName = this.stream.readASCIIString();
 				} else {
@@ -57,6 +57,12 @@ export class DataTable extends Parser {
 				}
 
 				if (prop.hasFlag(SendPropFlag.SPROP_INSIDEARRAY)) {
+					if (arrayElementProp) {
+						throw new Error("array element already set");
+					}
+					if (prop.hasFlag(SendPropFlag.SPROP_CHANGES_OFTEN)) {
+						throw new Error("unexpected CHANGES_OFTEN prop in array");
+					}
 					arrayElementProp = prop;
 				} else {
 					table.addProp(prop);
@@ -76,23 +82,23 @@ export class DataTable extends Parser {
 			}
 		}
 
-		var serverClasses = this.stream.readUint16(); // short
+		const serverClasses = this.stream.readUint16(); // short
 		if (serverClasses <= 0) {
 			throw "expected one or more serverclasses";
 		}
 
 		for (i = 0; i < serverClasses; i++) {
-			var classId = this.stream.readUint16();
+			const classId = this.stream.readUint16();
 			if (classId > serverClasses) {
 				throw "invalid class id";
 			}
-			var className = this.stream.readASCIIString();
-			var dataTable = this.stream.readASCIIString();
+			const className = this.stream.readASCIIString();
+			const dataTable = this.stream.readASCIIString();
 			this.match.serverClasses.push(new ServerClass(classId, className, dataTable));
 		}
 
-		var bitsLeft = (this.length * 8) - this.stream._index;
-		if (bitsLeft > 7) {
+		const bitsLeft = (this.length * 8) - this.stream._index;
+		if (bitsLeft > 7 || bitsLeft < 0) {
 			throw "unexpected remaining data in datatable (" + bitsLeft + " bits)";
 		}
 

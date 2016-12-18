@@ -5,6 +5,7 @@ import {Packet} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from "../../Data/GameEvent";
 import {Match} from "../../Data/Match";
+import {readUBitVar} from "../readBitVar";
 
 enum PVS {
 	PRESERVE = 0,
@@ -13,7 +14,7 @@ enum PVS {
 	DELETE   = 4
 }
 
-function readPVSType(stream: BitStream): number {
+function readPVSType(stream: BitStream): PVS {
 	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L24
 	let pvs;
 	const hi  = stream.readBoolean();
@@ -30,7 +31,7 @@ function readPVSType(stream: BitStream): number {
 	return pvs;
 }
 
-function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number):Entity {
+function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number): Entity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
 	console.log(serverClass);
@@ -84,7 +85,7 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 	const length          = stream.readBits(20);
 	const updatedBaseLine = stream.readBoolean();
 	const end             = stream._index + length;
-	let entityId          = -1
+	let entityId          = -1;
 
 	stream._index = end;
 	return {
@@ -106,23 +107,25 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 		const diff = readUBitVar(stream);
 		entityId += 1 + diff;
 		const pvs  = readPVSType(stream);
+		console.log("entity: " + entityId, ", pvs " + PVS[pvs]);
 		if (pvs === PVS.ENTER) {
 			const entity = readEnterPVS(stream, entityId, match, baseLine);
 			applyEntityUpdate(entity, stream);
 			match.entities[entityId] = entity;
 
 			if (updatedBaseLine) {
-				const newBaseLine:SendProp[] = [];
+				const newBaseLine: SendProp[] = [];
 				newBaseLine.concat(entity.props);
 				match.instanceBaselines[baseLine][entityId] = newBaseLine;
 			}
 			entity.inPVS = true;
+			// stream.readBits(1);
 		} else if (pvs === PVS.PRESERVE) {
 			const entity = match.entities[entityId];
 			if (entity) {
 				applyEntityUpdate(entity, stream);
 			} else {
-				console.log(entityId, match.entities.length);
+				console.log( entityId, match.entities.length);
 				throw new Error("unknown entity");
 			}
 		} else {
@@ -157,13 +160,13 @@ const readFieldIndex = function (stream: BitStream, lastIndex: number): number {
 };
 
 const applyEntityUpdate = function (entity: Entity, stream: BitStream): Entity {
-	let index      = -1;
-	const allProps = entity.sendTable.flattenedProps;
+	let index                    = -1;
+	const allProps               = entity.sendTable.flattenedProps;
+	let changedProps: SendProp[] = [];
 	while ((index = readFieldIndex(stream, index)) != -1) {
 		if (index > 4096) {
 			throw new Error('prop index out of bounds');
 		}
-		console.log(index);
 		const propDefinition = allProps[index];
 		const existingProp   = entity.getPropByDefinition(propDefinition);
 		let prop;
@@ -172,26 +175,18 @@ const applyEntityUpdate = function (entity: Entity, stream: BitStream): Entity {
 		} else {
 			prop = new SendProp(propDefinition);
 		}
-		prop.value = SendPropParser.decode(propDefinition, stream);
-		console.log(prop);
+		// prop.value = SendPropParser.decode(propDefinition, stream);
+		// console.log(prop);
+		changedProps.push(prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);
 		}
 	}
-	return entity;
-};
-
-const readUBitVar = function (stream: BitStream): number {
-	switch (stream.readBits(2)) {
-		case 0:
-			return stream.readBits(4);
-		case 1:
-			return stream.readBits(8);
-		case 2:
-			return stream.readBits(12);
-		case 3:
-			return stream.readBits(32);
+	for (let i = 0; i < changedProps.length; i++) {
+		const prop = changedProps[i];
+		prop.value = SendPropParser.decode(prop.definition, stream);
+		console.log(prop);
 	}
-	throw new Error('Invalid var bit');
+	return entity;
 };
