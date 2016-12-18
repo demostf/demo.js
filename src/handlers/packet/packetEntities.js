@@ -1,4 +1,6 @@
-var clone = require('clone');
+import {SendPropParser} from '../../Parser/SendPropParser';
+import {Entity} from '../../Data/Entity';
+import {SentProp} from '../../Data/SendProp';
 
 var PVS = {
 	PRESERVE: 0,
@@ -27,10 +29,11 @@ function readPVSType(stream) {
 function readEnterPVS(stream, entityId, match, baseLine) {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	var serverClass = match.serverClasses[stream.readBits(match.classBits)];
+	console.log(serverClass);
 	var sendTable = match.getSendTable(serverClass.dataTable);
 	var serialNumber = stream.readBits(10);
 
-	var entity = (match.entities[entityId]) ? match.entities[entityId] : new Entity(match, serverClass, sendTable, entityId, serialNumber);
+	var entity = (match.entities[entityId]) ? match.entities[entityId] : new Entity(serverClass, sendTable, entityId, serialNumber);
 
 	var decodedBaseLine = match.instanceBaselines[baseLine][entityId];
 	if (decodedBaseLine) {
@@ -88,7 +91,9 @@ module.exports = function (stream, events, entities, match) { //26: packetEntiti
 	}
 
 	for (var i = 0; i < updatedEntries; i++) {
-		entityId+= 1 + readUBitVar(stream);
+		var diff = readUBitVar(stream);
+		console.log(diff);
+		entityId += 1 + diff;
 		var pvs = readPVSType(stream);
 		if (pvs === PVS.ENTER) {
 			var entity = readEnterPVS(stream, entityId, match, baseLine);
@@ -157,6 +162,7 @@ var applyEntityUpdate = function (entity, stream) {
 		if (index > 4096) {
 			throw new Error('prop index out of bounds');
 		}
+		console.log(index);
 		var propDefinition = allProps[index];
 		var existingProp = entity.getPropByDefinition(propDefinition);
 		var prop;
@@ -165,7 +171,8 @@ var applyEntityUpdate = function (entity, stream) {
 		} else {
 			prop = new SentProp(propDefinition);
 		}
-		prop.value = propDefinition.decode(stream);
+		prop.value = SendPropParser.decode(propDefinition, stream);
+		console.log(prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);
@@ -185,34 +192,4 @@ var readUBitVar = function (stream) {
 		case 3:
 			return stream.readBits(32);
 	}
-};
-
-var Entity = function (match, serverClass, sentTable, entityIndex, serialNumber) {
-	this.match = match;
-	this.serverClass = serverClass;
-	this.sendTable = sentTable;
-	this.entityIndex = entityIndex;
-	this.serialNumber = serialNumber;
-	this.props = [];
-	this.inPVS = false;
-};
-
-Entity.prototype.getPropByDefinition = function (definition) {
-	for (var i = 0; i < this.props; i++) {
-		if (this.props[i].definition === definition) {
-			return this.props[i];
-		}
-	}
-	return null;
-};
-
-var SentProp = function (definition) {
-	this.definition = definition;
-	this.value = null;
-};
-
-SentProp.prototype.clone = function () {
-	var prop = new SentProp(this.definition);
-	prop.value = clone(this.value);
-	return prop;
 };

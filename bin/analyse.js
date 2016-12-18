@@ -1,4 +1,4 @@
-var Demo = require('../demo');
+var Demo = require('../index');
 var fs = require('fs');
 var argv = require('minimist')(process.argv.slice(2), {boolean: true});
 
