@@ -15,7 +15,7 @@ export class SendTable {
 		this.props.push(prop);
 	}
 
-	flatten() {
+	private flatten() {
 		let excludes: SendPropDefinition[] = [];
 		let props: SendPropDefinition[]    = [];
 		this.getAllProps(excludes, props);

@@ -4,22 +4,23 @@ import {
 	GameEventType, GameEventValue, GameEventEntry, GameEventDefinition, GameEvent as IGameEvent,
 	GameEventValueMap, GameEventDefinitionMap
 } from "../../Data/GameEvent";
+import {Match} from "../../Data/Match";
 
 const parseGameEvent = function (eventId: number, stream: BitStream, events: GameEventDefinitionMap): IGameEvent|null {
 	if (!events[eventId]) {
 		return null;
 	}
 	const eventDescription: GameEventDefinition = events[eventId];
-	const values: GameEventValueMap = {};
+	const values: GameEventValueMap             = {};
 	for (let i = 0; i < eventDescription.entries.length; i++) {
 		const entry: GameEventEntry = eventDescription.entries[i];
-		const value = getGameEventValue(stream, entry);
+		const value                 = getGameEventValue(stream, entry);
 		if (value) {
 			values[entry.name] = value;
 		}
 	}
 	return {
-		name: eventDescription.name,
+		name:   eventDescription.name,
 		values: values
 	};
 };
@@ -46,14 +47,14 @@ const getGameEventValue = function (stream: BitStream, entry: GameEventEntry): G
 };
 
 
-export function GameEvent(stream: BitStream, events: GameEventDefinitionMap): Packet { // 25: game event
-	const length = stream.readBits(11);
-	const end = stream._index + length;
+export function GameEvent(stream: BitStream, match: Match): Packet { // 25: game event
+	const length  = stream.readBits(11);
+	const end     = stream._index + length;
 	const eventId = stream.readBits(9);
-	const event = parseGameEvent(eventId, stream, events);
+	const event   = parseGameEvent(eventId, stream, match.eventDefinitions);
 	stream._index = end;
 	return {
 		packetType: 'gameEvent',
-		event: event
+		event:      event
 	}
 }

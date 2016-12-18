@@ -28,13 +28,12 @@ import {Packet as IPacket} from '../../Data/Packet';
 export class Packet extends Parser {
 	parse() {
 		let packets: IPacket[] = [];
-		let entities           = [];
 		let lastPacketType     = 0;
 		while (this.bitsLeft > 6) { // last 6 bits for NOOP
 			const type = this.stream.readBits(6);
 			if (type !== 0) {
 				if (Packet.parsers[type]) {
-					let packet = Packet.parsers[type].call(this, this.stream, Packet.gameEventMap, entities, this.match);
+					let packet = Packet.parsers[type].call(this, this.stream, this.match);
 					packets.push(packet);
 				} else {
 					throw new Error('Unknown packet type ' + type + " just parsed a " + PacketType[lastPacketType]);
@@ -81,8 +80,6 @@ export class Packet extends Parser {
 		31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
 		32: ParserGenerator.make('cmdKeyValues', 'length{32}data{$length}')
 	};
-
-	static gameEventMap: GameEventDefinitionMap = {};
 }
 
 enum PacketType {

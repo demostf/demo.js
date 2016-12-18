@@ -3,6 +3,7 @@ import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {StringTable} from "./StringTable";
 import {SendProp} from "./SendProp";
+import {GameEventDefinitionMap} from "./GameEvent";
 export class Match {
 	tick: number;
 	chat: any[];
@@ -17,7 +18,7 @@ export class Match {
 	sendTables: SendTable[];
 	instanceBaselines: SendProp[][][];
 	staticBaseLines: any[];
-	_classBits: number = 0
+	eventDefinitions: GameEventDefinitionMap;
 
 	constructor() {
 		this.tick              = 0;
@@ -34,6 +35,7 @@ export class Match {
 		this.entities          = [];
 		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
+		this.eventDefinitions  = {};
 	}
 
 	getSendTable(name) {
@@ -42,7 +44,7 @@ export class Match {
 				return this.sendTables[i];
 			}
 		}
-		return null;
+		throw new Error("unknown SendTable " + name);
 	}
 
 	getStringTable(name) {

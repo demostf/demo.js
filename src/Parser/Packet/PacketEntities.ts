@@ -6,6 +6,7 @@ import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from "../../Data/GameEvent";
 import {Match} from "../../Data/Match";
 import {readUBitVar} from "../readBitVar";
+import {applyEntityUpdate} from "../EntityDecoder";
 
 enum PVS {
 	PRESERVE = 0,
@@ -71,7 +72,7 @@ function readLeavePVS(match, entityId, shouldDelete) {
 	}
 }
 
-export function PacketEntities(stream: BitStream, events: GameEventDefinition[], entities: Entity[], match: Match): Packet { //26: packetEntities
+export function PacketEntities(stream: BitStream, match: Match): Packet { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -89,8 +90,7 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 
 	stream._index = end;
 	return {
-		packetType: 'packetEntities',
-		entities:   entities
+		packetType: 'packetEntities'
 	};
 
 	if (updatedBaseLine) {
@@ -146,47 +146,6 @@ export function PacketEntities(stream: BitStream, events: GameEventDefinition[],
 
 	stream._index = end;
 	return {
-		packetType: 'packetEntities',
-		entities:   entities
+		packetType: 'packetEntities'
 	};
 }
-
-const readFieldIndex = function (stream: BitStream, lastIndex: number): number {
-	if (!stream.readBoolean()) {
-		return -1;
-	}
-	const diff = readUBitVar(stream);
-	return lastIndex + diff + 1;
-};
-
-const applyEntityUpdate = function (entity: Entity, stream: BitStream): Entity {
-	let index                    = -1;
-	const allProps               = entity.sendTable.flattenedProps;
-	let changedProps: SendProp[] = [];
-	while ((index = readFieldIndex(stream, index)) != -1) {
-		if (index > 4096) {
-			throw new Error('prop index out of bounds');
-		}
-		const propDefinition = allProps[index];
-		const existingProp   = entity.getPropByDefinition(propDefinition);
-		let prop;
-		if (existingProp) {
-			prop = existingProp;
-		} else {
-			prop = new SendProp(propDefinition);
-		}
-		// prop.value = SendPropParser.decode(propDefinition, stream);
-		// console.log(prop);
-		changedProps.push(prop);
-
-		if (!existingProp) {
-			entity.props.push(prop);
-		}
-	}
-	for (let i = 0; i < changedProps.length; i++) {
-		const prop = changedProps[i];
-		prop.value = SendPropParser.decode(prop.definition, stream);
-		console.log(prop);
-	}
-	return entity;
-};

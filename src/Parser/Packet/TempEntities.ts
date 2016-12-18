@@ -1,12 +1,39 @@
 import {Packet} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
+import {Match} from "../../Data/Match";
+import {Entity} from "../../Data/Entity";
+import {applyEntityUpdate} from "../EntityDecoder";
 
-export function TempEntities(stream: BitStream): Packet { // 10: classInfo
+export function TempEntities(stream: BitStream, match: Match): Packet { // 10: classInfo
 	const entityCount = stream.readBits(8);
 	const length      = readVarInt(stream);
-	console.log(length);
-	stream._index += length;
+	const end         = stream._index + length;
 
+	// let entity: Entity|null = null;
+	// let entities: Entity[]  = [];
+	// for (let i = 0; i < entityCount; i++) {
+	// 	const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
+	// 	if (stream.readBoolean()) {
+	// 		const classId     = stream.readBits(match.classBits);
+	// 		const serverClass = match.serverClasses[classId];
+	// 		const sendTable   = match.getSendTable(serverClass.dataTable);
+	// 		entity            = new Entity(serverClass, sendTable, 0, 0);
+	// 		applyEntityUpdate(entity, stream);
+	// 		entities.push(entity);
+	// 	} else {
+	// 		if (entity) {
+	// 			applyEntityUpdate(entity, stream);
+	// 		} else {
+	// 			throw new Error("no entity set to update");
+	// 		}
+	// 	}
+	// 	console.log(entity);
+	// }
+	// if (end - stream._index > 8) {
+	// 	throw new Error("unexpected content after TempEntities");
+	// }
+
+	stream._index = end;
 	return {
 		'packetType': 'tempEntities'
 	}
