@@ -9,6 +9,7 @@
 		"target": "ES5",
 		"outDir": "build",
 		"rootDir": "src",
+		"declaration": true,
 		"strictNullChecks": true
 	}
 }

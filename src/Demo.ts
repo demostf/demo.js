@@ -28,7 +28,7 @@ export class Demo {
 	}
 }
 
-class StreamDemo {
+export class StreamDemo {
 	stream: Stream;
 
 	constructor(nodeStream: Stream) {
