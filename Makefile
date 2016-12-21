@@ -1,12 +1,15 @@
-TS_JS    := $(TS_SRC:.ts=.js)
+tsc=node_modules/.bin/tsc
 
-.PHONY: all tsc
+.PHONY: all
+all: build
 
-all: $(TS_JS)
+node_modules: package.json
+	npm install --deps
 
-$(TS_JS): %.js: %.ts js.stub
-    $(TSLINT) $<
+.PHONY: watch
+watch: node_modules
+	node $(tsc) --watch
 
-js.stub: $(TS_SRC)
-    $(TSC) $^
-    @touch $@
+.PHONY: build
+build: node_modules
+	node $(tsc)
