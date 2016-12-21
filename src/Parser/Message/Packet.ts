@@ -45,7 +45,7 @@ export class Packet extends Parser {
 	}
 
 	get bitsLeft() {
-		return (this.length * 8) - this.stream._index;
+		return (this.length * 8) - this.stream.index;
 	}
 
 	static parsers: PacketParserMap = {

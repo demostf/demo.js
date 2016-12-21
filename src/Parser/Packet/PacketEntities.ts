@@ -58,9 +58,9 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 	} else {
 		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
-			const streamStart = staticBaseLine._index;
+			const streamStart = staticBaseLine.index;
 			applyEntityUpdate(entity, staticBaseLine);
-			staticBaseLine._index = streamStart;
+			staticBaseLine.index = streamStart;
 		}
 	}
 	return entity;
@@ -85,10 +85,10 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 	const updatedEntries  = stream.readBits(11);
 	const length          = stream.readBits(20);
 	const updatedBaseLine = stream.readBoolean();
-	const end             = stream._index + length;
+	const end             = stream.index + length;
 	let entityId          = -1;
 
-	stream._index = end;
+	stream.index = end;
 	return {
 		packetType: 'packetEntities'
 	};
@@ -144,7 +144,7 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 		}
 	}
 
-	stream._index = end;
+	stream.index = end;
 	return {
 		packetType: 'packetEntities'
 	};

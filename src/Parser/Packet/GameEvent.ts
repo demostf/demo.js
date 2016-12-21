@@ -49,10 +49,10 @@ const getGameEventValue = function (stream: BitStream, entry: GameEventEntry): G
 
 export function GameEvent(stream: BitStream, match: Match): Packet { // 25: game event
 	const length  = stream.readBits(11);
-	const end     = stream._index + length;
+	const end     = stream.index + length;
 	const eventId = stream.readBits(9);
 	const event   = parseGameEvent(eventId, stream, match.eventDefinitions);
-	stream._index = end;
+	stream.index = end;
 	return {
 		packetType: 'gameEvent',
 		event:      event

@@ -89,7 +89,10 @@ export class Parser extends EventEmitter {
 		}
 	}
 
-	readMessage(stream, match): MessageParser|boolean {
+	readMessage(stream:BitStream, match:Match): MessageParser|boolean {
+		if (stream.bitsLeft < 8) {
+			return false;
+		}
 		const type: MessageType = stream.readBits(8);
 		if (type === MessageType.Stop) {
 			return false;

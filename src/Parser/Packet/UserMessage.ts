@@ -72,7 +72,7 @@ const userMessageParsers = {
 export function UserMessage(stream: BitStream): Packet { // 23: user message
 	const type   = stream.readBits(8);
 	const length = stream.readBits(11);
-	const pos    = stream._index;
+	const pos    = stream.index;
 	let result;
 	if (userMessageParsers[type]) {
 		result = userMessageParsers[type](stream);
@@ -82,6 +82,6 @@ export function UserMessage(stream: BitStream): Packet { // 23: user message
 			type:       type
 		}
 	}
-	stream._index = pos + length;
+	stream.index = pos + length;
 	return result;
 }

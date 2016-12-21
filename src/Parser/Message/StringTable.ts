@@ -1,5 +1,6 @@
 import {Parser} from './Parser';
 import {StringTableEntry} from "../../Data/StringTable";
+import {RemoteInfo} from "dgram";
 
 export class StringTable extends Parser {
 	parse() {
@@ -23,8 +24,16 @@ export class StringTable extends Parser {
 						tables: tables
 					}];
 				}
-				if (this.stream.readBits(1)) {
+				if (this.stream.readBoolean()) {
 					extraDataLength = this.stream.readUint16();
+					if ((extraDataLength * 8) > this.stream.bitsLeft) {
+						// extradata to long, can't continue parsing the tables
+						// seems to happen in POV demos after the MyM update
+						return [{
+							packetType: 'stringTable',
+							tables:     tables
+						}];
+					}
 					if (tableName === 'instancebaseline') {
 						this.match.staticBaseLines[parseInt(entry.text, 10)] = this.stream.readBitStream(8 * extraDataLength);
 					} else {
@@ -55,11 +64,11 @@ export class StringTable extends Parser {
 	}
 
 	readExtraData(length):string[] {
-		const end = this.stream._index + (length * 8);
+		const end = this.stream.index + (length * 8);
 		let data:string[] = [];
 		//console.log(this.stream.readUTF8String());
 		data.push(this.stream.readUTF8String());
-		while (this.stream._index < end) {
+		while (this.stream.index < end && this.stream.index < (this.stream.length - 7)) { // -7 because we need a full byte
 			try {
 				let string = this.stream.readUTF8String();
 				if (string) {
@@ -69,7 +78,7 @@ export class StringTable extends Parser {
 				return data;
 			}
 		}
-		this.stream._index = end;
+		this.stream.index = end;
 		return data;
 	}
 }

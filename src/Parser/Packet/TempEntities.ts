@@ -7,7 +7,7 @@ import {applyEntityUpdate} from "../EntityDecoder";
 export function TempEntities(stream: BitStream, match: Match): Packet { // 10: classInfo
 	const entityCount = stream.readBits(8);
 	const length      = readVarInt(stream);
-	const end         = stream._index + length;
+	const end         = stream.index + length;
 
 	// let entity: Entity|null = null;
 	// let entities: Entity[]  = [];
@@ -29,11 +29,11 @@ export function TempEntities(stream: BitStream, match: Match): Packet { // 10: c
 	// 	}
 	// 	console.log(entity);
 	// }
-	// if (end - stream._index > 8) {
+	// if (end - stream.index > 8) {
 	// 	throw new Error("unexpected content after TempEntities");
 	// }
 
-	stream._index = end;
+	stream.index = end;
 	return {
 		'packetType': 'tempEntities'
 	}

@@ -97,7 +97,7 @@ export class DataTable extends Parser {
 			this.match.serverClasses.push(new ServerClass(classId, className, dataTable));
 		}
 
-		const bitsLeft = (this.length * 8) - this.stream._index;
+		const bitsLeft = (this.length * 8) - this.stream.index;
 		if (bitsLeft > 7 || bitsLeft < 0) {
 			throw "unexpected remaining data in datatable (" + bitsLeft + " bits)";
 		}

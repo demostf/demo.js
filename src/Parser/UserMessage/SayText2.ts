@@ -4,14 +4,14 @@ import {BitStream} from 'bit-buffer';
 export function SayText2(stream: BitStream): Packet { // 4: SayText2
 	var client = stream.readBits(8);
 	var raw    = stream.readBits(8);
-	var pos    = stream._index;
+	var pos    = stream.index;
 	var from, text, kind, arg1, arg2;
 	if (stream.readBits(8) === 1) {
 		var first = stream.readBits(8);
 		if (first === 7) {
 			var color = stream.readUTF8String(6);
 		} else {
-			stream._index = pos + 8;
+			stream.index = pos + 8;
 		}
 		text = stream.readUTF8String();
 		if (text.substr(0, 6) === '*DEAD*') {
@@ -23,7 +23,7 @@ export function SayText2(stream: BitStream): Packet { // 4: SayText2
 			kind      = 'TF_Chat_AllDead';
 		}
 	} else {
-		stream._index = pos;
+		stream.index = pos;
 		kind          = stream.readUTF8String();
 		from          = stream.readUTF8String();
 		text          = stream.readUTF8String();
