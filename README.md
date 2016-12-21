@@ -26,3 +26,13 @@ fs.readFile("example.dem", function (err, data) {
 	console.log(body);
 });
 ```
+
+## A note on POV demos
+
+During the development of this project the main focus has always been on parsing
+STV demos. Parsing POV demos is a lot more error prone and has known issues.
+
+### Known issue with POV demos
+
+- Not all player names can be parsed correctly, resulting in multiple players
+having `null` as a name in the output.
