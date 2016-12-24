@@ -74,7 +74,7 @@ export class SendPropParser {
 	static readVector(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
-		const z = (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) ? SendPropParser.readFloat(propDefinition, stream) : 0;
+		const z = (!propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) ? SendPropParser.readFloat(propDefinition, stream) : 0;
 		return new Vector(x, y, z);
 	}
 
