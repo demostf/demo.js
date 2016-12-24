@@ -9,33 +9,33 @@ export function TempEntities(stream: BitStream, match: Match): Packet { // 10: c
 	const length      = readVarInt(stream);
 	const end         = stream.index + length;
 
-	// let entity: Entity|null = null;
-	// let entities: Entity[]  = [];
-	// for (let i = 0; i < entityCount; i++) {
-	// 	const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
-	// 	if (stream.readBoolean()) {
-	// 		const classId     = stream.readBits(match.classBits);
-	// 		const serverClass = match.serverClasses[classId];
-	// 		const sendTable   = match.getSendTable(serverClass.dataTable);
-	// 		entity            = new Entity(serverClass, sendTable, 0, 0);
-	// 		applyEntityUpdate(entity, stream);
-	// 		entities.push(entity);
-	// 	} else {
-	// 		if (entity) {
-	// 			applyEntityUpdate(entity, stream);
-	// 		} else {
-	// 			throw new Error("no entity set to update");
-	// 		}
-	// 	}
-	// 	console.log(entity);
-	// }
-	// if (end - stream.index > 8) {
-	// 	throw new Error("unexpected content after TempEntities");
-	// }
+	let entity: Entity|null = null;
+	let entities: Entity[]  = [];
+	for (let i = 0; i < entityCount; i++) {
+		const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
+		if (stream.readBoolean()) {
+			const classId     = stream.readBits(match.classBits);
+			const serverClass = match.serverClasses[classId - 1]; //no clue why the -1 but it works
+			const sendTable   = match.getSendTable(serverClass.dataTable);
+			entity            = new Entity(serverClass, sendTable, 0, 0);
+			applyEntityUpdate(entity, stream);
+			entities.push(entity);
+		} else {
+			if (entity) {
+				applyEntityUpdate(entity, stream);
+			} else {
+				throw new Error("no entity set to update");
+			}
+		}
+	}
+	if (end - stream.index > 8) {
+		throw new Error("unexpected content after TempEntities");
+	}
 
 	stream.index = end;
 	return {
-		'packetType': 'tempEntities'
+		'packetType': 'tempEntities',
+		entities: entities
 	}
 }
 

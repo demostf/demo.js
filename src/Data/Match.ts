@@ -4,6 +4,7 @@ import {SendTable} from "./SendTable";
 import {StringTable} from "./StringTable";
 import {SendProp} from "./SendProp";
 import {GameEventDefinitionMap} from "./GameEvent";
+import {BitStream} from "bit-buffer";
 export class Match {
 	tick: number;
 	chat: any[];
@@ -17,7 +18,7 @@ export class Match {
 	serverClasses: ServerClass[];
 	sendTables: SendTable[];
 	instanceBaselines: SendProp[][][];
-	staticBaseLines: any[];
+	staticBaseLines: BitStream[];
 	eventDefinitions: GameEventDefinitionMap;
 
 	constructor() {
