@@ -5,6 +5,7 @@ var ConsoleCmd = require('./consolecmd');
 var StringTable = require('./stringtable');
 var DataTable = require('./datatable');
 var BitStream = require('bit-buffer').BitStream;
+var BitView = require('bit-buffer').BitView;
 var EventEmitter = require('events').EventEmitter;
 
 var Parser = function (stream) {
@@ -118,7 +119,7 @@ Parser.prototype.readMessage = function (stream) {
 
 	length = stream.readInt32();
 	start = stream.byteIndex;
-	buffer = stream.buffer.slice(start, start + length);
+    buffer = new BitView(stream.view.buffer.slice(start, start + length));
 	stream.byteIndex += length;
 	return this.parseMessage(buffer, type, tick, length);
 };
