@@ -77,9 +77,8 @@ export class StreamParser extends Parser {
 		}
 
 		console.log('got message ' + tick);
-		const messageBuffer = this.buffer.slice(headerSize, headerSize + length);
-		this.eatBuffer(headerSize + length);
-		const message = this.parseMessage(messageBuffer, type, tick, length, this.match);
+		const messageStream = stream.readBitStream(length * 8);
+		const message = this.parseMessage(messageStream, type, tick, length, this.match);
 		this.handleMessage(message);
 	}
 }

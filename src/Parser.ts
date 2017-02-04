@@ -57,8 +57,7 @@ export class Parser extends EventEmitter {
 		return this.match;
 	}
 
-	parseMessage(buffer: ArrayBuffer, type: MessageType, tick: number, length: number, match: Match): MessageParser {
-		const data = new BitStream(buffer);
+	parseMessage(data: BitStream, type: MessageType, tick: number, length: number, match: Match): MessageParser {
 
 		switch (type) {
 			case MessageType.Sigon:
@@ -131,9 +130,7 @@ export class Parser extends EventEmitter {
 		}
 
 		length = stream.readInt32();
-		start  = stream.byteIndex;
-		buffer = toBuffer(stream._view._view.slice(start, start + length));
-		stream.byteIndex += length;
+		buffer = stream.readBitStream(length * 8);
 		return this.parseMessage(buffer, type, tick, length, match);
 	}
 }
