@@ -10,6 +10,7 @@
 		"outDir": "build",
 		"rootDir": "src",
 		"declaration": true,
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"sourceMap": true
 	}
 }
