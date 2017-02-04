@@ -9,8 +9,7 @@
   "dependencies": {
     "bit-buffer": "icewind1991/bit-buffer#typings",
     "clone": "^2.1.0",
-    "minimist": "1.1.x",
-    "typedarray-to-buffer": "^3.1.2"
+    "minimist": "1.1.x"
   },
   "devDependencies": {
     "@types/node": "^6.0.52",

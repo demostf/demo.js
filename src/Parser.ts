@@ -1,4 +1,3 @@
-import toBuffer =  require('typedarray-to-buffer');
 import {Packet} from './Parser/Message/Packet';
 import {ConsoleCmd} from './Parser/Message/ConsoleCmd';
 import {StringTable} from './Parser/Message/StringTable';
