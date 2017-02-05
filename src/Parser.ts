@@ -96,7 +96,6 @@ export class Parser extends EventEmitter {
 			return false;
 		}
 		const tick = stream.readInt32();
-		let start, length, buffer;
 
 		let viewOrigin: number[][] = [];
 		let viewAngles: number[][] = [];
@@ -128,8 +127,8 @@ export class Parser extends EventEmitter {
 				return true;
 		}
 
-		length = stream.readInt32();
-		buffer = stream.readBitStream(length * 8);
+		const length = stream.readInt32();
+		const buffer = stream.readBitStream(length * 8);
 		return this.parseMessage(buffer, type, tick, length, match);
 	}
 }

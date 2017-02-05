@@ -15,7 +15,9 @@ export function TempEntities(stream: BitStream, match: Match): Packet { // 10: c
 		const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
 		if (stream.readBoolean()) {
 			const classId     = stream.readBits(match.classBits);
-			const serverClass = match.serverClasses[classId - 1]; //no clue why the -1 but it works
+			const serverClass = match.serverClasses[classId - 1];	// no clue why the -1 but it works
+																	// maybe because world (id=0) can never be tem
+																	// but it's not like the -1 saves any space
 			const sendTable   = match.getSendTable(serverClass.dataTable);
 			entity            = new Entity(serverClass, sendTable, 0, 0);
 			applyEntityUpdate(entity, stream);

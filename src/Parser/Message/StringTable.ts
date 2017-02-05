@@ -4,6 +4,11 @@ import {RemoteInfo} from "dgram";
 
 export class StringTable extends Parser {
 	parse() {
+		// we get the tables from the packets
+		return [{
+			packetType: 'stringTable',
+			tables:     []
+		}];
 		// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
 		const tableCount = this.stream.readUint8();
 		let tables = {};
@@ -56,7 +61,6 @@ export class StringTable extends Parser {
 				}
 			}
 		}
-		//console.log(tables);
 		return [{
 			packetType: 'stringTable',
 			tables: tables

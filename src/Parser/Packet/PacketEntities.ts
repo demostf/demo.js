@@ -27,7 +27,7 @@ function readPVSType(stream: BitStream): PVS {
 	} else if (hi) {
 		pvs = (low) ? (PVS.LEAVE | PVS.DELETE) : PVS.LEAVE;
 	} else {
-		pvs = -1;
+		throw new Error('Invalid pvs');
 	}
 	return pvs;
 }
@@ -58,9 +58,12 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 	} else {
 		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
-			const streamStart = staticBaseLine.index;
+			staticBaseLine.index = 0;
 			applyEntityUpdate(entity, staticBaseLine);
-			staticBaseLine.index = streamStart;
+			if(staticBaseLine.bitsLeft > 7) {
+				console.log(staticBaseLine.length, staticBaseLine.index);
+				throw new Error('Unexpected data left at the end of staticBaseline, ' + stream.bitsLeft + ' bits left');
+			}
 		}
 	}
 	return entity;
@@ -77,7 +80,6 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs
-	// todo
 	const maxEntries      = stream.readBits(11);
 	const isDelta         = !!stream.readBits(1);
 	const delta           = (isDelta) ? stream.readInt32() : null;
@@ -88,10 +90,10 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 	const end             = stream.index + length;
 	let entityId          = -1;
 
-	stream.index = end;
-	return {
-		packetType: 'packetEntities'
-	};
+	// stream.index = end;
+	// return {
+	// 	packetType: 'packetEntities'
+	// };
 
 	if (updatedBaseLine) {
 		if (baseLine === 0) {
@@ -110,6 +112,7 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 		console.log("entity: " + entityId, ", pvs " + PVS[pvs]);
 		if (pvs === PVS.ENTER) {
 			const entity = readEnterPVS(stream, entityId, match, baseLine);
+			console.log('got entity');
 			applyEntityUpdate(entity, stream);
 			match.entities[entityId] = entity;
 
@@ -119,7 +122,6 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 				match.instanceBaselines[baseLine][entityId] = newBaseLine;
 			}
 			entity.inPVS = true;
-			// stream.readBits(1);
 		} else if (pvs === PVS.PRESERVE) {
 			const entity = match.entities[entityId];
 			if (entity) {

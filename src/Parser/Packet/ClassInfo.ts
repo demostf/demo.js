@@ -1,13 +1,6 @@
 import {Packet} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-
-function logBase2(num: number): number {
-	let result = 0;
-	while ((num >>= 1) != 0) {
-		result++;
-	}
-	return result;
-}
+import {logBase2} from '../../Math';
 
 export function ClassInfo(stream: BitStream): Packet { // 10: classInfo
 	const number = stream.readBits(16);

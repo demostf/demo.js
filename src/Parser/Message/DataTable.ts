@@ -2,6 +2,7 @@ import {SendTable} from '../../Data/SendTable';
 import {SendPropDefinition, SendPropFlag, SendPropType} from '../../Data/SendPropDefinition';
 import {ServerClass} from '../../Data/ServerClass';
 import {Parser} from './Parser';
+import {BitStream} from "bit-buffer";
 
 export class DataTable extends Parser {
 	parse() {

@@ -5,22 +5,16 @@ import {SendPropParser} from "./SendPropParser";
 import {readUBitVar} from "./readBitVar";
 
 export function applyEntityUpdate(entity: Entity, stream: BitStream): Entity {
-	let index                    = -1;
-	const allProps               = entity.sendTable.flattenedProps;
+	let index      = -1;
+	const allProps = entity.sendTable.flattenedProps;
 	while ((index = readFieldIndex(stream, index)) != -1) {
-		if (index > 4096) {
-			throw new Error('prop index out of bounds while applying update for ' + entity.sendTable.name + ' got ' + index);
+		if (index >= 4096 || index > allProps.length) {
+			throw new Error('prop index out of bounds while applying update for ' + entity.sendTable.name + ' got ' + index
+				+ ' proptype only has ' + allProps.length + ' properties');
 		}
-		console.log("index: " + index, allProps.length);
 		const propDefinition = allProps[index];
-		// console.log(propDefinition);
 		const existingProp   = entity.getPropByDefinition(propDefinition);
-		let prop;
-		if (existingProp) {
-			prop = existingProp;
-		} else {
-			prop = new SendProp(propDefinition);
-		}
+		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
 		console.log(prop);
 
