@@ -9,6 +9,7 @@ export class Entity {
 	serialNumber: number;
 	props: SendProp[];
 	inPVS: boolean;
+	updatedProps: SendProp[];
 
 	constructor(serverClass: ServerClass, sendTable: SendTable, entityIndex: number, serialNumber: number) {
 		this.serverClass  = serverClass;
@@ -17,6 +18,7 @@ export class Entity {
 		this.serialNumber = serialNumber;
 		this.props        = [];
 		this.inPVS        = false;
+		this.updatedProps = [];
 	}
 
 	getPropByDefinition(definition: SendPropDefinition) {

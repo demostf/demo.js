@@ -8,6 +8,7 @@ import {BitStream} from "bit-buffer";
 import {UserInfo} from "./UserInfo";
 import {World} from "./World";
 import {Vector} from "./Vector";
+import {Player} from "./Player";
 export class Match {
 	tick: number;
 	chat: any[];
@@ -24,6 +25,8 @@ export class Match {
 	staticBaseLines: BitStream[];
 	eventDefinitions: GameEventDefinitionMap;
 	world: World;
+	players: Player[];
+	playerMap: {[entityId: number]: Player};
 
 	constructor() {
 		this.tick              = 0;
@@ -41,6 +44,8 @@ export class Match {
 		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
 		this.eventDefinitions  = {};
+		this.players           = [];
+		this.playerMap         = {};
 		this.world             = {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0}
@@ -107,13 +112,18 @@ export class Match {
 					if (table.name === 'userinfo') {
 						for (const userData of table.entries) {
 							if (userData.extraData) {
-								const name         = userData.extraData.readUTF8String(32);
-								const userId       = userData.extraData.readUint32();
-								const steamId      = userData.extraData.readUTF8String();
-								const userState    = this.getUserInfo(userId);
-								userState.name     = name;
-								userState.steamId  = steamId;
-								userState.entityId = parseInt(userData.text, 10) + 1;
+								if (userData.extraData.bitsLeft > (32*8)) {
+									const name      = userData.extraData.readUTF8String(32);
+									const userId    = userData.extraData.readUint32();
+									const steamId   = userData.extraData.readUTF8String();
+									if (steamId) {
+										const userState    = this.getUserInfo(userId);
+										userState.name     = name;
+										userState.steamId  = steamId;
+										userState.entityId = parseInt(userData.text, 10) + 1;
+									}
+								}
+
 							}
 						}
 					}
@@ -153,10 +163,14 @@ export class Match {
 					case 'player_spawn':
 						const userId    = packet.event.values.userid;
 						const userState = this.getUserInfo(userId);
+						const player = this.playerMap[userState.entityId];
 						if (!userState.team) { //only register first spawn
 							userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
 						}
 						const classId = packet.event.values.class;
+						if (player) {
+							player.classId = classId;
+						}
 						if (!userState.classes[classId]) {
 							userState.classes[classId] = 0;
 						}
@@ -205,6 +219,46 @@ export class Match {
 				this.world.boundaryMin = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMins').value;
 				this.world.boundaryMax = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMaxs').value;
 				break;
+			case 'CTFPlayer':
+				const player: Player = (this.playerMap[entity.entityIndex]) ? this.playerMap[entity.entityIndex] : {
+						user:      this.getUserInfoForEntity(entity),
+						position:  new Vector(0, 0, 0),
+						maxHealth: 0,
+						health:    0,
+					};
+				if (!this.playerMap[entity.entityIndex]) {
+					this.playerMap[entity.entityIndex] = player;
+					this.players.push(player);
+				}
+
+				for (const prop of entity.updatedProps) {
+					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+					// console.log(propName, prop.value);
+					switch (propName) {
+						case 'DT_BasePlayer.m_iHealth':
+							player.health = <number>prop.value;
+							break;
+						case 'DT_BasePlayer.m_iMaxHealth':
+							player.maxHealth = <number>prop.value;
+							break;
+						case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
+							player.position.x = (<Vector>prop.value).x;
+							player.position.y = (<Vector>prop.value).y;
+							break;
+						case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
+							player.position.x = (<Vector>prop.value).x;
+							player.position.y = (<Vector>prop.value).y;
+							break;
+						case 'DT_TFLocalPlayerExclusive.m_vecOrigin[2]':
+							player.position.z = <number>prop.value;
+							break;
+						case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
+							player.position.z = <number>prop.value;
+							break;
+					}
+				}
+
 		}
+		entity.updatedProps = [];
 	}
 }
