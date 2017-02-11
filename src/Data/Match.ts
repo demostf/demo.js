@@ -5,10 +5,11 @@ import {StringTable} from "./StringTable";
 import {SendProp} from "./SendProp";
 import {GameEventDefinitionMap} from "./GameEvent";
 import {BitStream} from "bit-buffer";
+import {UserInfo} from "./UserInfo";
 export class Match {
 	tick: number;
 	chat: any[];
-	users: any;
+	users: UserInfo[];
 	deaths: any[];
 	rounds: any[];
 	startTick: number;
@@ -24,7 +25,7 @@ export class Match {
 	constructor() {
 		this.tick              = 0;
 		this.chat              = [];
-		this.users             = {};
+		this.users             = [];
 		this.deaths            = [];
 		this.rounds            = [];
 		this.startTick         = 0;
@@ -69,9 +70,16 @@ export class Match {
 	}
 
 	handlePacket(packet) {
-		var userState;
 		switch (packet.packetType) {
 			case 'packetEntities':
+				for (const entity of this.entities) {
+					if (entity && entity.serverClass.name === 'CTFPlayer') {
+						// console.log(entity.props.map((prop: SendProp) => {
+						// 	return prop.definition.ownerTableName + '.' + prop.definition.name;
+						// }));
+						// console.log(this.getUserInfoForEntity(entity).name);
+					}
+				}
 				break;
 			case 'netTick':
 				if (this.startTick === 0) {
@@ -95,12 +103,13 @@ export class Match {
 					if (table.name === 'userinfo') {
 						for (const userData of table.entries) {
 							if (userData.extraData) {
-								const name = userData.extraData.readUTF8String(32);
-								const userId  = userData.extraData.readUint32();
-								const steamId = userData.extraData.readUTF8String();
-								userState         = this.getUserState(userId);
-								userState.name    = name;
-								userState.steamId = steamId;
+								const name         = userData.extraData.readUTF8String(32);
+								const userId       = userData.extraData.readUint32();
+								const steamId      = userData.extraData.readUTF8String();
+								const userState    = this.getUserInfo(userId);
+								userState.name     = name;
+								userState.steamId  = steamId;
+								userState.entityId = parseInt(userData.text, 10) + 1;
 							}
 						}
 					}
@@ -112,8 +121,8 @@ export class Match {
 						while (packet.event.values.assister > 256 && packet.event.values.assister < (1024 * 16)) {
 							packet.event.values.assister -= 256;
 						}
-						var assister = packet.event.values.assister < 256 ? packet.event.values.assister : null;
-						// todo get player names, not same id as the name string table
+						const assister = packet.event.values.assister < 256 ? packet.event.values.assister : null;
+						// todo get player names, not same id as the name string table (entity id)
 						while (packet.event.values.attacker > 256) {
 							packet.event.values.attacker -= 256;
 						}
@@ -139,7 +148,7 @@ export class Match {
 						break;
 					case 'player_spawn':
 						const userId    = packet.event.values.userid;
-						userState = this.getUserState(userId);
+						const userState = this.getUserInfo(userId);
 						if (!userState.team) { //only register first spawn
 							userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
 						}
@@ -154,7 +163,7 @@ export class Match {
 		}
 	}
 
-	getUserState(userId) {
+	getUserInfo(userId: number): UserInfo {
 		// no clue why it does this
 		// only seems to be the case with per user ready
 		while (userId > 256) {
@@ -162,13 +171,24 @@ export class Match {
 		}
 		if (!this.users[userId]) {
 			this.users[userId] = {
-				name:    null,
-				userId:  userId,
-				steamId: null,
-				classes: {}
+				name:     '',
+				userId:   userId,
+				steamId:  '',
+				classes:  {},
+				entityId: 0,
+				team:     ''
 			}
 		}
 		return this.users[userId];
+	}
+
+	getUserInfoForEntity(entity: Entity): UserInfo {
+		for (const user of this.users) {
+			if (user && user.entityId === entity.entityIndex) {
+				return user;
+			}
+		}
+		throw new Error('User not found for entity ' + entity.entityIndex);
 	}
 
 	get classBits() {

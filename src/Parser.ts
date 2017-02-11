@@ -46,14 +46,22 @@ export class Parser extends EventEmitter {
 	}
 
 	parseBody() {
-		let message;
-		while (message = this.readMessage(this.stream, this.match)) {
-			if (message instanceof MessageParser) {
-				this.handleMessage(message);
-			}
+		let hasNext = true;
+		while (hasNext) {
+			hasNext = this.tick();
 		}
 		this.emit('done', this.match);
 		return this.match;
+	}
+
+	tick() {
+		const message = this.readMessage(this.stream, this.match);
+		if (message instanceof MessageParser) {
+			this.handleMessage(message);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	parseMessage(data: BitStream, type: MessageType, tick: number, length: number, match: Match): MessageParser {
