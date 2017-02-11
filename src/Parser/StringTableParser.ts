@@ -56,12 +56,7 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 				existingEntry.extraData = userData;
 			}
 			if (table.name === 'instancebaseline') {
-				console.log('updating instancebaseline');
-				if (userData) {
-					match.staticBaseLines[parseInt(existingEntry.text, 10)] = userData;
-				} else {
-					throw new Error('Missing baseline');
-				}
+				saveInstanceBaseLine(existingEntry, match);
 			}
 			history.push(existingEntry);
 
@@ -69,21 +64,26 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 				existingEntry.text = value;
 			}
 		} else {
-			if (table.name === 'instancebaseline') {
-				if (userData) {
-					match.staticBaseLines[parseInt(value, 10)] = userData;
-				} else {
-					throw new Error('Missing baseline');
-				}
-			}
-			table.entries[entryIndex] = {
+			const entry = {
 				text:      value,
 				extraData: userData
 			};
+			if (table.name === 'instancebaseline') {
+				saveInstanceBaseLine(entry, match);
+			}
+			table.entries[entryIndex] = entry;
 			history.push(table.entries[entryIndex]);
 		}
 		if (history.length > 32) {
 			history.shift();
 		}
+	}
+}
+
+function saveInstanceBaseLine(entry: StringTableEntry, match: Match) {
+	if (entry.extraData) {
+		match.staticBaseLines[parseInt(entry.text, 10)] = entry.extraData;
+	} else {
+		throw new Error('Missing baseline');
 	}
 }

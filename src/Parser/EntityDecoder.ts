@@ -12,11 +12,12 @@ export function applyEntityUpdate(entity: Entity, stream: BitStream): Entity {
 			throw new Error('prop index out of bounds while applying update for ' + entity.sendTable.name + ' got ' + index
 				+ ' proptype only has ' + allProps.length + ' properties');
 		}
+
 		const propDefinition = allProps[index];
 		const existingProp   = entity.getPropByDefinition(propDefinition);
+
 		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
-		console.log(prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);

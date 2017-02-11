@@ -16,7 +16,7 @@ export class SendTable {
 	}
 
 	private flatten() {
-		let excludes: SendPropDefinition[] = [];
+		let excludes: SendPropDefinition[] = this.excludes;
 		let props: SendPropDefinition[]    = [];
 		this.getAllProps(excludes, props);
 
@@ -38,19 +38,18 @@ export class SendTable {
 	getAllProps(excludes: SendPropDefinition[], props: SendPropDefinition[]) {
 		let localProps = [];
 		this.getAllPropsIteratorProps(excludes, localProps, props);
-		for (let i = 0; i < localProps.length; i++) {
-			props.push(localProps[i]);
+		for (const localProp of localProps) {
+			props.push(localProp);
 		}
 	}
 
 	getAllPropsIteratorProps(excludes: SendPropDefinition[], props: SendPropDefinition[], childProps: SendPropDefinition[]) {
-		for (let i = 0; i < this.props.length; i++) {
-			const prop = this.props[i];
+		for (const prop of this.props) {
 			if (prop.hasFlag(SendPropFlag.SPROP_EXCLUDE) || excludes.indexOf(prop) !== -1) {
 				continue;
 			}
 			if (excludes.filter((exclude) => {
-					return prop.table && exclude.name == prop.name && exclude.excludeDTName == prop.table.name;
+					return exclude.name == prop.name && exclude.excludeDTName == prop.ownerTableName;
 				}).length > 0) {
 				continue;
 			}
@@ -61,7 +60,7 @@ export class SendTable {
 				} else {
 					prop.table.getAllProps(excludes, childProps);
 				}
-			} else if (!prop.hasFlag(SendPropFlag.SPROP_EXCLUDE)) {
+			} else {
 				props.push(prop);
 			}
 		}
@@ -72,6 +71,18 @@ export class SendTable {
 			this.flatten();
 		}
 		return this._flattenedProps;
+	}
+
+	get excludes() {
+		let result: SendPropDefinition[] = [];
+		for (const prop of this.props) {
+			if (prop.hasFlag(SendPropFlag.SPROP_EXCLUDE)) {
+				result.push(prop);
+			} else if (prop.type === SendPropType.DPT_DataTable && prop.table) {
+				result = result.concat(prop.table.excludes);
+			}
+		}
+		return result;
 	}
 }
 

@@ -60,7 +60,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
 			applyEntityUpdate(entity, staticBaseLine);
-			if(staticBaseLine.bitsLeft > 7) {
+			if (staticBaseLine.bitsLeft > 7) {
 				console.log(staticBaseLine.length, staticBaseLine.index);
 				throw new Error('Unexpected data left at the end of staticBaseline, ' + stream.bitsLeft + ' bits left');
 			}
@@ -127,7 +127,7 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 			if (entity) {
 				applyEntityUpdate(entity, stream);
 			} else {
-				console.log( entityId, match.entities.length);
+				console.log(entityId, match.entities.length);
 				throw new Error("unknown entity");
 			}
 		} else {
