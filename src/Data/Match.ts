@@ -71,6 +71,8 @@ export class Match {
 	handlePacket(packet) {
 		var userState;
 		switch (packet.packetType) {
+			case 'packetEntities':
+				break;
 			case 'netTick':
 				if (this.startTick === 0) {
 					this.startTick = packet.tick;
@@ -89,15 +91,17 @@ export class Match {
 				});
 				break;
 			case 'stringTable':
-				if (packet.tables.userinfo) {
-					for (var j = 0; j < packet.tables.userinfo.length; j++) {
-						if (packet.tables.userinfo[j].extraData) {
-							var name          = packet.tables.userinfo[j].extraData[0];
-							var steamId       = packet.tables.userinfo[j].extraData[2];
-							var userId        = packet.tables.userinfo[j].extraData[1].charCodeAt(0);
-							userState         = this.getUserState(userId);
-							userState.name    = name;
-							userState.steamId = steamId;
+				for (const table of <StringTable[]>packet.tables) {
+					if (table.name === 'userinfo') {
+						for (const userData of table.entries) {
+							if (userData.extraData) {
+								const name = userData.extraData.readUTF8String(32);
+								const userId  = userData.extraData.readUint32();
+								const steamId = userData.extraData.readUTF8String();
+								userState         = this.getUserState(userId);
+								userState.name    = name;
+								userState.steamId = steamId;
+							}
 						}
 					}
 				}
@@ -134,12 +138,12 @@ export class Match {
 						}
 						break;
 					case 'player_spawn':
-						userId    = packet.event.values.userid;
+						const userId    = packet.event.values.userid;
 						userState = this.getUserState(userId);
 						if (!userState.team) { //only register first spawn
 							userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
 						}
-						var classId = packet.event.values.class;
+						const classId = packet.event.values.class;
 						if (!userState.classes[classId]) {
 							userState.classes[classId] = 0;
 						}

@@ -63,7 +63,7 @@ export function CreateStringTable(stream: BitStream, match: Match): Packet { // 
 
 	match.stringTables.push(table);
 	return {
-		packetType: 'createStringTable',
-		table:      table
+		packetType: 'stringTable',
+		tables:      [table]
 	};
 }

@@ -89,11 +89,6 @@ export function PacketEntities(stream: BitStream, match: Match): Packet { //26: 
 	const end             = stream.index + length;
 	let entityId          = -1;
 
-	// stream.index = end;
-	// return {
-	// 	packetType: 'packetEntities'
-	// };
-
 	if (updatedBaseLine) {
 		if (baseLine === 0) {
 			match.instanceBaselines[1] = match.instanceBaselines[0];

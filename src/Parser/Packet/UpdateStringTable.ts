@@ -21,7 +21,7 @@ export function UpdateStringTable(stream: BitStream, match: Match): Packet { // 
 	parseStringTable(data, table, changedEntries, match);
 
 	return {
-		packetType: 'updateStringTable',
-		table:      table
+		packetType: 'stringTable',
+		tables:      [table]
 	};
 }
