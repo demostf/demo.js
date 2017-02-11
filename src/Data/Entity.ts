@@ -11,12 +11,12 @@ export class Entity {
 	inPVS: boolean;
 
 	constructor(serverClass: ServerClass, sendTable: SendTable, entityIndex: number, serialNumber: number) {
-		this.serverClass = serverClass;
-		this.sendTable = sendTable;
-		this.entityIndex = entityIndex;
+		this.serverClass  = serverClass;
+		this.sendTable    = sendTable;
+		this.entityIndex  = entityIndex;
 		this.serialNumber = serialNumber;
-		this.props = [];
-		this.inPVS = false;
+		this.props        = [];
+		this.inPVS        = false;
 	}
 
 	getPropByDefinition(definition: SendPropDefinition) {
@@ -26,6 +26,15 @@ export class Entity {
 			}
 		}
 		return null;
+	}
+
+	getProperty(originTable: string, name: string) {
+		for (const prop of this.props) {
+			if (prop.definition.ownerTableName === originTable && prop.definition.name === name) {
+				return prop;
+			}
+		}
+		throw new Error('Property not found in entity');
 	}
 }
 

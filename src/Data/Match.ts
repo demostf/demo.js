@@ -6,6 +6,8 @@ import {SendProp} from "./SendProp";
 import {GameEventDefinitionMap} from "./GameEvent";
 import {BitStream} from "bit-buffer";
 import {UserInfo} from "./UserInfo";
+import {World} from "./World";
+import {Vector} from "./Vector";
 export class Match {
 	tick: number;
 	chat: any[];
@@ -21,6 +23,7 @@ export class Match {
 	instanceBaselines: SendProp[][][];
 	staticBaseLines: BitStream[];
 	eventDefinitions: GameEventDefinitionMap;
+	world: World;
 
 	constructor() {
 		this.tick              = 0;
@@ -38,6 +41,10 @@ export class Match {
 		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
 		this.eventDefinitions  = {};
+		this.world             = {
+			boundaryMin: {x: 0, y: 0, z: 0},
+			boundaryMax: {x: 0, y: 0, z: 0}
+		}
 	}
 
 	getSendTable(name) {
@@ -73,11 +80,8 @@ export class Match {
 		switch (packet.packetType) {
 			case 'packetEntities':
 				for (const entity of this.entities) {
-					if (entity && entity.serverClass.name === 'CTFPlayer') {
-						// console.log(entity.props.map((prop: SendProp) => {
-						// 	return prop.definition.ownerTableName + '.' + prop.definition.name;
-						// }));
-						// console.log(this.getUserInfoForEntity(entity).name);
+					if (entity) {
+						this.handleEntity(entity);
 					}
 				}
 				break;
@@ -193,5 +197,14 @@ export class Match {
 
 	get classBits() {
 		return Math.ceil(Math.log(this.serverClasses.length) * Math.LOG2E)
+	}
+
+	handleEntity(entity: Entity) {
+		switch (entity.serverClass.name) {
+			case 'CWorld':
+				this.world.boundaryMin = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMins').value;
+				this.world.boundaryMax = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMaxs').value;
+				break;
+		}
 	}
 }

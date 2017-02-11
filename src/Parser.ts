@@ -58,10 +58,8 @@ export class Parser extends EventEmitter {
 		const message = this.readMessage(this.stream, this.match);
 		if (message instanceof MessageParser) {
 			this.handleMessage(message);
-			return true;
-		} else {
-			return false;
 		}
+		return !!message;
 	}
 
 	parseMessage(data: BitStream, type: MessageType, tick: number, length: number, match: Match): MessageParser {
