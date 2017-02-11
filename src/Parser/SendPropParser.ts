@@ -2,21 +2,7 @@ import {SendPropDefinition, SendPropType, SendPropFlag} from '../Data/SendPropDe
 import {Vector} from "../Data/Vector";
 import {BitStream} from "bit-buffer";
 import {SendPropValue, SendPropArrayValue} from "../Data/SendProp";
-
-
-const readBitVar = function (stream: BitStream, signed: boolean): number {
-	switch (stream.readBits(2)) {
-		case 0:
-			return stream.readBits(4, signed);
-		case 1:
-			return stream.readBits(8, signed);
-		case 2:
-			return stream.readBits(12, signed);
-		case 3:
-			return stream.readBits(32, signed);
-	}
-	return 0;
-};
+import {readVarInt} from "./readBitVar";
 
 export class SendPropParser {
 	static decode(propDefinition: SendPropDefinition, stream: BitStream): SendPropValue {
@@ -39,7 +25,7 @@ export class SendPropParser {
 
 	static readInt(propDefinition: SendPropDefinition, stream: BitStream) {
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_VARINT)) {
-			return readBitVar(stream, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
+			return readVarInt(stream, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		} else {
 			return stream.readBits(propDefinition.bitCount, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		}

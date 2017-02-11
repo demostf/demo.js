@@ -62,7 +62,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 			applyEntityUpdate(entity, staticBaseLine);
 			if (staticBaseLine.bitsLeft > 7) {
 				console.log(staticBaseLine.length, staticBaseLine.index);
-				throw new Error('Unexpected data left at the end of staticBaseline, ' + stream.bitsLeft + ' bits left');
+				throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
 			}
 		}
 	}

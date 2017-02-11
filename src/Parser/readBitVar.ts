@@ -17,7 +17,7 @@ export function readBitVar(stream: BitStream, signed?: boolean): number {
 export const readUBitVar = readBitVar;
 
 
-export function readVarInt(stream: BitStream) {
+export function readVarInt(stream: BitStream, signed:boolean = false) {
 	let result = 0;
 	for (let i = 0; i < 35; i += 7) {
 		const byte = stream.readBits(8);
@@ -28,5 +28,9 @@ export function readVarInt(stream: BitStream) {
 		}
 	}
 
-	return result;
+	if (signed) {
+		return ((result >> 1) ^ -(result & 1));
+	} else {
+		return result;
+	}
 }
