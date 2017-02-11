@@ -35,7 +35,7 @@ function readPVSType(stream: BitStream): PVS {
 function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number): Entity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
-	console.log(serverClass);
+	// console.log(serverClass);
 	const sendTable    = match.getSendTable(serverClass.dataTable);
 	const serialNumber = stream.readBits(10);
 	if (!sendTable) {
@@ -62,7 +62,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 			applyEntityUpdate(entity, staticBaseLine);
 			if (staticBaseLine.bitsLeft > 7) {
 				console.log(staticBaseLine.length, staticBaseLine.index);
-				throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
+				// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
 			}
 		}
 	}

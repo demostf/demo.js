@@ -60,7 +60,7 @@ export class SendPropParser {
 	static readVector(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
-		const z = (!propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) ? SendPropParser.readFloat(propDefinition, stream) : 0;
+		const z = SendPropParser.readFloat(propDefinition, stream);
 		return new Vector(x, y, z);
 	}
 
@@ -72,17 +72,17 @@ export class SendPropParser {
 
 	static readFloat(propDefinition: SendPropDefinition, stream: BitStream): number {
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD)) {
-			throw new Error("not implemented");
+			return SendPropParser.readBitCoord(stream);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP)) {
-			return SendPropParser.readBitCoord(propDefinition, stream, false, false);
+			return SendPropParser.readBitCoordMP(propDefinition, stream, false, false);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_LOWPRECISION)) {
-			return SendPropParser.readBitCoord(propDefinition, stream, false, true);
+			return SendPropParser.readBitCoordMP(propDefinition, stream, false, true);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP_INTEGRAL)) {
-			return SendPropParser.readBitCoord(propDefinition, stream, true, false);
+			return SendPropParser.readBitCoordMP(propDefinition, stream, true, false);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NOSCALE)) {
 			return stream.readFloat32();
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) {
-			throw new Error("not implemented");
+			return SendPropParser.readBitNormal(stream);
 		} else {
 			const raw        = stream.readBits(propDefinition.bitCount);
 			const percentage = raw / ((1 << propDefinition.bitCount) - 1);
@@ -90,7 +90,29 @@ export class SendPropParser {
 		}
 	}
 
-	static readBitCoord(propDefinition: SendPropDefinition, stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
+	static readBitNormal(stream: BitStream) {
+		const isNegative = stream.readBoolean();
+		const fractVal   = stream.readBits(11);
+		const value      = fractVal * (1 / ((1 << 11) - 1));
+		return (isNegative) ? -value : value;
+	}
+
+	static readBitCoord(stream: BitStream) {
+		const hasIntVal   = stream.readBoolean();
+		const hasFractVal = stream.readBoolean();
+
+		if (hasIntVal || hasFractVal) {
+			const isNegative = stream.readBoolean();
+			const intVal     = (hasIntVal) ? stream.readBits(14) + 1 : 0;
+			const fractVal   = (hasFractVal) ? stream.readBits(5) : 0;
+			const value      = intVal + fractVal * (1 / (1 << 5));
+			return (isNegative) ? -value : value;
+		}
+
+		return 0;
+	}
+
+	static readBitCoordMP(propDefinition: SendPropDefinition, stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
 		let value      = 0;
 		let isNegative = false;
 		const inBounds = stream.readBoolean();

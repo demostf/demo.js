@@ -18,6 +18,7 @@ export function applyEntityUpdate(entity: Entity, stream: BitStream): Entity {
 
 		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
+		// console.log(entity.props.length, prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);
