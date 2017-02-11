@@ -18,7 +18,6 @@ export function UpdateStringTable(stream: BitStream, match: Match): Packet { // 
 	}
 
 	const table = match.stringTables[tableId];
-	console.log('update table ' + table.name);
 	parseStringTable(data, table, changedEntries, match);
 
 	return {

@@ -3,14 +3,20 @@ import {BitStream} from "bit-buffer";
 import {SendProp} from "../Data/SendProp";
 import {SendPropParser} from "./SendPropParser";
 import {readUBitVar} from "./readBitVar";
+import {SendTable} from "../Data/SendTable";
 
-export function applyEntityUpdate(entity: Entity, stream: BitStream): Entity {
+export function applyEntityUpdate(entity: Entity, stream: BitStream, sendTable?: SendTable): Entity {
+	if (!sendTable) {
+		sendTable = entity.sendTable;
+	}
 	let index      = -1;
-	const allProps = entity.sendTable.flattenedProps;
+	const allProps = sendTable.flattenedProps;
+	let lastProps:SendProp[]  = [];
 	while ((index = readFieldIndex(stream, index)) != -1) {
 		if (index >= 4096 || index > allProps.length) {
-			throw new Error('prop index out of bounds while applying update for ' + entity.sendTable.name + ' got ' + index
-				+ ' proptype only has ' + allProps.length + ' properties');
+			console.log(lastProps[lastProps.length - 1]);
+			throw new Error('prop index out of bounds while applying update for ' + sendTable.name + ' got ' + index
+				+ ' property only has ' + allProps.length + ' properties');
 		}
 
 		const propDefinition = allProps[index];
@@ -18,7 +24,7 @@ export function applyEntityUpdate(entity: Entity, stream: BitStream): Entity {
 
 		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
-		// console.log(entity.props.length, prop);
+		lastProps.push(prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);

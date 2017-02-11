@@ -139,8 +139,8 @@ export class SendPropParser {
 				} else {
 					value = stream.readBits(14) + 1;
 					if (value < (1 << 11)) {
-						console.log(propDefinition, value);
-						throw new Error("Something's fishy...");
+						// console.log(propDefinition, value);
+						// throw new Error("Something's fishy...");
 					}
 				}
 			}
