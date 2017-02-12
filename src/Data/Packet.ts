@@ -1,6 +1,7 @@
 import {StringTable} from "./StringTable";
 import {Vector} from "./Vector";
 import {GameEvent} from "./GameEvent";
+import {Entity} from "./Entity";
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
@@ -59,6 +60,11 @@ export interface SetConVarPacket {
 	vars: {[key: string]: string};
 }
 
+export interface TempEntitiesPacket {
+	packetType: 'tempEntities';
+	entities: Entity[];
+}
+
 export interface SayText2Packet {
 	packetType: 'sayText2';
 	client: number;
@@ -90,4 +96,5 @@ export type Packet = BSPDecalPacket |
 	PacketEntitiesPacket |
 	ParseSoundsPacket |
 	SetConVarPacket |
+	TempEntitiesPacket |
 	UserMessagePacket;

@@ -1,4 +1,3 @@
-import {PacketStringTable} from './PacketStringTable';
 import {StringTablePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {Match} from "../../Data/Match";

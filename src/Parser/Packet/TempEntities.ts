@@ -1,10 +1,10 @@
-import {Packet} from "../../Data/Packet";
+import {TempEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {Match} from "../../Data/Match";
 import {Entity} from "../../Data/Entity";
 import {applyEntityUpdate} from "../EntityDecoder";
 
-export function TempEntities(stream: BitStream, match: Match): Packet { // 10: classInfo
+export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
 	const length      = readVarInt(stream);
 	const end         = stream.index + length;
@@ -36,7 +36,7 @@ export function TempEntities(stream: BitStream, match: Match): Packet { // 10: c
 
 	stream.index = end;
 	return {
-		'packetType': 'tempEntities',
+		packetType: 'tempEntities',
 		entities: entities
 	}
 }
