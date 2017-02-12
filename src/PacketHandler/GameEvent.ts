@@ -1,51 +1,58 @@
 import {GameEventPacket} from "../Data/Packet";
 import {Match} from "../Data/Match";
+import {DeathEventValues, RoundWinEventValues, PlayerSpawnEventValues} from "../Data/GameEvent";
 
 export function handleGameEvent(packet: GameEventPacket, match: Match) {
 	switch (packet.event.name) {
-		case 'player_death':
-			while (packet.event.values.assister > 256 && packet.event.values.assister < (1024 * 16)) {
-				packet.event.values.assister -= 256;
+		case 'player_death': {
+			const values = <DeathEventValues>packet.event.values;
+			while (values.assister > 256 && values.assister < (1024 * 16)) {
+				values.assister -= 256;
 			}
-			const assister = packet.event.values.assister < 256 ? packet.event.values.assister : null;
-			// todo get player names, not same id as the name string table (entity id)
-			while (packet.event.values.attacker > 256) {
-				packet.event.values.attacker -= 256;
+			const assister = values.assister < 256 ? values.assister : null;
+			// todo get player names, not same id as the name string table (entity id?)
+			while (values.attacker > 256) {
+				values.attacker -= 256;
 			}
-			while (packet.event.values.userid > 256) {
-				packet.event.values.userid -= 256;
+			while (values.userid > 256) {
+				values.userid -= 256;
 			}
 			match.deaths.push({
-				killer:   packet.event.values.attacker,
+				killer:   values.attacker,
 				assister: assister,
-				victim:   packet.event.values.userid,
-				weapon:   packet.event.values.weapon,
+				victim:   values.userid,
+				weapon:   values.weapon,
 				tick:     match.tick
 			});
+		}
 			break;
-		case 'teamplay_round_win':
-			if (packet.event.values.winreason !== 6) {// 6 = timelimit
+		case 'teamplay_round_win': {
+			const values = <RoundWinEventValues>packet.event.values;
+			if (values.winreason !== 6) {// 6 = timelimit
 				match.rounds.push({
-					winner:   packet.event.values.team === 2 ? 'red' : 'blue',
-					length:   packet.event.values.round_time,
+					winner:   values.team === 2 ? 'red' : 'blue',
+					length:   values.round_time,
 					end_tick: match.tick
 				});
 			}
+		}
 			break;
-		case 'player_spawn':
-			const userId    = packet.event.values.userid;
+		case 'player_spawn': {
+			const values = <PlayerSpawnEventValues>packet.event.values;
+			const userId    = values.userid;
 			const userState = match.getUserInfo(userId);
 			const player    = match.playerMap[userState.entityId];
-			userState.team  = packet.event.values.team === 2 ? 'red' : 'blue';
-			const classId   = packet.event.values.class;
+			userState.team  = values.team === 2 ? 'red' : 'blue';
+			const classId   = values.class;
 			if (player) {
 				player.classId = classId;
-				player.team    = packet.event.values.team;
+				player.team    = values.team;
 			}
 			if (!userState.classes[classId]) {
 				userState.classes[classId] = 0;
 			}
 			userState.classes[classId]++;
+		}
 			break;
 	}
 }

@@ -1,11 +1,12 @@
 import {Parser} from './Parser';
+import {Packet} from "../../Data/Packet";
 
 export function make(name: string, definition: string): Parser {
 	const parts = definition.substr(0, definition.length - 1).split('}');//remove leading } to prevent empty part
 	const items = parts.map(function (part) {
 		return part.split('{');
 	});
-	return function (stream) {
+	return function (stream):Packet {
 		let result = {
 			'packetType': name
 		};
@@ -19,7 +20,7 @@ export function make(name: string, definition: string): Parser {
 		} catch (e) {
 			throw new Error('Failed reading pattern ' + definition + '. ' + e);
 		}
-		return result;
+		return <Packet>result;
 	}
 }
 

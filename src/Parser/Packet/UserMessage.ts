@@ -80,7 +80,7 @@ export function UserMessage(stream: BitStream): UserMessagePacket { // 23: user 
 		result = {
 			packetType: 'unknownUserMessage',
 			type:       type
-		}
+		};
 	}
 	stream.index = pos + length;
 	return result;

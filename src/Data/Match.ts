@@ -17,7 +17,7 @@ import {handlePacketEntities} from "../PacketHandler/PacketEntities";
 export class Match {
 	tick: number;
 	chat: any[];
-	users: UserInfo[];
+	users: {[id: string]: UserInfo};
 	deaths: Death[];
 	rounds: any[];
 	startTick: number;
@@ -36,7 +36,7 @@ export class Match {
 	constructor() {
 		this.tick              = 0;
 		this.chat              = [];
-		this.users             = [];
+		this.users             = {};
 		this.deaths            = [];
 		this.rounds            = [];
 		this.startTick         = 0;
@@ -76,9 +76,25 @@ export class Match {
 	}
 
 	getState() {
+		const users = {};
+		for (const key in this.users) {
+			const user = this.users[key];
+			if (this.users.hasOwnProperty(key)) {
+				users[key] = {
+					classes: user.classes,
+					name:    user.name,
+					steamId: user.steamId,
+					userId:  user.userId,
+				};
+				if (user.team) {
+					users[key].team = user.team;
+				}
+			}
+		}
+
 		return {
 			'chat':            this.chat,
-			'users':           this.users,
+			'users':           users,
 			'deaths':          this.deaths,
 			'rounds':          this.rounds,
 			'startTick':       this.startTick,
@@ -132,7 +148,8 @@ export class Match {
 	}
 
 	getUserInfoForEntity(entity: Entity): UserInfo {
-		for (const user of this.users) {
+		for (const id of Object.keys(this.users)) {
+			const user = this.users[id];
 			if (user && user.entityId === entity.entityIndex) {
 				return user;
 			}
