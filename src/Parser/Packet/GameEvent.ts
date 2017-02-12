@@ -1,4 +1,4 @@
-import {Packet} from "../../Data/Packet";
+import {GameEventPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {
 	GameEventType, GameEventValue, GameEventEntry, GameEventDefinition, GameEvent as IGameEvent,
@@ -6,9 +6,9 @@ import {
 } from "../../Data/GameEvent";
 import {Match} from "../../Data/Match";
 
-const parseGameEvent = function (eventId: number, stream: BitStream, events: GameEventDefinitionMap): IGameEvent|null {
+const parseGameEvent = function (eventId: number, stream: BitStream, events: GameEventDefinitionMap): IGameEvent {
 	if (!events[eventId]) {
-		return null;
+		throw new Error('unknown event type')
 	}
 	const eventDescription: GameEventDefinition = events[eventId];
 	const values: GameEventValueMap             = {};
@@ -47,7 +47,7 @@ const getGameEventValue = function (stream: BitStream, entry: GameEventEntry): G
 };
 
 
-export function GameEvent(stream: BitStream, match: Match): Packet { // 25: game event
+export function GameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
 	const length  = stream.readBits(11);
 	const end     = stream.index + length;
 	const eventId = stream.readBits(9);

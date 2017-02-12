@@ -1,4 +1,4 @@
-import {Packet} from "../../Data/Packet";
+import {UserMessagePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {make} from './ParserGenerator';
 import {SayText2} from '../UserMessage/SayText2';
@@ -69,7 +69,7 @@ const userMessageParsers = {
 	5: make('textMsg', 'destType{8}text{s}')
 };
 
-export function UserMessage(stream: BitStream): Packet { // 23: user message
+export function UserMessage(stream: BitStream): UserMessagePacket { // 23: user message
 	const type   = stream.readBits(8);
 	const length = stream.readBits(11);
 	const pos    = stream.index;

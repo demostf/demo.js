@@ -1,9 +1,7 @@
-import {SendPropParser} from '../../Parser/SendPropParser';
 import {Entity} from '../../Data/Entity';
 import {SendProp} from '../../Data/SendProp';
-import {Packet} from "../../Data/Packet";
+import {PacketEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {GameEventDefinition} from "../../Data/GameEvent";
 import {Match} from "../../Data/Match";
 import {readUBitVar} from "../readBitVar";
 import {applyEntityUpdate} from "../EntityDecoder";
@@ -74,7 +72,7 @@ function readLeavePVS(match, entityId, shouldDelete) {
 	}
 }
 
-export function PacketEntities(stream: BitStream, match: Match): Packet { //26: packetEntities
+export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesPacket { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs

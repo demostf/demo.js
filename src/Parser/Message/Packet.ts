@@ -85,7 +85,7 @@ export class Packet extends Parser {
 enum PacketType {
 	file              = 2,
 	netTick           = 3,
-	stringSmd         = 4,
+	stringCmd         = 4,
 	setConVar         = 5,
 	sigOnState        = 6,
 	print             = 7,

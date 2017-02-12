@@ -6,4 +6,5 @@ export interface Player {
 	health: number;
 	maxHealth: number;
 	classId: number;
+	team: number;
 }

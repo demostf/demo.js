@@ -1,7 +1,7 @@
-import {Packet} from "../../Data/Packet";
+import {SayText2Packet} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 
-export function SayText2(stream: BitStream): Packet { // 4: SayText2
+export function SayText2(stream: BitStream): SayText2Packet { // 4: SayText2
 	var client = stream.readBits(8);
 	var raw    = stream.readBits(8);
 	var pos    = stream.index;

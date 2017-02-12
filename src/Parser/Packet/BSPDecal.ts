@@ -1,10 +1,11 @@
-import {Packet} from "../../Data/Packet";
+import {BSPDecalPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
+import {Vector} from "../../Data/Vector";
 
 const getCoord = function (stream) {
-	const hasInt = !!stream.readBits(1);
+	const hasInt   = !!stream.readBits(1);
 	const hasFract = !!stream.readBits(1);
-	let value = 0;
+	let value      = 0;
 	if (hasInt || hasFract) {
 		const sign = !!stream.readBits(1);
 		if (hasInt) {
@@ -20,7 +21,7 @@ const getCoord = function (stream) {
 	return value;
 };
 
-const getVecCoord = function (stream) {
+const getVecCoord = function (stream): Vector {
 	const hasX = !!stream.readBits(1);
 	const hasY = !!stream.readBits(1);
 	const hasZ = !!stream.readBits(1);
@@ -31,21 +32,21 @@ const getVecCoord = function (stream) {
 	}
 };
 
-export function BSPDecal(stream: BitStream): Packet { // 21: BSPDecal
+export function BSPDecal(stream: BitStream): BSPDecalPacket { // 21: BSPDecal
 	let modelIndex, entIndex;
-	const position = getVecCoord(stream);
+	const position     = getVecCoord(stream);
 	const textureIndex = stream.readBits(9);
 	if (stream.readBits(1)) {
-		entIndex = stream.readBits(11);
+		entIndex   = stream.readBits(11);
 		modelIndex = stream.readBits(12);
 	}
-	const lowPriority = !!stream.readBits(1);
+	const lowPriority = stream.readBoolean();
 	return {
-		packetType: 'bspDecal',
-		position: position,
+		packetType:   'bspDecal',
+		position:     position,
 		textureIndex: textureIndex,
-		entIndex: entIndex,
-		modelIndex: modelIndex,
-		lowPriority: lowPriority
+		entIndex:     entIndex,
+		modelIndex:   modelIndex,
+		lowPriority:  lowPriority
 	}
 }

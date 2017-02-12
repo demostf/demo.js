@@ -9,11 +9,13 @@ import {UserInfo} from "./UserInfo";
 import {World} from "./World";
 import {Vector} from "./Vector";
 import {Player} from "./Player";
+import {Death} from "./Death";
+import {HandlerMap} from "../PacketHandler/Handler";
 export class Match {
 	tick: number;
 	chat: any[];
 	users: UserInfo[];
-	deaths: any[];
+	deaths: Death[];
 	rounds: any[];
 	startTick: number;
 	intervalPerTick: number;
@@ -53,18 +55,18 @@ export class Match {
 	}
 
 	getSendTable(name) {
-		for (var i = 0; i < this.sendTables.length; i++) {
-			if (this.sendTables[i].name === name) {
-				return this.sendTables[i];
+		for (const table of this.sendTables) {
+			if (table.name === name) {
+				return table;
 			}
 		}
 		throw new Error("unknown SendTable " + name);
 	}
 
 	getStringTable(name) {
-		for (var i = 0; i < this.stringTables.length; i++) {
-			if (this.stringTables[i].name === name) {
-				return this.stringTables[i];
+		for (const table of this.stringTables) {
+			if (table.name === name) {
+				return table;
 			}
 		}
 		return null;
@@ -112,10 +114,10 @@ export class Match {
 					if (table.name === 'userinfo') {
 						for (const userData of table.entries) {
 							if (userData.extraData) {
-								if (userData.extraData.bitsLeft > (32*8)) {
-									const name      = userData.extraData.readUTF8String(32);
-									const userId    = userData.extraData.readUint32();
-									const steamId   = userData.extraData.readUTF8String();
+								if (userData.extraData.bitsLeft > (32 * 8)) {
+									const name    = userData.extraData.readUTF8String(32);
+									const userId  = userData.extraData.readUint32();
+									const steamId = userData.extraData.readUTF8String();
 									if (steamId) {
 										const userState    = this.getUserInfo(userId);
 										userState.name     = name;
@@ -163,13 +165,12 @@ export class Match {
 					case 'player_spawn':
 						const userId    = packet.event.values.userid;
 						const userState = this.getUserInfo(userId);
-						const player = this.playerMap[userState.entityId];
-						if (!userState.team) { //only register first spawn
-							userState.team = packet.event.values.team === 2 ? 'red' : 'blue'
-						}
-						const classId = packet.event.values.class;
+						const player    = this.playerMap[userState.entityId];
+						userState.team  = packet.event.values.team === 2 ? 'red' : 'blue';
+						const classId   = packet.event.values.class;
 						if (player) {
 							player.classId = classId;
+							player.team    = packet.event.values.team;
 						}
 						if (!userState.classes[classId]) {
 							userState.classes[classId] = 0;
@@ -209,6 +210,15 @@ export class Match {
 		throw new Error('User not found for entity ' + entity.entityIndex);
 	}
 
+	getPlayerByUserId(userId: number): Player {
+		for (const player of this.players) {
+			if (player.user.userId === userId) {
+				return player;
+			}
+		}
+		throw new Error('player not found for user id');
+	}
+
 	get classBits() {
 		return Math.ceil(Math.log(this.serverClasses.length) * Math.LOG2E)
 	}
@@ -220,42 +230,48 @@ export class Match {
 				this.world.boundaryMax = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMaxs').value;
 				break;
 			case 'CTFPlayer':
-				const player: Player = (this.playerMap[entity.entityIndex]) ? this.playerMap[entity.entityIndex] : {
-						user:      this.getUserInfoForEntity(entity),
-						position:  new Vector(0, 0, 0),
-						maxHealth: 0,
-						health:    0,
-					};
-				if (!this.playerMap[entity.entityIndex]) {
-					this.playerMap[entity.entityIndex] = player;
-					this.players.push(player);
-				}
-
-				for (const prop of entity.updatedProps) {
-					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
-					// console.log(propName, prop.value);
-					switch (propName) {
-						case 'DT_BasePlayer.m_iHealth':
-							player.health = <number>prop.value;
-							break;
-						case 'DT_BasePlayer.m_iMaxHealth':
-							player.maxHealth = <number>prop.value;
-							break;
-						case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
-							player.position.x = (<Vector>prop.value).x;
-							player.position.y = (<Vector>prop.value).y;
-							break;
-						case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
-							player.position.x = (<Vector>prop.value).x;
-							player.position.y = (<Vector>prop.value).y;
-							break;
-						case 'DT_TFLocalPlayerExclusive.m_vecOrigin[2]':
-							player.position.z = <number>prop.value;
-							break;
-						case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
-							player.position.z = <number>prop.value;
-							break;
+				try {
+					const player: Player = (this.playerMap[entity.entityIndex]) ? this.playerMap[entity.entityIndex] : {
+							user:      this.getUserInfoForEntity(entity),
+							position:  new Vector(0, 0, 0),
+							maxHealth: 0,
+							health:    0,
+							classId:   0,
+							team:      0
+						};
+					if (!this.playerMap[entity.entityIndex]) {
+						this.playerMap[entity.entityIndex] = player;
+						this.players.push(player);
 					}
+
+					for (const prop of entity.updatedProps) {
+						const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+						// console.log(propName, prop.value);
+						switch (propName) {
+							case 'DT_BasePlayer.m_iHealth':
+								player.health = <number>prop.value;
+								break;
+							case 'DT_BasePlayer.m_iMaxHealth':
+								player.maxHealth = <number>prop.value;
+								break;
+							case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
+								player.position.x = (<Vector>prop.value).x;
+								player.position.y = (<Vector>prop.value).y;
+								break;
+							case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
+								player.position.x = (<Vector>prop.value).x;
+								player.position.y = (<Vector>prop.value).y;
+								break;
+							case 'DT_TFLocalPlayerExclusive.m_vecOrigin[2]':
+								player.position.z = <number>prop.value;
+								break;
+							case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
+								player.position.z = <number>prop.value;
+								break;
+						}
+					}
+				} catch (e) {
+
 				}
 
 		}

@@ -1,16 +1,14 @@
-import {PacketStringTable} from './PacketStringTable';
-
-import {Packet} from "../../Data/Packet";
+import {StringTablePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {logBase2} from "../../Math";
-import {readBitVar, readVarInt} from "../readBitVar";
+import {readVarInt} from "../readBitVar";
 
 import {uncompress} from "snappyjs";
 import {StringTable} from "../../Data/StringTable";
 import {parseStringTable} from "../StringTableParser";
 import {Match} from "../../Data/Match";
 
-export function CreateStringTable(stream: BitStream, match: Match): Packet { // 12: createStringTable
+export function CreateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: createStringTable
 	const tableName   = stream.readASCIIString();
 	const maxEntries  = stream.readUint16();
 	const encodeBits  = logBase2(maxEntries);
