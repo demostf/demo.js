@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "clone": "registry:dt/clone#0.1.11+20160428043022"
+  },
+  "globalDevDependencies": {
+    "mocha": "registry:dt/mocha#2.2.5+20170204022515"
   }
 }

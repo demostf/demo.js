@@ -16,6 +16,8 @@
     "@types/node": "^6.0.52",
     "babel-plugin-transform-do-expressions": "^6.8.0",
     "babel-preset-es2015-node6": "^0.4.0",
+    "mocha": "^3.2.0",
+    "ts-node": "^2.1.0",
     "typescript": "^2.1.4"
   }
 }

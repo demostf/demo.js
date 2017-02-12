@@ -13,3 +13,7 @@ watch: node_modules
 .PHONY: build
 build: node_modules
 	node $(tsc)
+
+.PHONY: test
+test: node_modules
+	node node_modules/.bin/mocha --opts mocha.opts
