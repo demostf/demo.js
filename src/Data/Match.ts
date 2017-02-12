@@ -7,10 +7,13 @@ import {GameEventDefinitionMap} from "./GameEvent";
 import {BitStream} from "bit-buffer";
 import {UserInfo} from "./UserInfo";
 import {World} from "./World";
-import {Vector} from "./Vector";
 import {Player} from "./Player";
 import {Death} from "./Death";
-import {HandlerMap} from "../PacketHandler/Handler";
+import {handleStringTable} from "../PacketHandler/StringTable";
+import {handleSayText2} from "../PacketHandler/SayText2";
+import {handleGameEvent} from "../PacketHandler/GameEvent";
+import {handlePacketEntities} from "../PacketHandler/PacketEntities";
+
 export class Match {
 	tick: number;
 	chat: any[];
@@ -86,11 +89,7 @@ export class Match {
 	handlePacket(packet) {
 		switch (packet.packetType) {
 			case 'packetEntities':
-				for (const entity of this.entities) {
-					if (entity) {
-						this.handleEntity(entity);
-					}
-				}
+				handlePacketEntities(packet, this);
 				break;
 			case 'netTick':
 				if (this.startTick === 0) {
@@ -102,82 +101,13 @@ export class Match {
 				this.intervalPerTick = packet.intervalPerTick;
 				break;
 			case 'sayText2':
-				this.chat.push({
-					kind: packet.kind,
-					from: packet.from,
-					text: packet.text,
-					tick: this.tick
-				});
+				handleSayText2(packet, this);
 				break;
 			case 'stringTable':
-				for (const table of <StringTable[]>packet.tables) {
-					if (table.name === 'userinfo') {
-						for (const userData of table.entries) {
-							if (userData.extraData) {
-								if (userData.extraData.bitsLeft > (32 * 8)) {
-									const name    = userData.extraData.readUTF8String(32);
-									const userId  = userData.extraData.readUint32();
-									const steamId = userData.extraData.readUTF8String();
-									if (steamId) {
-										const userState    = this.getUserInfo(userId);
-										userState.name     = name;
-										userState.steamId  = steamId;
-										userState.entityId = parseInt(userData.text, 10) + 1;
-									}
-								}
-
-							}
-						}
-					}
-				}
+				handleStringTable(packet, this);
 				break;
 			case 'gameEvent':
-				switch (packet.event.name) {
-					case 'player_death':
-						while (packet.event.values.assister > 256 && packet.event.values.assister < (1024 * 16)) {
-							packet.event.values.assister -= 256;
-						}
-						const assister = packet.event.values.assister < 256 ? packet.event.values.assister : null;
-						// todo get player names, not same id as the name string table (entity id)
-						while (packet.event.values.attacker > 256) {
-							packet.event.values.attacker -= 256;
-						}
-						while (packet.event.values.userid > 256) {
-							packet.event.values.userid -= 256;
-						}
-						this.deaths.push({
-							killer:   packet.event.values.attacker,
-							assister: assister,
-							victim:   packet.event.values.userid,
-							weapon:   packet.event.values.weapon,
-							tick:     this.tick
-						});
-						break;
-					case 'teamplay_round_win':
-						if (packet.event.values.winreason !== 6) {// 6 = timelimit
-							this.rounds.push({
-								winner:   packet.event.values.team === 2 ? 'red' : 'blue',
-								length:   packet.event.values.round_time,
-								end_tick: this.tick
-							});
-						}
-						break;
-					case 'player_spawn':
-						const userId    = packet.event.values.userid;
-						const userState = this.getUserInfo(userId);
-						const player    = this.playerMap[userState.entityId];
-						userState.team  = packet.event.values.team === 2 ? 'red' : 'blue';
-						const classId   = packet.event.values.class;
-						if (player) {
-							player.classId = classId;
-							player.team    = packet.event.values.team;
-						}
-						if (!userState.classes[classId]) {
-							userState.classes[classId] = 0;
-						}
-						userState.classes[classId]++;
-						break;
-				}
+				handleGameEvent(packet, this);
 				break;
 		}
 	}
@@ -221,60 +151,5 @@ export class Match {
 
 	get classBits() {
 		return Math.ceil(Math.log(this.serverClasses.length) * Math.LOG2E)
-	}
-
-	handleEntity(entity: Entity) {
-		switch (entity.serverClass.name) {
-			case 'CWorld':
-				this.world.boundaryMin = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMins').value;
-				this.world.boundaryMax = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMaxs').value;
-				break;
-			case 'CTFPlayer':
-				try {
-					const player: Player = (this.playerMap[entity.entityIndex]) ? this.playerMap[entity.entityIndex] : {
-							user:      this.getUserInfoForEntity(entity),
-							position:  new Vector(0, 0, 0),
-							maxHealth: 0,
-							health:    0,
-							classId:   0,
-							team:      0
-						};
-					if (!this.playerMap[entity.entityIndex]) {
-						this.playerMap[entity.entityIndex] = player;
-						this.players.push(player);
-					}
-
-					for (const prop of entity.updatedProps) {
-						const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
-						// console.log(propName, prop.value);
-						switch (propName) {
-							case 'DT_BasePlayer.m_iHealth':
-								player.health = <number>prop.value;
-								break;
-							case 'DT_BasePlayer.m_iMaxHealth':
-								player.maxHealth = <number>prop.value;
-								break;
-							case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
-								player.position.x = (<Vector>prop.value).x;
-								player.position.y = (<Vector>prop.value).y;
-								break;
-							case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
-								player.position.x = (<Vector>prop.value).x;
-								player.position.y = (<Vector>prop.value).y;
-								break;
-							case 'DT_TFLocalPlayerExclusive.m_vecOrigin[2]':
-								player.position.z = <number>prop.value;
-								break;
-							case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
-								player.position.z = <number>prop.value;
-								break;
-						}
-					}
-				} catch (e) {
-
-				}
-
-		}
-		entity.updatedProps = [];
 	}
 }
