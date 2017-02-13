@@ -2,7 +2,7 @@ import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {SendProp} from "./SendProp";
 import {SendPropDefinition} from "./SendPropDefinition";
-export class Entity {
+export class PacketEntity {
 	serverClass: ServerClass;
 	sendTable: SendTable;
 	entityIndex: number;

@@ -1,7 +1,7 @@
 import {TempEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {Match} from "../../Data/Match";
-import {Entity} from "../../Data/Entity";
+import {PacketEntity} from "../../Data/PacketEntity";
 import {applyEntityUpdate} from "../EntityDecoder";
 
 export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacket { // 10: classInfo
@@ -9,22 +9,23 @@ export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacke
 	const length      = readVarInt(stream);
 	const end         = stream.index + length;
 
-	let entity: Entity|null = null;
-	let entities: Entity[]  = [];
+	let entity: PacketEntity|null = null;
+	let entities: PacketEntity[]  = [];
 	for (let i = 0; i < entityCount; i++) {
 		const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
 		if (stream.readBoolean()) {
 			const classId     = stream.readBits(match.classBits);
-			const serverClass = match.serverClasses[classId - 1];	// no clue why the -1 but it works
-																	// maybe because world (id=0) can never be tem
-																	// but it's not like the -1 saves any space
-			const sendTable   = match.getSendTable(serverClass.dataTable);
-			entity            = new Entity(serverClass, sendTable, 0, 0);
-			applyEntityUpdate(entity, stream);
+			const serverClass = match.serverClasses[classId - 1];
+			// no clue why the -1 but it works
+			// maybe because world (id=0) can never be temp
+			// but it's not like the -1 saves any space
+			const sendTable = match.getSendTable(serverClass.dataTable);
+			entity          = new PacketEntity(serverClass, sendTable, 0, 0);
+			applyEntityUpdate(entity, sendTable, stream);
 			entities.push(entity);
 		} else {
 			if (entity) {
-				applyEntityUpdate(entity, stream);
+				applyEntityUpdate(entity, entity.sendTable, stream);
 			} else {
 				throw new Error("no entity set to update");
 			}
@@ -37,7 +38,7 @@ export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacke
 	stream.index = end;
 	return {
 		packetType: 'tempEntities',
-		entities: entities
+		entities:   entities
 	}
 }
 

@@ -1,18 +1,16 @@
 import {PacketEntitiesPacket} from "../Data/Packet";
 import {Match} from "../Data/Match";
-import {Entity} from "../Data/Entity";
+import {PacketEntity} from "../Data/PacketEntity";
 import {Vector} from "../Data/Vector";
 import {Player} from "../Data/Player";
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
-	for (const entity of match.entities) {
-		if (entity) {
-			handleEntity(entity, match);
-		}
+	for (const entity of packet.entities) {
+		handleEntity(entity, match);
 	}
 }
 
-function handleEntity(entity: Entity, match: Match) {
+function handleEntity(entity: PacketEntity, match: Match) {
 	switch (entity.serverClass.name) {
 		case 'CWorld':
 			match.world.boundaryMin = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMins').value;

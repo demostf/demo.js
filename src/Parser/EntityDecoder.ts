@@ -1,14 +1,11 @@
-import {Entity} from "../Data/Entity";
+import {PacketEntity} from "../Data/PacketEntity";
 import {BitStream} from "bit-buffer";
 import {SendProp} from "../Data/SendProp";
 import {SendPropParser} from "./SendPropParser";
 import {readUBitVar} from "./readBitVar";
 import {SendTable} from "../Data/SendTable";
 
-export function applyEntityUpdate(entity: Entity, stream: BitStream, sendTable?: SendTable): Entity {
-	if (!sendTable) {
-		sendTable = entity.sendTable;
-	}
+export function applyEntityUpdate(entity: PacketEntity, sendTable: SendTable, stream: BitStream): PacketEntity {
 	let index      = -1;
 	const allProps = sendTable.flattenedProps;
 	let lastProps:SendProp[]  = [];

@@ -1,7 +1,7 @@
 import {StringTable} from "./StringTable";
 import {Vector} from "./Vector";
 import {GameEvent} from "./GameEvent";
-import {Entity} from "./Entity";
+import {PacketEntity} from "./PacketEntity";
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
@@ -46,6 +46,7 @@ export interface GameEventListPacket {
 
 export interface PacketEntitiesPacket {
 	packetType: 'packetEntities';
+	entities: PacketEntity[];
 }
 
 export interface ParseSoundsPacket {
@@ -62,7 +63,7 @@ export interface SetConVarPacket {
 
 export interface TempEntitiesPacket {
 	packetType: 'tempEntities';
-	entities: Entity[];
+	entities: PacketEntity[];
 }
 
 export interface SayText2Packet {

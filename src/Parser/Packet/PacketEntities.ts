@@ -1,4 +1,4 @@
-import {Entity} from '../../Data/Entity';
+import {PacketEntity} from '../../Data/PacketEntity';
 import {SendProp} from '../../Data/SendProp';
 import {PacketEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
@@ -30,19 +30,16 @@ function readPVSType(stream: BitStream): PVS {
 	return pvs;
 }
 
-function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number): Entity {
+function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLine: number): PacketEntity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
-	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
+	const serverClass  = match.serverClasses[stream.readBits(match.classBits)];
 	const sendTable    = match.getSendTable(serverClass.dataTable);
 	const serialNumber = stream.readBits(10);
 	if (!sendTable) {
 		throw new Error('Unknown SendTable for serverclass');
 	}
 
-	// if (match.entities[entityId]) {
-		// console.log('overwriting entity');
-	// }
-	const entity = new Entity(serverClass, sendTable, entityId, serialNumber);
+	const entity = new PacketEntity(serverClass, sendTable, entityId, serialNumber);
 
 	const decodedBaseLine = match.instanceBaselines[baseLine][entityId];
 	if (decodedBaseLine) {
@@ -56,7 +53,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
-			applyEntityUpdate(entity, staticBaseLine, sendTable);
+			applyEntityUpdate(entity, sendTable, staticBaseLine);
 			if (staticBaseLine.bitsLeft > 7) {
 				// console.log(staticBaseLine.length, staticBaseLine.index);
 				// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
@@ -68,7 +65,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match, baseLin
 
 function readLeavePVS(match, entityId, shouldDelete) {
 	if (shouldDelete) {
-		match.entities[entityId] = null;
+		match.packetEntities[entityId] = null;
 	}
 }
 
@@ -97,14 +94,15 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 		}
 	}
 
+	const receivedEntities: PacketEntity[] = [];
 	for (let i = 0; i < updatedEntries; i++) {
 		const diff = readUBitVar(stream);
 		entityId += 1 + diff;
 		const pvs  = readPVSType(stream);
 		if (pvs === PVS.ENTER) {
 			const entity = readEnterPVS(stream, entityId, match, baseLine);
-			applyEntityUpdate(entity, stream);
-			match.entities[entityId] = entity;
+			applyEntityUpdate(entity, entity.sendTable, stream);
+			match.packetEntities[entityId] = entity;
 
 			if (updatedBaseLine) {
 				const newBaseLine: SendProp[] = [];
@@ -112,16 +110,18 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 				match.instanceBaselines[baseLine][entityId] = newBaseLine;
 			}
 			entity.inPVS = true;
+			receivedEntities.push(entity);
 		} else if (pvs === PVS.PRESERVE) {
-			const entity = match.entities[entityId];
+			const entity = match.packetEntities[entityId];
 			if (entity) {
-				applyEntityUpdate(entity, stream);
+				applyEntityUpdate(entity, entity.sendTable, stream);
+				receivedEntities.push(entity);
 			} else {
-				console.log(entityId, match.entities.length);
+				console.log(entityId, match.packetEntities.length);
 				throw new Error("unknown entity");
 			}
 		} else {
-			const entity = match.entities[entityId];
+			const entity = match.packetEntities[entityId];
 			if (entity) {
 				entity.inPVS = false;
 			}
@@ -131,13 +131,14 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 
 	if (isDelta) {
 		while (stream.readBoolean()) {
-			const ent           = stream.readBits(11);
-			match.entities[ent] = null;
+			const ent                 = stream.readBits(11);
+			match.packetEntities[ent] = null;
 		}
 	}
 
 	stream.index = end;
 	return {
-		packetType: 'packetEntities'
+		packetType: 'packetEntities',
+		entities:   receivedEntities
 	};
 }

@@ -1,4 +1,4 @@
-import {Entity} from "./Entity";
+import {PacketEntity} from "./PacketEntity";
 import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {StringTable} from "./StringTable";
@@ -22,7 +22,7 @@ export class Match {
 	rounds: any[];
 	startTick: number;
 	intervalPerTick: number;
-	entities: (Entity|null)[];
+	packetEntities: (PacketEntity|null)[];
 	stringTables: StringTable[];
 	serverClasses: ServerClass[];
 	sendTables: SendTable[];
@@ -41,11 +41,11 @@ export class Match {
 		this.rounds            = [];
 		this.startTick         = 0;
 		this.intervalPerTick   = 0;
-		this.entities          = [];
+		this.packetEntities    = [];
 		this.stringTables      = [];
 		this.sendTables        = [];
 		this.serverClasses     = [];
-		this.entities          = [];
+		this.packetEntities    = [];
 		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
 		this.eventDefinitions  = {};
@@ -147,7 +147,7 @@ export class Match {
 		return this.users[userId];
 	}
 
-	getUserInfoForEntity(entity: Entity): UserInfo {
+	getUserInfoForEntity(entity: PacketEntity): UserInfo {
 		for (const id of Object.keys(this.users)) {
 			const user = this.users[id];
 			if (user && user.entityId === entity.entityIndex) {
