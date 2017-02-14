@@ -1,6 +1,6 @@
 import {StringTable} from "./StringTable";
 import {Vector} from "./Vector";
-import {GameEvent} from "./GameEvent";
+import {GameEvent, GameEventDefinitionMap} from "./GameEvent";
 import {PacketEntity} from "./PacketEntity";
 
 export interface StringTablePacket {
@@ -42,6 +42,7 @@ export interface GameEventPacket {
 
 export interface GameEventListPacket {
 	packetType: 'gameEventList';
+	eventList: GameEventDefinitionMap;
 }
 
 export interface PacketEntitiesPacket {

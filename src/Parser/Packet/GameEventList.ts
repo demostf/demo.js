@@ -5,8 +5,9 @@ import {Match} from "../../Data/Match";
 
 export function GameEventList(stream: BitStream, match: Match): GameEventListPacket { // 30: gameEventList
 	// list of game events and parameters
-	const numEvents = stream.readBits(9);
-	const length    = stream.readBits(20);
+	const numEvents                         = stream.readBits(9);
+	const length                            = stream.readBits(20);
+	const eventList: GameEventDefinitionMap = {};
 	for (let i = 0; i < numEvents; i++) {
 		const id                        = stream.readBits(9);
 		const name                      = stream.readASCIIString();
@@ -19,13 +20,14 @@ export function GameEventList(stream: BitStream, match: Match): GameEventListPac
 			});
 			type = stream.readBits(3);
 		}
-		match.eventDefinitions[id] = {
+		eventList[id] = {
 			id:      id,
 			name:    name,
 			entries: entries
 		};
 	}
 	return {
-		packetType: 'gameEventList'
+		packetType: 'gameEventList',
+		eventList:  eventList
 	}
 }
