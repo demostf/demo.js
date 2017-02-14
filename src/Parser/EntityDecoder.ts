@@ -8,10 +8,8 @@ import {SendTable} from "../Data/SendTable";
 export function applyEntityUpdate(entity: PacketEntity, sendTable: SendTable, stream: BitStream): PacketEntity {
 	let index      = -1;
 	const allProps = sendTable.flattenedProps;
-	let lastProps:SendProp[]  = [];
 	while ((index = readFieldIndex(stream, index)) != -1) {
 		if (index >= 4096 || index > allProps.length) {
-			console.log(lastProps[lastProps.length - 1]);
 			throw new Error('prop index out of bounds while applying update for ' + sendTable.name + ' got ' + index
 				+ ' property only has ' + allProps.length + ' properties');
 		}
@@ -21,7 +19,6 @@ export function applyEntityUpdate(entity: PacketEntity, sendTable: SendTable, st
 
 		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
-		lastProps.push(prop);
 
 		if (!existingProp) {
 			entity.props.push(prop);
