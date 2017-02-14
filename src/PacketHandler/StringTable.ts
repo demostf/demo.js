@@ -1,5 +1,6 @@
 import {StringTablePacket} from "../Data/Packet";
 import {Match} from "../Data/Match";
+import {StringTableEntry} from "../Data/StringTable";
 
 export function handleStringTable(packet: StringTablePacket, match: Match) {
 	for (const table of packet.tables) {
@@ -20,5 +21,18 @@ export function handleStringTable(packet: StringTablePacket, match: Match) {
 				}
 			}
 		}
+		if (table.name === 'instancebaseline') {
+			for (const instanceBaseLine of table.entries) {
+				saveInstanceBaseLine(instanceBaseLine, match);
+			}
+		}
+	}
+}
+
+function saveInstanceBaseLine(entry: StringTableEntry, match: Match) {
+	if (entry.extraData) {
+		match.staticBaseLines[parseInt(entry.text, 10)] = entry.extraData;
+	} else {
+		throw new Error('Missing baseline');
 	}
 }

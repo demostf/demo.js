@@ -55,35 +55,20 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 			if (userData) {
 				existingEntry.extraData = userData;
 			}
-			if (table.name === 'instancebaseline') {
-				saveInstanceBaseLine(existingEntry, match);
-			}
 			history.push(existingEntry);
 
 			if (value) {
 				existingEntry.text = value;
 			}
 		} else {
-			const entry = {
+			table.entries[entryIndex] = {
 				text:      value,
 				extraData: userData
 			};
-			if (table.name === 'instancebaseline') {
-				saveInstanceBaseLine(entry, match);
-			}
-			table.entries[entryIndex] = entry;
 			history.push(table.entries[entryIndex]);
 		}
 		if (history.length > 32) {
 			history.shift();
 		}
-	}
-}
-
-function saveInstanceBaseLine(entry: StringTableEntry, match: Match) {
-	if (entry.extraData) {
-		match.staticBaseLines[parseInt(entry.text, 10)] = entry.extraData;
-	} else {
-		throw new Error('Missing baseline');
 	}
 }
