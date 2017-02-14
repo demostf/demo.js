@@ -1,13 +1,26 @@
 import {PacketEntitiesPacket} from "../Data/Packet";
 import {Match} from "../Data/Match";
-import {PacketEntity} from "../Data/PacketEntity";
+import {PacketEntity, PVS} from "../Data/PacketEntity";
 import {Vector} from "../Data/Vector";
 import {Player} from "../Data/Player";
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
+	for (const removedEntityId of packet.removedEntities) {
+		delete match.entityClasses[removedEntityId];
+	}
+
 	for (const entity of packet.entities) {
+		saveEntity(entity, match);
 		handleEntity(entity, match);
 	}
+}
+
+function saveEntity(packetEntity: PacketEntity, match: Match) {
+	if (packetEntity.pvs === PVS.DELETE) {
+		delete match.entityClasses[packetEntity.entityIndex];
+	}
+
+	match.entityClasses[packetEntity.entityIndex] = packetEntity.serverClass;
 }
 
 function handleEntity(entity: PacketEntity, match: Match) {

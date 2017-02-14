@@ -1,7 +1,7 @@
 import {TempEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {Match} from "../../Data/Match";
-import {PacketEntity} from "../../Data/PacketEntity";
+import {PacketEntity, PVS} from "../../Data/PacketEntity";
 import {applyEntityUpdate} from "../EntityDecoder";
 
 export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacket { // 10: classInfo
@@ -20,12 +20,12 @@ export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacke
 			// maybe because world (id=0) can never be temp
 			// but it's not like the -1 saves any space
 			const sendTable = match.getSendTable(serverClass.dataTable);
-			entity          = new PacketEntity(serverClass, sendTable, 0, 0);
+			entity          = new PacketEntity(serverClass, 0, PVS.ENTER);
 			applyEntityUpdate(entity, sendTable, stream);
 			entities.push(entity);
 		} else {
 			if (entity) {
-				applyEntityUpdate(entity, entity.sendTable, stream);
+				applyEntityUpdate(entity, match.getSendTable(entity.serverClass.dataTable), stream);
 			} else {
 				throw new Error("no entity set to update");
 			}

@@ -2,23 +2,29 @@ import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {SendProp} from "./SendProp";
 import {SendPropDefinition} from "./SendPropDefinition";
+
+export enum PVS {
+	PRESERVE = 0,
+	ENTER    = 1,
+	LEAVE    = 2,
+	DELETE   = 4
+}
+
 export class PacketEntity {
+	pvs: PVS;
 	serverClass: ServerClass;
-	sendTable: SendTable;
 	entityIndex: number;
-	serialNumber: number;
 	props: SendProp[];
 	inPVS: boolean;
 	updatedProps: SendProp[];
 
-	constructor(serverClass: ServerClass, sendTable: SendTable, entityIndex: number, serialNumber: number) {
+	constructor(serverClass: ServerClass, entityIndex: number, pvs: PVS) {
 		this.serverClass  = serverClass;
-		this.sendTable    = sendTable;
 		this.entityIndex  = entityIndex;
-		this.serialNumber = serialNumber;
 		this.props        = [];
 		this.inPVS        = false;
 		this.updatedProps = [];
+		this.pvs          = pvs;
 	}
 
 	getPropByDefinition(definition: SendPropDefinition) {

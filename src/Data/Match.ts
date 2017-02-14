@@ -23,7 +23,6 @@ export class Match {
 	rounds: any[];
 	startTick: number;
 	intervalPerTick: number;
-	packetEntities: (PacketEntity|null)[];
 	stringTables: StringTable[];
 	serverClasses: ServerClass[];
 	sendTables: SendTable[];
@@ -33,6 +32,7 @@ export class Match {
 	world: World;
 	players: Player[];
 	playerMap: {[entityId: number]: Player};
+	entityClasses: {[entityId: string]: ServerClass};
 
 	constructor() {
 		this.tick              = 0;
@@ -42,11 +42,9 @@ export class Match {
 		this.rounds            = [];
 		this.startTick         = 0;
 		this.intervalPerTick   = 0;
-		this.packetEntities    = [];
 		this.stringTables      = [];
 		this.sendTables        = [];
 		this.serverClasses     = [];
-		this.packetEntities    = [];
 		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
 		this.eventDefinitions  = {};
@@ -55,7 +53,8 @@ export class Match {
 		this.world             = {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0}
-		}
+		};
+		this.entityClasses     = {};
 	}
 
 	getSendTable(name) {

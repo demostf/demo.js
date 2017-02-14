@@ -48,6 +48,7 @@ export interface GameEventListPacket {
 export interface PacketEntitiesPacket {
 	packetType: 'packetEntities';
 	entities: PacketEntity[];
+	removedEntities: number[];
 }
 
 export interface ParseSoundsPacket {
