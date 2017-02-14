@@ -13,7 +13,7 @@ export class SendProp {
 
 	clone():SendProp {
 		const prop = new SendProp(this.definition);
-		prop.value = clone(this.value);
+		prop.value = clone(this.value, false);
 		return prop;
 	}
 }

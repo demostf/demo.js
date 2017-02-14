@@ -16,15 +16,13 @@ export class PacketEntity {
 	entityIndex: number;
 	props: SendProp[];
 	inPVS: boolean;
-	updatedProps: SendProp[];
 
 	constructor(serverClass: ServerClass, entityIndex: number, pvs: PVS) {
-		this.serverClass  = serverClass;
-		this.entityIndex  = entityIndex;
-		this.props        = [];
-		this.inPVS        = false;
-		this.updatedProps = [];
-		this.pvs          = pvs;
+		this.serverClass = serverClass;
+		this.entityIndex = entityIndex;
+		this.props       = [];
+		this.inPVS       = false;
+		this.pvs         = pvs;
 	}
 
 	getPropByDefinition(definition: SendPropDefinition) {
@@ -43,6 +41,14 @@ export class PacketEntity {
 			}
 		}
 		throw new Error('Property not found in entity');
+	}
+
+	clone(): PacketEntity {
+		const result = new PacketEntity(this.serverClass, this.entityIndex, this.pvs);
+		for (const prop of this.props) {
+			result.props.push(prop.clone());
+		}
+		return result;
 	}
 }
 

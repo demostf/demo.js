@@ -27,7 +27,6 @@ export class Match {
 	stringTables: StringTable[];
 	serverClasses: ServerClass[];
 	sendTables: SendTable[];
-	instanceBaselines: SendProp[][][];
 	staticBaseLines: BitStream[];
 	eventDefinitions: GameEventDefinitionMap;
 	world: World;
@@ -47,7 +46,6 @@ export class Match {
 		this.stringTables      = [];
 		this.sendTables        = [];
 		this.serverClasses     = [];
-		this.instanceBaselines = [[], []];
 		this.staticBaseLines   = [];
 		this.eventDefinitions  = {};
 		this.players           = [];

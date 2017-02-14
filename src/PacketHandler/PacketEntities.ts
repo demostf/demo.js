@@ -44,7 +44,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					match.players.push(player);
 				}
 
-				for (const prop of entity.updatedProps) {
+				for (const prop of entity.props) {
 					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 					// console.log(propName, prop.value);
 					switch (propName) {
@@ -75,5 +75,4 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			}
 
 	}
-	entity.updatedProps = [];
 }

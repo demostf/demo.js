@@ -21,7 +21,6 @@ export function applyEntityUpdate(entity: PacketEntity, sendTable: SendTable, st
 
 		const prop = existingProp ? existingProp : new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
-		entity.updatedProps.push(prop);
 		lastProps.push(prop);
 
 		if (!existingProp) {
