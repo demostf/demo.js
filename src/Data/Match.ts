@@ -33,6 +33,7 @@ export class Match {
 	players: Player[];
 	playerMap: {[entityId: number]: Player};
 	entityClasses: {[entityId: string]: ServerClass};
+	sendTableMap: {[name: string]: SendTable};
 
 	constructor() {
 		this.tick              = 0;
@@ -55,11 +56,16 @@ export class Match {
 			boundaryMax: {x: 0, y: 0, z: 0}
 		};
 		this.entityClasses     = {};
+		this.sendTableMap      = {};
 	}
 
 	getSendTable(name) {
+		if (this.sendTableMap[name]) {
+			return this.sendTableMap[name];
+		}
 		for (const table of this.sendTables) {
 			if (table.name === name) {
+				this.sendTableMap[name] = table;
 				return table;
 			}
 		}
