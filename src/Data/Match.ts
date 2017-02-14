@@ -14,6 +14,7 @@ import {handleSayText2} from "../PacketHandler/SayText2";
 import {handleGameEvent} from "../PacketHandler/GameEvent";
 import {handlePacketEntities} from "../PacketHandler/PacketEntities";
 import {handleGameEventList} from "../PacketHandler/GameEventList";
+import {handleDataTable} from "../PacketHandler/DataTable";
 
 export class Match {
 	tick: number;
@@ -124,6 +125,9 @@ export class Match {
 				break;
 			case 'sayText2':
 				handleSayText2(packet, this);
+				break;
+			case 'dataTable':
+				handleDataTable(packet, this);
 				break;
 			case 'stringTable':
 				handleStringTable(packet, this);

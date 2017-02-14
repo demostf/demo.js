@@ -18,5 +18,5 @@ export abstract class Parser {
 		this.match = match;
 	}
 
-	abstract parse():Packet[]|string|SendTable[];
+	abstract parse():Packet[]|string;
 }

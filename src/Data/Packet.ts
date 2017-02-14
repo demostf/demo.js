@@ -2,10 +2,18 @@ import {StringTable} from "./StringTable";
 import {Vector} from "./Vector";
 import {GameEvent, GameEventDefinitionMap} from "./GameEvent";
 import {PacketEntity} from "./PacketEntity";
+import {SendTable} from "./SendTable";
+import {ServerClass} from "./ServerClass";
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
 	tables: StringTable[];
+}
+
+export interface DataTablePacket {
+	packetType: 'dataTable';
+	tables: SendTable[];
+	serverClasses: ServerClass[];
 }
 
 export interface BSPDecalPacket {
@@ -92,6 +100,7 @@ export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUser
 
 export type Packet = BSPDecalPacket |
 	StringTablePacket |
+	DataTablePacket |
 	ClassInfoPacket |
 	EntityMessagePacket |
 	GameEventPacket |
