@@ -96,6 +96,12 @@ export interface UnknownUserMessagePacket {
 	type: number;
 }
 
+export interface VoiceInitPacket {
+	packetType: 'voiceInit';
+	codec: string;
+	quality: number;
+}
+
 export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUserMessagePacket;
 
 export type Packet = BSPDecalPacket |
@@ -109,4 +115,5 @@ export type Packet = BSPDecalPacket |
 	ParseSoundsPacket |
 	SetConVarPacket |
 	TempEntitiesPacket |
-	UserMessagePacket;
+	UserMessagePacket |
+	VoiceInitPacket;

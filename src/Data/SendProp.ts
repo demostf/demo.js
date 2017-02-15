@@ -1,4 +1,3 @@
-import * as clone from 'clone';
 import {SendPropDefinition} from "./SendPropDefinition";
 import {Vector} from "./Vector";
 
@@ -13,7 +12,7 @@ export class SendProp {
 
 	clone():SendProp {
 		const prop = new SendProp(this.definition);
-		prop.value = clone(this.value, false);
+		prop.value = this.value;
 		return prop;
 	}
 }

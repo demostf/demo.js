@@ -12,8 +12,9 @@ import {ParseSounds} from '../Packet/ParseSounds';
 import {SetConVar} from '../Packet/SetConVar';
 import {UpdateStringTable} from '../Packet/UpdateStringTable';
 import {UserMessage} from '../Packet/UserMessage';
-import {PacketParserMap} from '../Packet/Parser'
-import {TempEntities} from '../Packet/TempEntities'
+import {PacketParserMap} from '../Packet/Parser';
+import {TempEntities} from '../Packet/TempEntities';
+import {VoiceInit} from '../Packet/VoiceInit';
 
 import {GameEventDefinitionMap} from "../../Data/GameEvent";
 
@@ -63,7 +64,7 @@ export class Packet extends Parser {
 		11: ParserGenerator.make('setPause', 'paused{b}'),
 		12: CreateStringTable,
 		13: UpdateStringTable,
-		14: ParserGenerator.make('voiceInit', 'codec{s}quality{8}'),
+		14: VoiceInit,
 		15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}_{$length}'),
 		17: ParseSounds,
 		18: ParserGenerator.make('setView', 'index{11}'),
