@@ -2,7 +2,6 @@ import {PacketEntity} from "./PacketEntity";
 import {ServerClass} from "./ServerClass";
 import {SendTable} from "./SendTable";
 import {StringTable} from "./StringTable";
-import {SendProp} from "./SendProp";
 import {GameEventDefinitionMap} from "./GameEvent";
 import {BitStream} from "bit-buffer";
 import {UserInfo} from "./UserInfo";

@@ -6,23 +6,17 @@ import {UserCmd} from './Parser/Message/UserCmd';
 import {BitStream} from 'bit-buffer';
 import {EventEmitter} from 'events';
 import {Match} from './Data/Match';
-import {Packet as IPacket} from "./Data/Packet";
 import {Parser as MessageParser} from './Parser/Message/Parser';
 
 export class Parser extends EventEmitter {
 	stream: BitStream;
-	packets: IPacket[];
 	match: Match;
 
 	constructor(stream: BitStream) {
 		super();
 		this.stream  = stream;
-		this.packets = [];
 		this.match   = new Match();
 		this.on('packet', this.match.handlePacket.bind(this.match));
-		this.on('packet', function (packet) {
-			this.packets.push(packet);
-		});
 	}
 
 	readHeader() {
