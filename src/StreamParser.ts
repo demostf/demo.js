@@ -1,7 +1,7 @@
-import {Match} from "./Data/Match";
 import {BitStream} from 'bit-buffer';
 import {Parser, MessageType} from './Parser';
 import {Stream} from "stream";
+import {Buffer} from 'buffer';
 
 export class StreamParser extends Parser {
 	buffer: Buffer;
