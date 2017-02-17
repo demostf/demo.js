@@ -16,6 +16,7 @@ export class PacketEntity {
 	entityIndex: number;
 	props: SendProp[];
 	inPVS: boolean;
+	serialNumber?: number;
 
 	constructor(serverClass: ServerClass, entityIndex: number, pvs: PVS) {
 		this.serverClass = serverClass;
