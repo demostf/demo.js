@@ -15,6 +15,9 @@ import {UserMessage} from '../Packet/UserMessage';
 import {PacketParserMap} from '../Packet/Parser';
 import {TempEntities} from '../Packet/TempEntities';
 import {VoiceInit} from '../Packet/VoiceInit';
+import {VoiceData} from '../Packet/VoiceData';
+import {Menu} from '../Packet/Menu';
+import {CmdKeyValues} from '../Packet/CmdKeyValues';
 
 import {GameEventDefinitionMap} from "../../Data/GameEvent";
 
@@ -65,7 +68,7 @@ export class Packet extends Parser {
 		12: CreateStringTable,
 		13: UpdateStringTable,
 		14: VoiceInit,
-		15: ParserGenerator.make('voiceData', 'client{8}proximity{8}length{16}_{$length}'),
+		15: VoiceData,
 		17: ParseSounds,
 		18: ParserGenerator.make('setView', 'index{11}'),
 		19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
@@ -76,10 +79,10 @@ export class Packet extends Parser {
 		26: PacketEntities,
 		27: TempEntities,
 		28: ParserGenerator.make('preFetch', 'index{14}'),
-		29: ParserGenerator.make('menu', 'type{16}length{16}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}_{$length}'),//length*8
+		29: Menu,
 		30: GameEventList,
 		31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
-		32: ParserGenerator.make('cmdKeyValues', 'length{32}data{$length}')
+		32: CmdKeyValues
 	};
 }
 

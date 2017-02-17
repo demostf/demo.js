@@ -4,6 +4,7 @@ import {GameEvent, GameEventDefinitionMap} from "./GameEvent";
 import {PacketEntity} from "./PacketEntity";
 import {SendTable} from "./SendTable";
 import {ServerClass} from "./ServerClass";
+import {BitStream} from "bit-buffer";
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
@@ -57,6 +58,13 @@ export interface PacketEntitiesPacket {
 	packetType: 'packetEntities';
 	entities: PacketEntity[];
 	removedEntities: number[];
+	maxEntries: number;
+	isDelta: boolean;
+	delta: number;
+	baseLine : number;
+	updatedEntries: number;
+	length: number;
+	updatedBaseLine: boolean;
 }
 
 export interface ParseSoundsPacket {
@@ -100,6 +108,28 @@ export interface VoiceInitPacket {
 	packetType: 'voiceInit';
 	codec: string;
 	quality: number;
+	extraData: number
+}
+
+export interface VoiceDataPacket {
+	packetType: 'voiceData';
+	client: number;
+	proximity: number;
+	length: number;
+	data: BitStream;
+}
+
+export interface MenuPacket {
+	packetType: 'menu';
+	type: number;
+	length: number;
+	data: BitStream;
+}
+
+export interface CmdKeyValuesPacket {
+	packetType: 'cmdKeyValues';
+	length: number;
+	data: BitStream;
 }
 
 export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUserMessagePacket;
@@ -116,4 +146,7 @@ export type Packet = BSPDecalPacket |
 	SetConVarPacket |
 	TempEntitiesPacket |
 	UserMessagePacket |
-	VoiceInitPacket;
+	VoiceInitPacket |
+	VoiceDataPacket |
+	MenuPacket |
+	CmdKeyValuesPacket;

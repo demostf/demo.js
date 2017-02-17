@@ -63,7 +63,7 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs
 	const maxEntries      = stream.readBits(11);
 	const isDelta         = !!stream.readBits(1);
-	const delta           = (isDelta) ? stream.readInt32() : null;
+	const delta           = (isDelta) ? stream.readInt32() : 0;
 	const baseLine        = stream.readBits(1);
 	const updatedEntries  = stream.readBits(11);
 	const length          = stream.readBits(20);
@@ -109,6 +109,13 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 	return {
 		packetType:      'packetEntities',
 		entities:        receivedEntities,
-		removedEntities: removedEntityIds
+		removedEntities: removedEntityIds,
+		maxEntries:      maxEntries,
+		isDelta:         isDelta,
+		delta:           delta,
+		baseLine:        baseLine,
+		updatedEntries:  updatedEntries,
+		length:          length,
+		updatedBaseLine: updatedBaseLine
 	};
 }
