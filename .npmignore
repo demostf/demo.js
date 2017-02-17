@@ -1,4 +1,5 @@
 src
 typings
+build/tests
 *.dem
 *.txt

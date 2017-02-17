@@ -17,4 +17,8 @@ suite('Parse basic demo info', () => {
 	test('Parse snakewater.dem', () => {
 		testDemo('snakewater');
 	});
+
+	test('Parse demo with new celt voice codec', () => {
+		testDemo('celt');
+	});
 });

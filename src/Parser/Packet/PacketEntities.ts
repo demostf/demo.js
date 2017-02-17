@@ -23,15 +23,13 @@ function readPVSType(stream: BitStream): PVS {
 	return pvs;
 }
 
-const baseLineCache: {[serverClass: string]: PacketEntity} = {};
-
 function readEnterPVS(stream: BitStream, entityId: number, match: Match): PacketEntity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
 	stream.readBits(10); // unused serial number
 
-	if (baseLineCache[serverClass.id]) {
-		const result       = baseLineCache[serverClass.id].clone();
+	if (match.baseLineCache[serverClass.id]) {
+		const result       = match.baseLineCache[serverClass.id].clone();
 		result.entityIndex = entityId;
 		return result;
 	} else {
@@ -44,7 +42,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match): Packet
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
 			applyEntityUpdate(entity, sendTable, staticBaseLine);
-			baseLineCache[serverClass.id] = entity.clone();
+			match.baseLineCache[serverClass.id] = entity.clone();
 			if (staticBaseLine.bitsLeft > 7) {
 				// console.log(staticBaseLine.length, staticBaseLine.index);
 				// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
@@ -56,7 +54,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match): Packet
 
 function getPacketEntityForExisting(entityId: number, match: Match, pvs: PVS) {
 	if (!match.entityClasses[entityId]) {
-		throw new Error("unknown entity");
+		throw new Error("unknown entity " + entityId + " for " + PVS[pvs]);
 	}
 	const serverClass = match.entityClasses[entityId];
 	return new PacketEntity(serverClass, entityId, pvs);
@@ -89,7 +87,7 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 			if (updatedBaseLine) {
 				const newBaseLine: SendProp[] = [];
 				newBaseLine.concat(packetEntity.props);
-				baseLineCache[packetEntity.serverClass.id] = packetEntity.clone();
+				match.baseLineCache[packetEntity.serverClass.id] = packetEntity.clone();
 			}
 			packetEntity.inPVS = true;
 			receivedEntities.push(packetEntity);

@@ -33,28 +33,30 @@ export class Match {
 	playerMap: {[entityId: number]: Player};
 	entityClasses: {[entityId: string]: ServerClass};
 	sendTableMap: {[name: string]: SendTable};
+	baseLineCache: {[serverClass: string]: PacketEntity};
 
 	constructor() {
-		this.tick              = 0;
-		this.chat              = [];
-		this.users             = {};
-		this.deaths            = [];
-		this.rounds            = [];
-		this.startTick         = 0;
-		this.intervalPerTick   = 0;
-		this.stringTables      = [];
-		this.sendTables        = [];
-		this.serverClasses     = [];
-		this.staticBaseLines   = [];
-		this.eventDefinitions  = {};
-		this.players           = [];
-		this.playerMap         = {};
-		this.world             = {
+		this.tick             = 0;
+		this.chat             = [];
+		this.users            = {};
+		this.deaths           = [];
+		this.rounds           = [];
+		this.startTick        = 0;
+		this.intervalPerTick  = 0;
+		this.stringTables     = [];
+		this.sendTables       = [];
+		this.serverClasses    = [];
+		this.staticBaseLines  = [];
+		this.eventDefinitions = {};
+		this.players          = [];
+		this.playerMap        = {};
+		this.world            = {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0}
 		};
-		this.entityClasses     = {};
-		this.sendTableMap      = {};
+		this.entityClasses    = {};
+		this.sendTableMap     = {};
+		this.baseLineCache    = {};
 	}
 
 	getSendTable(name) {

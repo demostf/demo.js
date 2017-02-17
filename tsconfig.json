@@ -3,10 +3,10 @@
 		"lib": [
 			"dom",
 			"es2015.promise",
-			"es6"
+			"es5"
 		],
-		"module": "ES6",
-		"target": "ES6",
+		"module": "commonjs",
+		"target": "ES5",
 		"outDir": "build",
 		"rootDir": "src",
 		"declaration": true,
