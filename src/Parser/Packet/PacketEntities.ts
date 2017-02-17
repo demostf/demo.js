@@ -6,21 +6,15 @@ import {Match} from "../../Data/Match";
 import {readUBitVar} from "../readBitVar";
 import {applyEntityUpdate} from "../EntityDecoder";
 
+const pvsMap = {
+	0: PVS.PRESERVE,
+	2: PVS.ENTER,
+	1: PVS.LEAVE,
+	3: PVS.LEAVE | PVS.DELETE
+};
+
 function readPVSType(stream: BitStream): PVS {
-	// https://github.com/skadistats/smoke/blob/a2954fbe2fa3936d64aee5b5567be294fef228e6/smoke/io/stream/entity.pyx#L24
-	let pvs;
-	const hi  = stream.readBoolean();
-	const low = stream.readBoolean();
-	if (low && !hi) {
-		pvs = PVS.ENTER;
-	} else if (!(hi || low)) {
-		pvs = PVS.PRESERVE;
-	} else if (hi) {
-		pvs = (low) ? (PVS.LEAVE | PVS.DELETE) : PVS.LEAVE;
-	} else {
-		throw new Error('Invalid pvs');
-	}
-	return pvs;
+	return pvsMap[stream.readBits(2)];
 }
 
 function readEnterPVS(stream: BitStream, entityId: number, match: Match): PacketEntity {
