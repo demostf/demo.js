@@ -5,7 +5,9 @@
   "bin": {
     "demo-analyse": "./bin/analyse.js"
   },
-  "main": "demo.js",
+  "main": "build/index.js",
+  "jsnext:main": "build/es6/index.js",
+  "module": "build/es6/index.js",
   "dependencies": {
     "bit-buffer": "icewind1991/bit-buffer#typings",
     "clone": "^2.1.0",
