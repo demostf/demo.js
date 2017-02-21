@@ -21,4 +21,8 @@ suite('Parse basic demo info', () => {
 	test('Parse demo with new celt voice codec', () => {
 		testDemo('celt');
 	});
+
+	test('Parse pov demo', () => {
+		testDemo('pov');
+	});
 });

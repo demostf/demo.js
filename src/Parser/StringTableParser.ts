@@ -33,7 +33,11 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 
 				const restOfString = stream.readASCIIString();
 
-				value = history[index].text.substr(0, bytesToCopy) + restOfString;
+				if (!history[index].text) {
+					value = restOfString; // best guess, happens in some pov demos but only for unimported tables it seems
+				} else {
+					value = history[index].text.substr(0, bytesToCopy) + restOfString;
+				}
 			} else {
 				value = stream.readASCIIString();
 			}
@@ -55,11 +59,11 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 			if (userData) {
 				existingEntry.extraData = userData;
 			}
-			history.push(existingEntry);
 
 			if (value) {
 				existingEntry.text = value;
 			}
+			history.push(existingEntry);
 		} else {
 			table.entries[entryIndex] = {
 				text:      value,

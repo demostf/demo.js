@@ -23,7 +23,9 @@ export function handleStringTable(packet: StringTablePacket, match: Match) {
 		}
 		if (table.name === 'instancebaseline') {
 			for (const instanceBaseLine of table.entries) {
-				saveInstanceBaseLine(instanceBaseLine, match);
+				if (instanceBaseLine) {
+					saveInstanceBaseLine(instanceBaseLine, match);
+				}
 			}
 		}
 	}
