@@ -38,10 +38,10 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match): Packet
 			staticBaseLine.index = 0;
 			applyEntityUpdate(entity, sendTable, staticBaseLine);
 			match.baseLineCache[serverClass.id] = entity.clone();
-			if (staticBaseLine.bitsLeft > 7) {
+			// if (staticBaseLine.bitsLeft > 7) {
 				// console.log(staticBaseLine.length, staticBaseLine.index);
-				throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
-			}
+				// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
+			// }
 		}
 		entity.serialNumber = serial;
 		return entity;

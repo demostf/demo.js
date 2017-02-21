@@ -5,13 +5,17 @@ import {StreamParser} from './StreamParser';
 
 export class Demo {
 	stream: BitStream;
+	parser: Parser|null;
 
 	constructor(arrayBuffer: ArrayBuffer) {
 		this.stream = new BitStream(arrayBuffer);
 	}
 
 	getParser() {
-		return new Parser(this.stream);
+		if (!this.parser) {
+			this.parser = new Parser(this.stream);
+		}
+		return this.parser;
 	}
 
 	static fromNodeBuffer(nodeBuffer) {

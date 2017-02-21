@@ -7,6 +7,7 @@ import {BitStream} from 'bit-buffer';
 import {EventEmitter} from 'events';
 import {Match} from './Data/Match';
 import {Parser as MessageParser} from './Parser/Message/Parser';
+import {Header} from "./Data/Header";
 
 export class Parser extends EventEmitter {
 	stream: BitStream;
@@ -14,8 +15,8 @@ export class Parser extends EventEmitter {
 
 	constructor(stream: BitStream) {
 		super();
-		this.stream  = stream;
-		this.match   = new Match();
+		this.stream = stream;
+		this.match  = new Match();
 		this.on('packet', this.match.handlePacket.bind(this.match));
 	}
 
@@ -23,7 +24,7 @@ export class Parser extends EventEmitter {
 		return this.parseHeader(this.stream);
 	}
 
-	parseHeader(stream) {
+	parseHeader(stream): Header {
 		return {
 			'type':     stream.readASCIIString(8),
 			'version':  stream.readInt32(),
@@ -87,7 +88,7 @@ export class Parser extends EventEmitter {
 		}
 	}
 
-	readMessage(stream:BitStream, match:Match): MessageParser|boolean {
+	readMessage(stream: BitStream, match: Match): MessageParser|boolean {
 		if (stream.bitsLeft < 8) {
 			return false;
 		}

@@ -37,7 +37,8 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						maxHealth: 0,
 						health:    0,
 						classId:   0,
-						team:      0
+						team:      0,
+						viewAngle: 0
 					};
 				if (!match.playerMap[entity.entityIndex]) {
 					match.playerMap[entity.entityIndex] = player;
@@ -46,7 +47,6 @@ function handleEntity(entity: PacketEntity, match: Match) {
 
 				for (const prop of entity.props) {
 					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
-					// console.log(propName, prop.value);
 					switch (propName) {
 						case 'DT_BasePlayer.m_iHealth':
 							player.health = <number>prop.value;
@@ -68,8 +68,15 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
 							player.position.z = <number>prop.value;
 							break;
+						case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
+							player.viewAngle = <number>prop.value;
+							break;
+						case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[1]':
+							player.viewAngle = <number>prop.value;
+							break;
 					}
 				}
+
 			} catch (e) {
 
 			}

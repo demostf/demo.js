@@ -8,4 +8,5 @@ export interface Player {
 	maxHealth: number;
 	classId: number;
 	team: number;
+	viewAngle: number;
 }
