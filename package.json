@@ -1,7 +1,7 @@
 {
   "name": "tf2-demo",
   "description": "A parser for TF2 demo files",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "bin": {
     "demo-analyse": "./bin/analyse.js"
   },
