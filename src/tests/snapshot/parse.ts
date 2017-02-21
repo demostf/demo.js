@@ -25,4 +25,8 @@ suite('Parse basic demo info', () => {
 	test('Parse pov demo', () => {
 		testDemo('pov');
 	});
+
+	test('Parse post MyM pov demo', () => {
+		testDemo('pov2');
+	});
 });
