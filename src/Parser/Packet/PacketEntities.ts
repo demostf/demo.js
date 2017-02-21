@@ -10,11 +10,13 @@ const pvsMap = {
 	0: PVS.PRESERVE,
 	2: PVS.ENTER,
 	1: PVS.LEAVE,
-	3: PVS.LEAVE | PVS.DELETE
+	3: PVS.LEAVE + PVS.DELETE
 };
 
 function readPVSType(stream: BitStream): PVS {
-	return pvsMap[stream.readBits(2)];
+	const pvs = stream.readBits(2);
+	// console.log(pvs);
+	return pvsMap[pvs];
 }
 
 function readEnterPVS(stream: BitStream, entityId: number, match: Match): PacketEntity {
@@ -50,7 +52,7 @@ function readEnterPVS(stream: BitStream, entityId: number, match: Match): Packet
 
 function getPacketEntityForExisting(entityId: number, match: Match, pvs: PVS) {
 	if (!match.entityClasses[entityId]) {
-		throw new Error("unknown entity " + entityId + " for " + PVS[pvs]);
+		throw new Error(`"unknown entity ${entityId} for ${PVS[pvs]}(${pvs})`);
 	}
 	const serverClass = match.entityClasses[entityId];
 	return new PacketEntity(serverClass, entityId, pvs);
@@ -92,8 +94,10 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 			applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
 			receivedEntities.push(packetEntity);
 		} else {
-			const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
-			receivedEntities.push(packetEntity);
+			if(match.entityClasses[entityId]) {
+				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
+				receivedEntities.push(packetEntity);
+			}
 		}
 	}
 
