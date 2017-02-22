@@ -74,22 +74,12 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			 "DT_TFPlayerSharedLocal.m_nDesiredDisguiseTeam": 0,
 			 "DT_TFPlayerSharedLocal.m_nDesiredDisguiseClass": 0,
 			 "DT_TFPlayerShared.m_iKillStreak": 0,
-			 "DT_BaseCombatCharacter.m_hActiveWeapon": 2097151,
 			 "DT_TFPlayerShared.m_flCloakMeter": 100,
 			 */
 
-			const player: Player = (match.playerMap[entity.entityIndex]) ? match.playerMap[entity.entityIndex] : {
-					user:      match.getUserInfoForEntity(entity),
-					position:  new Vector(0, 0, 0),
-					maxHealth: 0,
-					health:    0,
-					classId:   0,
-					team:      0,
-					viewAngle: 0,
-					weapons:   [],
-					ammo:      [],
-					lifeState: LifeState.DEATH
-				};
+			const player: Player = (match.playerMap[entity.entityIndex]) ?
+				match.playerMap[entity.entityIndex] :
+				new Player(match, match.getUserInfoForEntity(entity));
 			if (!match.playerMap[entity.entityIndex]) {
 				match.playerMap[entity.entityIndex] = player;
 				match.players.push(player);
@@ -98,7 +88,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			for (const prop of entity.props) {
 				if (prop.definition.ownerTableName === 'm_hMyWeapons') {
 					if (prop.value !== 2097151) {
-						player.weapons[parseInt(prop.definition.name, 10)] = <number>prop.value;
+						player.weaponIds[parseInt(prop.definition.name, 10)] = <number>prop.value;
 					}
 				}
 				if (prop.definition.ownerTableName === 'm_iAmmo') {
@@ -137,6 +127,12 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					case 'DT_BasePlayer.m_lifeState':
 						player.lifeState = <number>prop.value;
 						break;
+					case 'DT_BaseCombatCharacter.m_hActiveWeapon':
+						for (let i = 0; i < player.weapons.length; i++) {
+							if (player.weaponIds[i] === prop.value) {
+								player.activeWeapon = i;
+							}
+						}
 				}
 			}
 			break;
