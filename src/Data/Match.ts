@@ -14,6 +14,8 @@ import {handleGameEvent} from "../PacketHandler/GameEvent";
 import {handlePacketEntities} from "../PacketHandler/PacketEntities";
 import {handleGameEventList} from "../PacketHandler/GameEventList";
 import {handleDataTable} from "../PacketHandler/DataTable";
+import {Weapon} from "./Weapon";
+import {Team} from "./Team";
 
 export class Match {
 	tick: number;
@@ -34,6 +36,10 @@ export class Match {
 	entityClasses: {[entityId: string]: ServerClass};
 	sendTableMap: {[name: string]: SendTable};
 	baseLineCache: {[serverClass: string]: PacketEntity};
+	weaponMap: {[entityId: string]: Weapon};
+	outerMap: {[outer: number]: number};
+	teams: Team[];
+	teamMap: {[entityId: string]: Team};
 
 	constructor() {
 		this.tick             = 0;
@@ -57,6 +63,10 @@ export class Match {
 		this.entityClasses    = {};
 		this.sendTableMap     = {};
 		this.baseLineCache    = {};
+		this.weaponMap        = {};
+		this.outerMap         = {};
+		this.teams            = [];
+		this.teamMap          = {};
 	}
 
 	getSendTable(name) {

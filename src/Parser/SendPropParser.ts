@@ -47,7 +47,7 @@ export class SendPropParser {
 			if (value instanceof Array) {
 				throw new Error('Nested arrays not supported');
 			}
-			values.push();
+			values.push(value);
 		}
 		return values;
 	}

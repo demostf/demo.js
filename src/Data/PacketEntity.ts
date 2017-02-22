@@ -41,7 +41,7 @@ export class PacketEntity {
 				return prop;
 			}
 		}
-		throw new Error('Property not found in entity');
+		throw new Error(`Property not found in entity (${originTable}.${name})`);
 	}
 
 	clone(): PacketEntity {
