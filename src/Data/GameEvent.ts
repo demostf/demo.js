@@ -43,6 +43,15 @@ export interface PlayerSpawnEventValues {
 	'class': number
 }
 
+export interface ObjectDestroyedValues {
+	userid: number;
+	attacker: number;
+	weapon: string;
+	weapinid: number;
+	objecttype: number;
+	index: number;
+}
+
 export type GameEventValue = string|number|boolean;
 
 export type GameEventValueMap = {
@@ -52,7 +61,8 @@ export type GameEventValueMap = {
 export type GameEventValues = GameEventValueMap |
 	DeathEventValues |
 	RoundWinEventValues |
-	PlayerSpawnEventValues;
+	PlayerSpawnEventValues |
+	ObjectDestroyedValues;
 
 export type GameEventDefinitionMap = {
 	[id: number]: GameEventDefinition;

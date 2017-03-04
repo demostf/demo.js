@@ -4,6 +4,8 @@ import {PacketEntity, PVS} from "../Data/PacketEntity";
 import {Vector} from "../Data/Vector";
 import {Player, LifeState} from "../Data/Player";
 import {CWeaponMedigun, Weapon} from "../Data/Weapon";
+import {Building, Sentry, Dispenser, Teleporter} from "../Data/Building";
+import {SendProp} from "../Data/SendProp";
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const removedEntityId of packet.removedEntities) {
@@ -189,11 +191,285 @@ function handleEntity(entity: PacketEntity, match: Match) {
 				// process.exit();
 			}
 			break;
-		case 'CTFPlayerResource':
-			break;
 		case 'CObjectSentrygun':
+			if (!match.buildings[entity.entityIndex]) {
+				match.buildings[entity.entityIndex] = {
+					type:             'sentry',
+					ammoRockets:      0,
+					ammoShells:       0,
+					autoAimTarget:    0,
+					builder:          0,
+					health:           0,
+					isBuilding:       false,
+					isSapped:         false,
+					level:            0,
+					maxHealth:        0,
+					playerControlled: false,
+					position:         new Vector(0, 0, 0),
+					shieldLevel:      0,
+					isMini:           false,
+					team:             0
+				};
+			}
+			const sentry = <Sentry>match.buildings[entity.entityIndex];
+			for (const prop of entity.props) {
+				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+				applyBuildingProp(sentry, prop, propName);
+				switch (propName) {
+					case 'DT_ObjectSentrygun.m_bPlayerControlled':
+						sentry.playerControlled = <number>prop.value > 0;
+						break;
+					case 'DT_ObjectSentrygun.m_hAutoAimTarget':
+						sentry.autoAimTarget = <number>prop.value;
+						break;
+					case 'DT_ObjectSentrygun.m_nShieldLevel':
+						sentry.shieldLevel = <number>prop.value;
+						break;
+					case 'DT_ObjectSentrygun.m_iAmmoShells':
+						sentry.ammoShells = <number>prop.value;
+						break;
+					case 'DT_ObjectSentrygun.m_iAmmoRockets':
+						sentry.ammoRockets = <number>prop.value;
+						break;
+					case 'DT_BaseObject.m_bMiniBuilding':
+						sentry.isMini = <number>prop.value > 1;
+				}
+			}
+			if (entity.pvs & PVS.LEAVE) {
+				delete match.buildings[entity.entityIndex];
+			}
+			break;
+		case 'CObjectDispenser':
+			if (!match.buildings[entity.entityIndex]) {
+				match.buildings[entity.entityIndex] = {
+					type:       'dispenser',
+					builder:    0,
+					health:     0,
+					isBuilding: false,
+					isSapped:   false,
+					level:      0,
+					maxHealth:  0,
+					position:   new Vector(0, 0, 0),
+					team:       0,
+					healing:    [],
+					metal:      0
+				};
+			}
+			const dispenser = <Dispenser>match.buildings[entity.entityIndex];
+			for (const prop of entity.props) {
+				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+				applyBuildingProp(dispenser, prop, propName);
+				switch (propName) {
+					case 'DT_ObjectDispenser.m_iAmmoMetal':
+						dispenser.metal = <number>prop.value;
+						break;
+					case 'DT_ObjectDispenser."healing_array"':
+						dispenser.healing = <number[]>prop.value;
+						break;
+				}
+			}
+			if (entity.pvs & PVS.LEAVE) {
+				delete match.buildings[entity.entityIndex];
+			}
+			break;
+		case 'CObjectTeleporter':
+			if (!match.buildings[entity.entityIndex]) {
+				match.buildings[entity.entityIndex] = {
+					type:             'teleporter',
+					builder:          0,
+					health:           0,
+					isBuilding:       false,
+					isSapped:         false,
+					level:            0,
+					maxHealth:        0,
+					position:         new Vector(0, 0, 0),
+					team:             0,
+					isEntrance:       false,
+					otherEnd:         0,
+					rechargeTime:     0,
+					rechargeDuration: 0,
+					timesUsed:        0,
+					yawToExit:        0
+				};
+			}
+			const teleporter = <Teleporter>match.buildings[entity.entityIndex];
+			for (const prop of entity.props) {
+				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+				applyBuildingProp(teleporter, prop, propName);
+				switch (propName) {
+					case 'DT_ObjectTeleporter.m_flRechargeTime':
+						teleporter.rechargeTime = <number>prop.value;
+						break;
+					case 'DT_ObjectTeleporter.m_flCurrentRechargeDuration':
+						teleporter.rechargeDuration = <number>prop.value;
+						break;
+					case 'DT_ObjectTeleporter.m_iTimesUsed':
+						teleporter.timesUsed = <number>prop.value;
+						break;
+					case 'DT_ObjectTeleporter.m_bMatchBuilding':
+						teleporter.otherEnd = <number>prop.value;
+						break;
+					case 'DT_ObjectTeleporter.m_flYawToExit':
+						if (prop.value) {
+							teleporter.isEntrance = true;
+							teleporter.yawToExit  = <number>prop.value;
+						}
+						break;
+				}
+			}
+			if (entity.pvs & PVS.LEAVE) {
+				delete match.buildings[entity.entityIndex];
+			}
+			break;
+		case 'CTFPlayerResource':
+			for (const prop of entity.props) {
+				const playerId = parseInt(prop.definition.name, 10);
+				const value    = <number>prop.value;
+				if (!match.playerResources[playerId]) {
+					match.playerResources[playerId] = {
+						alive:           false,
+						arenaSpectator:  false,
+						bonusPoints:     0,
+						chargeLevel:     0,
+						connected:       false,
+						damageAssists:   0,
+						damageBlocked:   0,
+						deaths:          0,
+						dominations:     0,
+						healing:         0,
+						healingAssist:   0,
+						health:          0,
+						killStreak:      0,
+						maxBuffedHealth: 0,
+						maxHealth:       0,
+						nextRespawn:     0,
+						ping:            0,
+						playerClass:     0,
+						playerLevel:     0,
+						score:           0,
+						team:            0,
+						totalScore:      0,
+						damage:          0
+					};
+				}
+				const playerResource = match.playerResources[playerId];
+				switch (prop.definition.ownerTableName) {
+					case 'm_iPing':
+						playerResource.ping = value;
+						break;
+					case 'm_iScore':
+						playerResource.score = value;
+						break;
+					case 'm_iDeaths':
+						playerResource.deaths = value;
+						break;
+					case 'm_bConnected':
+						playerResource.connected = value > 0;
+						break;
+					case 'm_iTeam':
+						playerResource.team = value;
+						break;
+					case'm_bAlive':
+						playerResource.alive = value > 0;
+						break;
+					case 'm_iHealth':
+						playerResource.health = value;
+						break;
+					case 'm_iTotalScore':
+						playerResource.totalScore = value;
+						break;
+					case 'm_iMaxHealth':
+						playerResource.maxHealth = value;
+						break;
+					case 'm_iMaxBuffedHealth':
+						playerResource.maxBuffedHealth = value;
+						break;
+					case 'm_iPlayerClass':
+						playerResource.playerClass = value;
+						break;
+					case 'm_bArenaSpectator':
+						playerResource.arenaSpectator = value > 0;
+						break;
+					case 'm_iActiveDominations':
+						playerResource.dominations = value;
+						break;
+					case 'm_flNextRespawnTime':
+						playerResource.nextRespawn = value;
+						break;
+					case 'm_iChargeLevel':
+						playerResource.chargeLevel = value;
+						break;
+					case 'm_iDamage':
+						playerResource.damage = value;
+						break;
+					case 'm_iDamageAssist':
+						playerResource.damageAssists = value;
+						break;
+					case 'm_iHealing':
+						playerResource.healing = value;
+						break;
+					case 'm_iHealingAssist':
+						playerResource.healingAssist = value;
+						break;
+					case 'm_iDamageBlocked':
+						playerResource.damageBlocked = value;
+						break;
+					case 'm_iBonusPoints':
+						playerResource.bonusPoints = value;
+						break;
+					case 'm_iPlayerLevel':
+						playerResource.playerLevel = value;
+						break;
+					case 'm_iKillstreak':
+						playerResource.killStreak = value;
+						break;
+				}
+			}
 			break;
 		case 'CTeamRoundTimer':
+			break;
+		case 'CLaserDot':
+			// for (const prop of entity.props) {
+			// 	const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+			// 	switch (propName) {
+			// 		case 'DT_BaseEntity.m_iParentAttachment':
+			// 			console.log(prop.value);
+			// 			process.exit();
+			// 			break;
+			//
+			// 	}
+			// }
+			// console.log(match.getSendTable(entity.serverClass.dataTable).flattenedProps);
+
+			break;
+	}
+}
+
+function applyBuildingProp(building: Building, prop: SendProp, propName: string) {
+	switch (propName) {
+		case 'DT_BaseObject.m_iUpgradeLevel':
+			building.level = <number>prop.value;
+			break;
+		case 'DT_BaseObject.m_hBuilder':
+			building.builder = <number>prop.value;
+			break;
+		case 'DT_BaseObject.m_iMaxHealth':
+			building.maxHealth = <number>prop.value;
+			break;
+		case 'DT_BaseObject.m_iHealth':
+			building.health = <number>prop.value;
+			break;
+		case 'DT_BaseObject.m_bBuilding':
+			building.isBuilding = <number>prop.value > 0;
+			break;
+		case 'DT_BaseObject.m_bHasSapper':
+			building.isSapped = <number>prop.value > 0;
+			break;
+		case 'DT_BaseEntity.m_vecOrigin':
+			building.position = <Vector>prop.value;
+			break;
+		case 'DT_BaseEntity.m_iTeamNum':
+			building.team = <number>prop.value;
 			break;
 	}
 }

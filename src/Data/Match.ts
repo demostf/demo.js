@@ -16,6 +16,8 @@ import {handleGameEventList} from "../PacketHandler/GameEventList";
 import {handleDataTable} from "../PacketHandler/DataTable";
 import {Weapon} from "./Weapon";
 import {Team} from "./Team";
+import {Building} from "./Building";
+import {PlayerResource} from "./PlayerResource";
 
 export class Match {
 	tick: number;
@@ -40,6 +42,9 @@ export class Match {
 	outerMap: {[outer: number]: number};
 	teams: Team[];
 	teamMap: {[entityId: string]: Team};
+	version: number;
+	buildings: {[entityId: string]: Building} = {};
+	playerResources: PlayerResource[]         = [];
 
 	constructor() {
 		this.tick             = 0;
@@ -67,6 +72,7 @@ export class Match {
 		this.outerMap         = {};
 		this.teams            = [];
 		this.teamMap          = {};
+		this.version          = 0;
 	}
 
 	getSendTable(name) {
@@ -131,6 +137,7 @@ export class Match {
 				break;
 			case 'serverInfo':
 				this.intervalPerTick = packet.intervalPerTick;
+				this.version         = packet.version;
 				break;
 			case 'sayText2':
 				handleSayText2(packet, this);

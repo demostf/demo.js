@@ -1,6 +1,6 @@
 import {GameEventPacket} from "../Data/Packet";
 import {Match} from "../Data/Match";
-import {DeathEventValues, RoundWinEventValues, PlayerSpawnEventValues} from "../Data/GameEvent";
+import {DeathEventValues, RoundWinEventValues, PlayerSpawnEventValues, ObjectDestroyedValues} from "../Data/GameEvent";
 
 export function handleGameEvent(packet: GameEventPacket, match: Match) {
 	switch (packet.event.name) {
@@ -54,5 +54,9 @@ export function handleGameEvent(packet: GameEventPacket, match: Match) {
 			userState.classes[classId]++;
 		}
 			break;
+		case 'object_destroyed':{
+			const values = <ObjectDestroyedValues>packet.event.values;
+			delete match.buildings[values.index];
+		}
 	}
 }
