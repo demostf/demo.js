@@ -38,7 +38,7 @@ export function handleGameEvent(packet: GameEventPacket, match: Match) {
 		}
 			break;
 		case 'player_spawn': {
-			const values = <PlayerSpawnEventValues>packet.event.values;
+			const values    = <PlayerSpawnEventValues>packet.event.values;
 			const userId    = values.userid;
 			const userState = match.getUserInfo(userId);
 			const player    = match.playerMap[userState.entityId];
@@ -54,9 +54,13 @@ export function handleGameEvent(packet: GameEventPacket, match: Match) {
 			userState.classes[classId]++;
 		}
 			break;
-		case 'object_destroyed':{
+		case 'object_destroyed': {
 			const values = <ObjectDestroyedValues>packet.event.values;
 			delete match.buildings[values.index];
 		}
+			break;
+		case 'teamplay_round_start':
+			match.buildings = {};
+			break;
 	}
 }
