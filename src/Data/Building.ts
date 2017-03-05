@@ -9,6 +9,7 @@ export interface BaseBuilding {
 	isBuilding: boolean;
 	isSapped: boolean;
 	team: number;
+	angle: number;
 }
 
 export interface Sentry extends BaseBuilding {

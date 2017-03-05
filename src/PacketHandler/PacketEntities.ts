@@ -208,7 +208,8 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					position:         new Vector(0, 0, 0),
 					shieldLevel:      0,
 					isMini:           false,
-					team:             0
+					team:             0,
+					angle:            0
 				};
 			}
 			const sentry = <Sentry>match.buildings[entity.entityIndex];
@@ -233,6 +234,10 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						break;
 					case 'DT_BaseObject.m_bMiniBuilding':
 						sentry.isMini = <number>prop.value > 1;
+						break;
+					case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
+						sentry.angle = <number>prop.value;
+						break;
 				}
 			}
 			if (entity.pvs & PVS.LEAVE) {
@@ -252,7 +257,8 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					position:   new Vector(0, 0, 0),
 					team:       0,
 					healing:    [],
-					metal:      0
+					metal:      0,
+					angle:      0
 				};
 			}
 			const dispenser = <Dispenser>match.buildings[entity.entityIndex];
@@ -289,6 +295,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					rechargeTime:     0,
 					rechargeDuration: 0,
 					timesUsed:        0,
+					angle:            0,
 					yawToExit:        0
 				};
 			}
@@ -310,10 +317,10 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						teleporter.otherEnd = <number>prop.value;
 						break;
 					case 'DT_ObjectTeleporter.m_flYawToExit':
-						if (prop.value) {
-							teleporter.isEntrance = true;
-							teleporter.yawToExit  = <number>prop.value;
-						}
+						teleporter.yawToExit = <number>prop.value;
+						break;
+					case 'DT_BaseObject.m_iObjectMode':
+						teleporter.isEntrance = <number>prop.value === 0;
 						break;
 				}
 			}
@@ -470,6 +477,9 @@ function applyBuildingProp(building: Building, prop: SendProp, propName: string)
 			break;
 		case 'DT_BaseEntity.m_iTeamNum':
 			building.team = <number>prop.value;
+			break;
+		case 'DT_BaseEntity.m_angRotation':
+			building.angle = (<Vector>prop.value).y;
 			break;
 	}
 }
