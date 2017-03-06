@@ -1,0 +1,1475 @@
+{
+  "chat": [
+    {
+      "kind": "TF_Chat_Team",
+      "from": "Kireek",
+      "text": "[P-REC] Recording...",
+      "tick": 13806
+    },
+    {
+      "text": "[LogsTF] To see the stats from the previous rounds, type: .ss",
+      "tick": 42503
+    },
+    {
+      "text": "[LogsTF] Uploading logs...",
+      "tick": 80216
+    },
+    {
+      "kind": "TF_Chat_Team",
+      "from": "Kireek",
+      "text": "[P-REC] Stop record.",
+      "tick": 80217
+    },
+    {
+      "text": "[LogsTF] Logs were uploaded to: logs.tf/1648254",
+      "tick": 80272
+    },
+    {
+      "text": "[LogsTF] To see the stats, type: .ss",
+      "tick": 80272
+    },
+    {
+      "kind": "TF_Chat_Team",
+      "from": "Kireek",
+      "text": "[P-REC] Recording...",
+      "tick": 80670
+    },
+    {
+      "text": "[LogsTF] To see the stats from the previous rounds, type: .ss",
+      "tick": 124760
+    },
+    {
+      "text": "[LogsTF] Uploading logs...",
+      "tick": 165893
+    },
+    {
+      "kind": "TF_Chat_Team",
+      "from": "Kireek",
+      "text": "[P-REC] Stop record.",
+      "tick": 165894
+    },
+    {
+      "text": "[LogsTF] Logs were uploaded to: logs.tf/1648278",
+      "tick": 165948
+    },
+    {
+      "text": "[LogsTF] To see the stats, type: .ss",
+      "tick": 165948
+    }
+  ],
+  "users": {
+    "2": {
+      "classes": {},
+      "name": "UGC Highlander Match TV",
+      "steamId": "BOT",
+      "userId": 2
+    },
+    "67": {
+      "classes": {
+        "5": 36
+      },
+      "name": "Old Billy Riley",
+      "steamId": "[U:1:92096346]",
+      "userId": 67,
+      "team": "blue"
+    },
+    "68": {
+      "classes": {
+        "5": 59
+      },
+      "name": "Icewind | demos.tf",
+      "steamId": "[U:1:64229260]",
+      "userId": 68,
+      "team": "red"
+    },
+    "69": {
+      "classes": {
+        "3": 55,
+        "undefined": 1
+      },
+      "name": "Foz",
+      "steamId": "[U:1:115748435]",
+      "userId": 69,
+      "team": "blue"
+    },
+    "70": {
+      "classes": {
+        "3": 67,
+        "undefined": 1
+      },
+      "name": "Kireek",
+      "steamId": "[U:1:92428736]",
+      "userId": 70,
+      "team": "red"
+    }
+  },
+  "deaths": [
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "ubersaw",
+      "tick": 6619
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 67,
+      "weapon": "crusaders_crossbow",
+      "tick": 7714
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 10208
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 11665
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 11949
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 69,
+      "weapon": "ubersaw",
+      "tick": 12158
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 13091
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 13111
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 13425
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 14617
+    },
+    {
+      "killer": 68,
+      "assister": 70,
+      "victim": 67,
+      "weapon": "crusaders_crossbow",
+      "tick": 14628
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 15009
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 15603
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 15984
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 17420
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "disciplinary_action",
+      "tick": 17991
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 18520
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 19418
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 19960
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 21990
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 22624
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 24539
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 24877
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 27252
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 27887
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "world",
+      "tick": 28106
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 29410
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 29786
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 31428
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 31974
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 33305
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 34074
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "crusaders_crossbow",
+      "tick": 34450
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 35946
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 37077
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "disciplinary_action",
+      "tick": 37971
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 38149
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 38520
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 39615
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 40219
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 42305
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 42503
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 43983
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 44100
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 44547
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 45245
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 46466
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 46533
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 67,
+      "weapon": "crusaders_crossbow",
+      "tick": 46939
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 47344
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 47808
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 50018
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 51095
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 51329
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 52990
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 53997
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 70,
+      "weapon": "crusaders_crossbow",
+      "tick": 53997
+    },
+    {
+      "assister": null,
+      "victim": 69,
+      "weapon": "worldspawn",
+      "tick": 54984
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 55644
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 56158
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 58814
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 59189
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 60300
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 61619
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 61624
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 62578
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 62738
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 64414
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 65748
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "pickaxe",
+      "tick": 65919
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 67869
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "crusaders_crossbow",
+      "tick": 68929
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 68933
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 69990
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 70861
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "crusaders_crossbow",
+      "tick": 71155
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 72905
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 68,
+      "weapon": "ubersaw",
+      "tick": 73397
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 74270
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 75770
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 75940
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 76903
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "ubersaw",
+      "tick": 77379
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 78009
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 79094
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "disciplinary_action",
+      "tick": 79531
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 81663
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "disciplinary_action",
+      "tick": 82305
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 70,
+      "weapon": "crusaders_crossbow",
+      "tick": 82665
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 83962
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 84657
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 85221
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 85243
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 86281
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 86635
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 87802
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 88553
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 89491
+    },
+    {
+      "killer": 68,
+      "assister": 70,
+      "victim": 69,
+      "weapon": "ubersaw",
+      "tick": 90329
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 92159
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 92567
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 94069
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 95194
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "disciplinary_action",
+      "tick": 95485
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 97291
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 97535
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 99413
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 100050
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 100786
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 101227
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 102581
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 104255
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 105677
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 106456
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 107050
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 107328
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 108362
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 108713
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "ubersaw",
+      "tick": 109099
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 110039
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 110538
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 111563
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "world",
+      "tick": 112750
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 112845
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 114357
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 114443
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 115324
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 115551
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 115609
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 116737
+    },
+    {
+      "killer": 67,
+      "assister": null,
+      "victim": 70,
+      "weapon": "ubersaw",
+      "tick": 117027
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 118015
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 118480
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "world",
+      "tick": 118886
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 120423
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 120914
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 121668
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 121988
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 124178
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 124760
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 125268
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 126393
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 126631
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 127842
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 69,
+      "weapon": "quake_rl",
+      "tick": 127857
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 67,
+      "weapon": "crusaders_crossbow",
+      "tick": 129353
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 129361
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 69,
+      "weapon": "ubersaw",
+      "tick": 129659
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 131300
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 67,
+      "weapon": "pickaxe",
+      "tick": 131755
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 132996
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 133640
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 133839
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 133863
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 134967
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "disciplinary_action",
+      "tick": 135434
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 136878
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 137091
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 138628
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 139488
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 139846
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 141274
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 141310
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 141474
+    },
+    {
+      "killer": 68,
+      "assister": null,
+      "victim": 69,
+      "weapon": "crusaders_crossbow",
+      "tick": 142109
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "shotgun_soldier",
+      "tick": 143238
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 143501
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 145082
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 145577
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 146678
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "shotgun_soldier",
+      "tick": 146919
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 148583
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 149790
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 151332
+    },
+    {
+      "killer": 67,
+      "assister": 69,
+      "victim": 68,
+      "weapon": "crusaders_crossbow",
+      "tick": 151432
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "pickaxe",
+      "tick": 151666
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 152217
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 152873
+    },
+    {
+      "killer": 70,
+      "assister": 68,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 154269
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "quake_rl",
+      "tick": 154273
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 155159
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 158795
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "shotgun_soldier",
+      "tick": 159090
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "shotgun_soldier",
+      "tick": 159241
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 160599
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 160688
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 161534
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 69,
+      "weapon": "tf_projectile_rocket",
+      "tick": 161756
+    },
+    {
+      "killer": 70,
+      "assister": null,
+      "victim": 67,
+      "weapon": "tf_projectile_rocket",
+      "tick": 162126
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 70,
+      "weapon": "world",
+      "tick": 164844
+    },
+    {
+      "killer": 69,
+      "assister": 67,
+      "victim": 68,
+      "weapon": "quake_rl",
+      "tick": 164996
+    },
+    {
+      "killer": 69,
+      "assister": null,
+      "victim": 69,
+      "weapon": "quake_rl",
+      "tick": 166596
+    }
+  ],
+  "rounds": [
+    {
+      "winner": "blue",
+      "length": 397.905029296875,
+      "end_tick": 40395
+    },
+    {
+      "winner": "blue",
+      "length": 577.3049926757812,
+      "end_tick": 79549
+    },
+    {
+      "winner": "blue",
+      "length": 621.5699462890625,
+      "end_tick": 122174
+    },
+    {
+      "winner": "blue",
+      "length": 635.8050537109375,
+      "end_tick": 165226
+    }
+  ],
+  "startTick": 79,
+  "intervalPerTick": 0.014999999664723873
+}

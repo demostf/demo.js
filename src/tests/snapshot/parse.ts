@@ -10,7 +10,7 @@ function testDemo(name: string) {
 	parser.readHeader();
 	parser.parseBody();
 	const parsed = parser.match.getState();
-	assert.deepEqual(parsed, target);
+	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), target);
 }
 
 suite('Parse basic demo info', () => {

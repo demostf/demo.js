@@ -1,0 +1,3203 @@
+{
+  "chat": [
+    {
+      "kind": "#TF_Name_Change",
+      "from": "OverFortress 3",
+      "text": "Advertise here",
+      "tick": 1264
+    },
+    {
+      "kind": "#TF_Name_Change",
+      "from": "Advertise here",
+      "text": "TF2 Roadhog",
+      "tick": 15579
+    },
+    {
+      "kind": "#TF_Name_Change",
+      "from": "Ice๊wind | demos.tf",
+      "text": "Here comes that boi",
+      "tick": 41929
+    },
+    {
+      "kind": "#TF_Name_Change",
+      "from": "Here comes that boi",
+      "text": "Here comes dat boi",
+      "tick": 43929
+    }
+  ],
+  "users": {
+    "2": {
+      "classes": {},
+      "name": "UGC Highlander Match TV",
+      "steamId": "BOT",
+      "userId": 2
+    },
+    "3": {
+      "classes": {
+        "1": 55,
+        "undefined": 1
+      },
+      "name": "Icewind | demos.tf",
+      "steamId": "[U:1:64229260]",
+      "userId": 3,
+      "team": "red"
+    },
+    "4": {
+      "classes": {
+        "7": 32
+      },
+      "name": "Strno8 / Patrezak DLan 2016",
+      "steamId": "[U:1:54986081]",
+      "userId": 4,
+      "team": "blue"
+    },
+    "8": {
+      "classes": {
+        "9": 24,
+        "undefined": 1
+      },
+      "name": "Kireek",
+      "steamId": "[U:1:92428736]",
+      "userId": 8,
+      "team": "red"
+    },
+    "9": {
+      "classes": {
+        "6": 7
+      },
+      "name": "TF2 Roadhog",
+      "steamId": "[U:1:56973094]",
+      "userId": 9,
+      "team": "blue"
+    },
+    "19": {
+      "classes": {
+        "2": 2,
+        "undefined": 1
+      },
+      "name": "Ice๊wind | demos.tf",
+      "steamId": "[U:1:115754284]",
+      "userId": 19,
+      "team": "red"
+    },
+    "22": {
+      "classes": {
+        "1": 14,
+        "2": 6,
+        "3": 24,
+        "4": 6
+      },
+      "name": "uggo retardo",
+      "steamId": "[U:1:89046714]",
+      "userId": 22,
+      "team": "red"
+    },
+    "23": {
+      "classes": {
+        "8": 4,
+        "undefined": 1
+      },
+      "name": "BaaBo",
+      "steamId": "[U:1:44065750]",
+      "userId": 23,
+      "team": "blue"
+    },
+    "26": {
+      "classes": {
+        "1": 25,
+        "3": 1,
+        "undefined": 1
+      },
+      "name": "s1ck",
+      "steamId": "[U:1:146390399]",
+      "userId": 26,
+      "team": "blue"
+    },
+    "27": {
+      "classes": {
+        "3": 26,
+        "5": 2
+      },
+      "name": "[BINGO] GrayFox",
+      "steamId": "[U:1:37659838]",
+      "userId": 27,
+      "team": "blue"
+    },
+    "28": {
+      "classes": {
+        "1": 9,
+        "2": 25,
+        "4": 18,
+        "undefined": 1
+      },
+      "name": "☺",
+      "steamId": "[U:1:130774992]",
+      "userId": 28,
+      "team": "red"
+    },
+    "29": {
+      "classes": {
+        "7": 5,
+        "undefined": 1
+      },
+      "name": "Dreyk",
+      "steamId": "[U:1:114808252]",
+      "userId": 29,
+      "team": "red"
+    },
+    "30": {
+      "classes": {
+        "1": 28,
+        "8": 1,
+        "undefined": 1
+      },
+      "name": "Pyla",
+      "steamId": "[U:1:157204170]",
+      "userId": 30,
+      "team": "blue"
+    },
+    "31": {
+      "classes": {
+        "2": 3,
+        "3": 9,
+        "6": 18,
+        "9": 6,
+        "undefined": 1
+      },
+      "name": "[BFL] Åspiråtæur Æ Føutre",
+      "steamId": "[U:1:86068441]",
+      "userId": 31,
+      "team": "red"
+    },
+    "32": {
+      "classes": {
+        "7": 14,
+        "undefined": 1
+      },
+      "name": "Dreyk",
+      "steamId": "[U:1:114808252]",
+      "userId": 32,
+      "team": "blue"
+    },
+    "33": {
+      "classes": {
+        "4": 37,
+        "undefined": 1
+      },
+      "name": "Old Billy Riley",
+      "steamId": "[U:1:92096346]",
+      "userId": 33,
+      "team": "red"
+    },
+    "34": {
+      "classes": {
+        "2": 6,
+        "undefined": 1
+      },
+      "name": "Ice๊wind | demos.tf",
+      "steamId": "[U:1:115754284]",
+      "userId": 34,
+      "team": "blue"
+    },
+    "35": {
+      "classes": {
+        "3": 8,
+        "undefined": 1
+      },
+      "name": "Colin McCree",
+      "steamId": "[U:1:117926946]",
+      "userId": 35,
+      "team": "blue"
+    },
+    "36": {
+      "classes": {
+        "2": 10,
+        "undefined": 1
+      },
+      "name": "Cronk",
+      "steamId": "[U:1:73190327]",
+      "userId": 36,
+      "team": "red"
+    },
+    "37": {
+      "classes": {
+        "1": 9,
+        "undefined": 1
+      },
+      "name": "Clem",
+      "steamId": "[U:1:68891230]",
+      "userId": 37,
+      "team": "blue"
+    },
+    "38": {
+      "classes": {
+        "2": 11,
+        "3": 9,
+        "undefined": 1
+      },
+      "name": "Here comes dat boi",
+      "steamId": "[U:1:115754284]",
+      "userId": 38,
+      "team": "red"
+    }
+  },
+  "deaths": [
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "deflect_rocket",
+      "tick": 2286
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 26,
+      "weapon": "world",
+      "tick": 2326
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "world",
+      "tick": 2535
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 3154
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 3591
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 3779
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 28,
+      "weapon": "shotgun_pyro",
+      "tick": 3856
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 3893
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 4454
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 28,
+      "weapon": "iron_bomber",
+      "tick": 4611
+    },
+    {
+      "killer": 4,
+      "assister": 26,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 5012
+    },
+    {
+      "killer": 28,
+      "assister": 3,
+      "victim": 9,
+      "weapon": "quickiebomb_launcher",
+      "tick": 5094
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 5220
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 5414
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 5539
+    },
+    {
+      "killer": 4,
+      "assister": 26,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 6173
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 6330
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 6556
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 28,
+      "weapon": "shotgun_pyro",
+      "tick": 6765
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 6776
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 7022
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 29,
+      "weapon": "scattergun",
+      "tick": 7351
+    },
+    {
+      "killer": 22,
+      "assister": 28,
+      "victim": 9,
+      "weapon": "scattergun",
+      "tick": 7482
+    },
+    {
+      "killer": 3,
+      "assister": 22,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 7687
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 27,
+      "weapon": "world",
+      "tick": 7725
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 8244
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 27,
+      "weapon": "iron_bomber",
+      "tick": 8251
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 29,
+      "weapon": "scattergun",
+      "tick": 8349
+    },
+    {
+      "killer": 22,
+      "assister": 29,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 8426
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 8569
+    },
+    {
+      "killer": 29,
+      "assister": null,
+      "victim": 27,
+      "weapon": "deflect_rocket",
+      "tick": 8705
+    },
+    {
+      "killer": 29,
+      "assister": 3,
+      "victim": 26,
+      "weapon": "flamethrower",
+      "tick": 9151
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "degreaser",
+      "tick": 9349
+    },
+    {
+      "killer": 4,
+      "assister": 27,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 9493
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 29,
+      "weapon": "scattergun",
+      "tick": 9753
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 3,
+      "weapon": "shotgun_soldier",
+      "tick": 9995
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 27,
+      "weapon": "iron_bomber",
+      "tick": 10066
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 10168
+    },
+    {
+      "killer": 3,
+      "assister": 22,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 10474
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 27,
+      "weapon": "tf_projectile_rocket",
+      "tick": 10582
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 10735
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 26,
+      "weapon": "quickiebomb_launcher",
+      "tick": 11114
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_soldier",
+      "tick": 11187
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 27,
+      "weapon": "quickiebomb_launcher",
+      "tick": 11382
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 4,
+      "weapon": "tf_projectile_rocket",
+      "tick": 11579
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 11827
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 30,
+      "weapon": "world",
+      "tick": 11899
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 27,
+      "weapon": "iron_bomber",
+      "tick": 11966
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 12059
+    },
+    {
+      "killer": 27,
+      "assister": 30,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 12324
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 30,
+      "weapon": "iron_bomber",
+      "tick": 12469
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 12600
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 12628
+    },
+    {
+      "killer": 30,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 12892
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 13150
+    },
+    {
+      "killer": 27,
+      "assister": 26,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 13414
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 9,
+      "weapon": "iron_bomber",
+      "tick": 13533
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 27,
+      "weapon": "warfan",
+      "tick": 13771
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 13819
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "deflect_promode",
+      "tick": 14056
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 14109
+    },
+    {
+      "killer": 28,
+      "assister": 3,
+      "victim": 4,
+      "weapon": "iron_bomber",
+      "tick": 14122
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 30,
+      "weapon": "scattergun",
+      "tick": 14344
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "shotgun_soldier",
+      "tick": 14359
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_rocket",
+      "tick": 14591
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 14831
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 14966
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 15278
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 15484
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 15534
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 4,
+      "weapon": "shotgun_primary",
+      "tick": 15840
+    },
+    {
+      "killer": 8,
+      "assister": 28,
+      "victim": 27,
+      "weapon": "shotgun_primary",
+      "tick": 16033
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 26,
+      "weapon": "tf_projectile_rocket",
+      "tick": 16124
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 8,
+      "weapon": "scattergun",
+      "tick": 16442
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 16532
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "world",
+      "tick": 16545
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 16626
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 16941
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 27,
+      "weapon": "tf_projectile_rocket",
+      "tick": 17028
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 17036
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 8,
+      "weapon": "guillotine",
+      "tick": 17303
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 9,
+      "weapon": "world",
+      "tick": 17320
+    },
+    {
+      "killer": 8,
+      "assister": 22,
+      "victim": 27,
+      "weapon": "obj_minisentry",
+      "tick": 17393
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 17429
+    },
+    {
+      "killer": 4,
+      "assister": 27,
+      "victim": 3,
+      "weapon": "degreaser",
+      "tick": 17925
+    },
+    {
+      "killer": 4,
+      "assister": 27,
+      "victim": 8,
+      "weapon": "degreaser",
+      "tick": 18067
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 26,
+      "weapon": "iron_bomber",
+      "tick": 18097
+    },
+    {
+      "killer": 28,
+      "assister": 3,
+      "victim": 4,
+      "weapon": "quickiebomb_launcher",
+      "tick": 18531
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 18647
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "pistol_scout",
+      "tick": 18903
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 18918
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_rocket",
+      "tick": 19109
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 22,
+      "weapon": "deflect_rocket",
+      "tick": 19157
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 8,
+      "weapon": "shotgun_pyro",
+      "tick": 19451
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 19770
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 19885
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 26,
+      "weapon": "tf_projectile_rocket",
+      "tick": 19890
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 30,
+      "weapon": "iron_bomber",
+      "tick": 20016
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 20219
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 4,
+      "weapon": "world",
+      "tick": 20382
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 20407
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 32,
+      "weapon": "iron_bomber",
+      "tick": 20484
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 20554
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 30,
+      "weapon": "shotgun_primary",
+      "tick": 20710
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 20719
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 28,
+      "weapon": "world",
+      "tick": 20898
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 8,
+      "weapon": "pistol_scout",
+      "tick": 21007
+    },
+    {
+      "killer": 27,
+      "assister": 30,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 21159
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 21221
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 33,
+      "weapon": "flamethrower",
+      "tick": 21269
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 21278
+    },
+    {
+      "killer": 32,
+      "assister": 26,
+      "victim": 19,
+      "weapon": "flamethrower",
+      "tick": 21506
+    },
+    {
+      "killer": 30,
+      "assister": 27,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 21513
+    },
+    {
+      "killer": 22,
+      "assister": 8,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 21637
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 28,
+      "weapon": "world",
+      "tick": 21645
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 3,
+      "weapon": "flamethrower",
+      "tick": 21675
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 27,
+      "weapon": "tf_projectile_pipe",
+      "tick": 21930
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "pistol_scout",
+      "tick": 22218
+    },
+    {
+      "killer": 27,
+      "assister": 26,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 22242
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 32,
+      "weapon": "scattergun",
+      "tick": 22281
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 22435
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_pipe",
+      "tick": 22573
+    },
+    {
+      "killer": 26,
+      "assister": 30,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 22616
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 8,
+      "weapon": "flamethrower",
+      "tick": 22727
+    },
+    {
+      "killer": 3,
+      "assister": 22,
+      "victim": 32,
+      "weapon": "scattergun",
+      "tick": 22805
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 22874
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 22899
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 22961
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 31,
+      "weapon": "world",
+      "tick": 23017
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 23150
+    },
+    {
+      "killer": 28,
+      "assister": 8,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 23366
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 23484
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 23541
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_rocket",
+      "tick": 23564
+    },
+    {
+      "killer": 31,
+      "assister": 8,
+      "victim": 4,
+      "weapon": "tf_projectile_rocket",
+      "tick": 23852
+    },
+    {
+      "killer": 22,
+      "assister": 28,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 23892
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 32,
+      "weapon": "pistol_scout",
+      "tick": 24007
+    },
+    {
+      "killer": 26,
+      "assister": 32,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 24049
+    },
+    {
+      "killer": 33,
+      "assister": 28,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 24145
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 8,
+      "weapon": "shotgun_pyro",
+      "tick": 24206
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "degreaser",
+      "tick": 24544
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "pistol_scout",
+      "tick": 24579
+    },
+    {
+      "killer": 8,
+      "assister": 28,
+      "victim": 26,
+      "weapon": "shotgun_primary",
+      "tick": 25192
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 25286
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 25335
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 28,
+      "weapon": "degreaser",
+      "tick": 25439
+    },
+    {
+      "killer": 32,
+      "assister": 27,
+      "victim": 31,
+      "weapon": "flamethrower",
+      "tick": 25522
+    },
+    {
+      "killer": 32,
+      "assister": 27,
+      "victim": 8,
+      "weapon": "flamethrower",
+      "tick": 25646
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 30,
+      "weapon": "scattergun",
+      "tick": 25667
+    },
+    {
+      "killer": 28,
+      "assister": 22,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 25763
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 31,
+      "weapon": "deflect_rocket",
+      "tick": 25814
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 25836
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 25880
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 32,
+      "weapon": "shotgun_primary",
+      "tick": 25961
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 26052
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 26056
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 31,
+      "weapon": "deflect_rocket",
+      "tick": 26204
+    },
+    {
+      "killer": 3,
+      "assister": 22,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 26380
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 26514
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 26527
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 26666
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 26881
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 27042
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 26,
+      "weapon": "tf_projectile_rocket",
+      "tick": 27042
+    },
+    {
+      "killer": 28,
+      "assister": 8,
+      "victim": 32,
+      "weapon": "scattergun",
+      "tick": 27076
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 27346
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 30,
+      "weapon": "scattergun",
+      "tick": 27354
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun_pyro",
+      "tick": 27433
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 27528
+    },
+    {
+      "killer": 4,
+      "assister": 26,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 27642
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 32,
+      "weapon": "tf_projectile_rocket",
+      "tick": 27854
+    },
+    {
+      "killer": 8,
+      "assister": 22,
+      "victim": 26,
+      "weapon": "shotgun_primary",
+      "tick": 27857
+    },
+    {
+      "killer": 4,
+      "assister": 30,
+      "victim": 8,
+      "weapon": "degreaser",
+      "tick": 28016
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_pipe",
+      "tick": 28256
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 27,
+      "weapon": "tf_projectile_rocket",
+      "tick": 28416
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_rocket",
+      "tick": 28651
+    },
+    {
+      "killer": 28,
+      "assister": 31,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 28736
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 8,
+      "weapon": "pistol_scout",
+      "tick": 28780
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 32,
+      "weapon": "tf_projectile_pipe",
+      "tick": 28898
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "degreaser",
+      "tick": 28976
+    },
+    {
+      "killer": 8,
+      "assister": 28,
+      "victim": 26,
+      "weapon": "shotgun_primary",
+      "tick": 29191
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 33,
+      "weapon": "flamethrower",
+      "tick": 29207
+    },
+    {
+      "killer": 28,
+      "assister": 3,
+      "victim": 4,
+      "weapon": "pistol_scout",
+      "tick": 29214
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 29533
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 29603
+    },
+    {
+      "killer": 4,
+      "assister": 30,
+      "victim": 31,
+      "weapon": "shotgun_pyro",
+      "tick": 29619
+    },
+    {
+      "killer": 28,
+      "assister": 22,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 29650
+    },
+    {
+      "killer": 33,
+      "assister": 28,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 29714
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 34,
+      "weapon": "scattergun",
+      "tick": 29961
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 29964
+    },
+    {
+      "killer": 27,
+      "assister": 26,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 30170
+    },
+    {
+      "killer": 3,
+      "assister": 28,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 30501
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 30656
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 30666
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 30720
+    },
+    {
+      "killer": 22,
+      "assister": 28,
+      "victim": 30,
+      "weapon": "tf_projectile_rocket",
+      "tick": 30785
+    },
+    {
+      "killer": 31,
+      "assister": 3,
+      "victim": 27,
+      "weapon": "tf_projectile_rocket",
+      "tick": 31020
+    },
+    {
+      "killer": 31,
+      "assister": 28,
+      "victim": 4,
+      "weapon": "tf_projectile_rocket",
+      "tick": 31200
+    },
+    {
+      "killer": 32,
+      "assister": 30,
+      "victim": 36,
+      "weapon": "flamethrower",
+      "tick": 31243
+    },
+    {
+      "killer": 26,
+      "assister": 30,
+      "victim": 8,
+      "weapon": "scattergun",
+      "tick": 31307
+    },
+    {
+      "killer": 33,
+      "assister": 8,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 31363
+    },
+    {
+      "killer": 22,
+      "assister": 8,
+      "victim": 32,
+      "weapon": "tf_projectile_rocket",
+      "tick": 31366
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 34,
+      "weapon": "tf_projectile_rocket",
+      "tick": 31683
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 31721
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 31786
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 30,
+      "weapon": "scattergun",
+      "tick": 31859
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 32009
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 30,
+      "weapon": "scattergun",
+      "tick": 32138
+    },
+    {
+      "killer": 34,
+      "assister": 32,
+      "victim": 31,
+      "weapon": "nonnonviolent_protest",
+      "tick": 32376
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 32401
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 4,
+      "weapon": "world",
+      "tick": 32582
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 30,
+      "weapon": "shotgun_primary",
+      "tick": 32690
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 27,
+      "weapon": "scattergun",
+      "tick": 32694
+    },
+    {
+      "killer": 26,
+      "assister": 34,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 32779
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 32877
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 33069
+    },
+    {
+      "killer": 34,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "sniperrifle",
+      "tick": 33111
+    },
+    {
+      "killer": 32,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "flamethrower",
+      "tick": 33239
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 31,
+      "weapon": "world",
+      "tick": 33252
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 33256
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 28,
+      "weapon": "world",
+      "tick": 33295
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 33360
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 33521
+    },
+    {
+      "killer": 4,
+      "assister": 34,
+      "victim": 22,
+      "weapon": "deflect_rocket",
+      "tick": 33573
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 33582
+    },
+    {
+      "killer": 31,
+      "assister": 22,
+      "victim": 34,
+      "weapon": "shotgun_primary",
+      "tick": 33704
+    },
+    {
+      "killer": 23,
+      "assister": 30,
+      "victim": 31,
+      "weapon": "revolver",
+      "tick": 33776
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 34,
+      "weapon": "shotgun_primary",
+      "tick": 34052
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 4,
+      "weapon": "shotgun_primary",
+      "tick": 34162
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34190
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 8,
+      "weapon": "scattergun",
+      "tick": 34257
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 34279
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 34432
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34476
+    },
+    {
+      "killer": 31,
+      "assister": 8,
+      "victim": 4,
+      "weapon": "shotgun_primary",
+      "tick": 34508
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "revolver",
+      "tick": 34562
+    },
+    {
+      "killer": 35,
+      "assister": 4,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34650
+    },
+    {
+      "killer": 22,
+      "assister": 33,
+      "victim": 32,
+      "weapon": "scattergun",
+      "tick": 34696
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34736
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34795
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34868
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "obj_minisentry",
+      "tick": 34875
+    },
+    {
+      "killer": 35,
+      "assister": 30,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 34915
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 35025
+    },
+    {
+      "killer": 22,
+      "assister": 31,
+      "victim": 26,
+      "weapon": "scattergun",
+      "tick": 35118
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 34,
+      "weapon": "shotgun_primary",
+      "tick": 35149
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 35304
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 4,
+      "weapon": "shotgun_primary",
+      "tick": 35496
+    },
+    {
+      "killer": 35,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 35578
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 23,
+      "weapon": "pistol",
+      "tick": 35612
+    },
+    {
+      "killer": 22,
+      "assister": 3,
+      "victim": 34,
+      "weapon": "scattergun",
+      "tick": 35616
+    },
+    {
+      "killer": 35,
+      "assister": 30,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 35760
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 4,
+      "weapon": "scattergun",
+      "tick": 35952
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun_pyro",
+      "tick": 35981
+    },
+    {
+      "killer": 30,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 36051
+    },
+    {
+      "killer": 35,
+      "assister": 23,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 36099
+    },
+    {
+      "killer": 27,
+      "assister": 35,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 36251
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 30,
+      "weapon": "sniperrifle",
+      "tick": 36304
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 32,
+      "weapon": "scattergun",
+      "tick": 36442
+    },
+    {
+      "killer": 26,
+      "assister": 32,
+      "victim": 8,
+      "weapon": "scattergun",
+      "tick": 36518
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "world",
+      "tick": 36664
+    },
+    {
+      "killer": 4,
+      "assister": 32,
+      "victim": 28,
+      "weapon": "degreaser",
+      "tick": 36756
+    },
+    {
+      "killer": 32,
+      "assister": 4,
+      "victim": 31,
+      "weapon": "flamethrower",
+      "tick": 36769
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 36927
+    },
+    {
+      "killer": 26,
+      "assister": 32,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 37151
+    },
+    {
+      "killer": 27,
+      "assister": 35,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 37293
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 22,
+      "weapon": "flamethrower",
+      "tick": 37325
+    },
+    {
+      "killer": 27,
+      "assister": 30,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 37364
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 37496
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 35,
+      "weapon": "world",
+      "tick": 37763
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "minigun",
+      "tick": 37892
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 8,
+      "weapon": "shotgun_pyro",
+      "tick": 38039
+    },
+    {
+      "killer": 31,
+      "assister": 3,
+      "victim": 23,
+      "weapon": "minigun",
+      "tick": 38081
+    },
+    {
+      "killer": 33,
+      "assister": 31,
+      "victim": 4,
+      "weapon": "tf_projectile_pipe",
+      "tick": 38352
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 23,
+      "weapon": "world",
+      "tick": 38387
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 38769
+    },
+    {
+      "killer": 26,
+      "assister": 30,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 39076
+    },
+    {
+      "killer": 27,
+      "assister": 35,
+      "victim": 22,
+      "weapon": "shotgun_soldier",
+      "tick": 39124
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 37,
+      "weapon": "minigun",
+      "tick": 39371
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 39683
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 27,
+      "weapon": "quickiebomb_launcher",
+      "tick": 39733
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 28,
+      "weapon": "maxgun",
+      "tick": 39981
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "minigun",
+      "tick": 40065
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 40140
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 40244
+    },
+    {
+      "killer": 30,
+      "assister": 37,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 40428
+    },
+    {
+      "killer": 33,
+      "assister": 22,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 40432
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 30,
+      "weapon": "tf_projectile_pipe",
+      "tick": 40641
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 38,
+      "weapon": "shotgun_pyro",
+      "tick": 40785
+    },
+    {
+      "killer": 33,
+      "assister": 38,
+      "victim": 37,
+      "weapon": "tf_projectile_pipe",
+      "tick": 40835
+    },
+    {
+      "killer": 35,
+      "assister": 26,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 40892
+    },
+    {
+      "killer": 30,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 40892
+    },
+    {
+      "killer": 37,
+      "assister": 32,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 41137
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 41304
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 41570
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 27,
+      "weapon": "minigun",
+      "tick": 41579
+    },
+    {
+      "killer": 30,
+      "assister": 37,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 41675
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 41883
+    },
+    {
+      "killer": 37,
+      "assister": 4,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 42061
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 32,
+      "weapon": "minigun",
+      "tick": 42348
+    },
+    {
+      "killer": 35,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 42373
+    },
+    {
+      "killer": 37,
+      "assister": 30,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 42578
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "world",
+      "tick": 42813
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 30,
+      "weapon": "quickiebomb_launcher",
+      "tick": 42980
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 37,
+      "weapon": "quickiebomb_launcher",
+      "tick": 43029
+    },
+    {
+      "killer": 37,
+      "assister": 32,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 43369
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 35,
+      "weapon": "minigun",
+      "tick": 43373
+    },
+    {
+      "killer": 38,
+      "assister": 33,
+      "victim": 30,
+      "weapon": "sniperrifle",
+      "tick": 43592
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun_pyro",
+      "tick": 43602
+    },
+    {
+      "killer": 27,
+      "assister": 37,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 43870
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 35,
+      "weapon": "minigun",
+      "tick": 43923
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 38,
+      "weapon": "maxgun",
+      "tick": 44081
+    },
+    {
+      "killer": 35,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 44124
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 44227
+    },
+    {
+      "killer": 30,
+      "assister": 37,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 44321
+    },
+    {
+      "killer": 38,
+      "assister": 28,
+      "victim": 37,
+      "weapon": "nonnonviolent_protest",
+      "tick": 44334
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 44729
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 44729
+    },
+    {
+      "killer": 27,
+      "assister": 37,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 44760
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 38,
+      "weapon": "shotgun_pyro",
+      "tick": 44769
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 44943
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 28,
+      "weapon": "flamethrower",
+      "tick": 45147
+    },
+    {
+      "killer": 32,
+      "assister": 37,
+      "victim": 38,
+      "weapon": "shotgun_pyro",
+      "tick": 45474
+    },
+    {
+      "killer": 27,
+      "assister": 30,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 45478
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun_pyro",
+      "tick": 45483
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 4,
+      "weapon": "minigun",
+      "tick": 45505
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "minigun",
+      "tick": 45873
+    },
+    {
+      "killer": 22,
+      "assister": 3,
+      "victim": 37,
+      "weapon": "quickiebomb_launcher",
+      "tick": 45925
+    },
+    {
+      "killer": 33,
+      "assister": 31,
+      "victim": 27,
+      "weapon": "tf_projectile_pipe",
+      "tick": 45944
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 46061
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 4,
+      "weapon": "minigun",
+      "tick": 46133
+    },
+    {
+      "killer": 37,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 46230
+    },
+    {
+      "killer": 37,
+      "assister": 35,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 46270
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 46376
+    },
+    {
+      "killer": 37,
+      "assister": 4,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 46486
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 4,
+      "weapon": "tf_projectile_pipe",
+      "tick": 46704
+    },
+    {
+      "killer": 35,
+      "assister": 27,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 46767
+    },
+    {
+      "killer": 37,
+      "assister": 4,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 46796
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 46927
+    },
+    {
+      "killer": 37,
+      "assister": 35,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 46999
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 47108
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 4,
+      "weapon": "sniperrifle",
+      "tick": 47161
+    },
+    {
+      "killer": 38,
+      "assister": null,
+      "victim": 35,
+      "weapon": "sniperrifle",
+      "tick": 47478
+    },
+    {
+      "killer": 30,
+      "assister": 26,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 47641
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 37,
+      "weapon": "minigun",
+      "tick": 47717
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 47729
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 22,
+      "weapon": "world",
+      "tick": 47781
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 28,
+      "weapon": "degreaser",
+      "tick": 47796
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 48036
+    },
+    {
+      "killer": 37,
+      "assister": 30,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 48121
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 48168
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 48172
+    },
+    {
+      "killer": 4,
+      "assister": 26,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 48253
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 36,
+      "weapon": "scattergun",
+      "tick": 48321
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 28,
+      "weapon": "shotgun_pyro",
+      "tick": 48321
+    },
+    {
+      "killer": 38,
+      "assister": null,
+      "victim": 38,
+      "weapon": "world",
+      "tick": 48443
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 48545
+    },
+    {
+      "killer": 30,
+      "assister": 4,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 48612
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 48837
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 48916
+    },
+    {
+      "killer": 38,
+      "assister": null,
+      "victim": 30,
+      "weapon": "quake_rl",
+      "tick": 48987
+    },
+    {
+      "killer": 4,
+      "assister": 35,
+      "victim": 28,
+      "weapon": "shotgun_pyro",
+      "tick": 49016
+    },
+    {
+      "killer": 33,
+      "assister": 31,
+      "victim": 35,
+      "weapon": "tf_projectile_pipe",
+      "tick": 49069
+    },
+    {
+      "killer": 26,
+      "assister": 37,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 49132
+    },
+    {
+      "killer": 27,
+      "assister": 26,
+      "victim": 33,
+      "weapon": "shotgun_soldier",
+      "tick": 49268
+    },
+    {
+      "killer": 28,
+      "assister": null,
+      "victim": 37,
+      "weapon": "sniperrifle",
+      "tick": 49341
+    },
+    {
+      "killer": 32,
+      "assister": 30,
+      "victim": 3,
+      "weapon": "shotgun_pyro",
+      "tick": 49383
+    },
+    {
+      "killer": 26,
+      "assister": 27,
+      "victim": 36,
+      "weapon": "scattergun",
+      "tick": 49422
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 49545
+    },
+    {
+      "killer": 26,
+      "assister": 4,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 49577
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 49743
+    },
+    {
+      "killer": 31,
+      "assister": 22,
+      "victim": 27,
+      "weapon": "minigun",
+      "tick": 49764
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 22,
+      "weapon": "tf_projectile_rocket",
+      "tick": 49816
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 49908
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 26,
+      "weapon": "tf_projectile_pipe",
+      "tick": 49946
+    },
+    {
+      "killer": 35,
+      "assister": 37,
+      "victim": 36,
+      "weapon": "tf_projectile_rocket",
+      "tick": 49997
+    },
+    {
+      "killer": 30,
+      "assister": 32,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 50034
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 50234
+    },
+    {
+      "killer": 32,
+      "assister": 30,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 50255
+    },
+    {
+      "killer": 38,
+      "assister": null,
+      "victim": 35,
+      "weapon": "quake_rl",
+      "tick": 50372
+    },
+    {
+      "killer": 37,
+      "assister": 4,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 50419
+    },
+    {
+      "killer": 32,
+      "assister": 30,
+      "victim": 36,
+      "weapon": "shotgun_pyro",
+      "tick": 50438
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 50469
+    },
+    {
+      "killer": 31,
+      "assister": 38,
+      "victim": 26,
+      "weapon": "minigun",
+      "tick": 50541
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 28,
+      "weapon": "tf_projectile_rocket",
+      "tick": 50734
+    },
+    {
+      "killer": 32,
+      "assister": 4,
+      "victim": 22,
+      "weapon": "shotgun_pyro",
+      "tick": 50744
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "minigun",
+      "tick": 50807
+    },
+    {
+      "killer": 35,
+      "assister": null,
+      "victim": 36,
+      "weapon": "tf_projectile_rocket",
+      "tick": 50845
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 50918
+    },
+    {
+      "killer": 26,
+      "assister": 30,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 51193
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 4,
+      "weapon": "sniperrifle",
+      "tick": 51238
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 38,
+      "weapon": "deflect_rocket",
+      "tick": 51310
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 51332
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 51512
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 33,
+      "weapon": "deflect_rocket",
+      "tick": 51814
+    },
+    {
+      "killer": 30,
+      "assister": 37,
+      "victim": 38,
+      "weapon": "scattergun",
+      "tick": 51899
+    },
+    {
+      "killer": 35,
+      "assister": 32,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 51970
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 30,
+      "weapon": "sniperrifle",
+      "tick": 52086
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 35,
+      "weapon": "tf_projectile_pipe",
+      "tick": 52147
+    },
+    {
+      "killer": 22,
+      "assister": 3,
+      "victim": 26,
+      "weapon": "sniperrifle",
+      "tick": 52378
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 30,
+      "weapon": "minigun",
+      "tick": 52380
+    },
+    {
+      "killer": 27,
+      "assister": null,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 52388
+    },
+    {
+      "killer": 37,
+      "assister": 35,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 52432
+    },
+    {
+      "killer": 27,
+      "assister": 32,
+      "victim": 3,
+      "weapon": "tf_projectile_rocket",
+      "tick": 52512
+    },
+    {
+      "killer": 35,
+      "assister": 37,
+      "victim": 38,
+      "weapon": "tf_projectile_rocket",
+      "tick": 52552
+    },
+    {
+      "killer": 27,
+      "assister": 4,
+      "victim": 28,
+      "weapon": "shotgun_soldier",
+      "tick": 52700
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 32,
+      "weapon": "minigun",
+      "tick": 52808
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 38,
+      "weapon": "shotgun_pyro",
+      "tick": 52997
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 28,
+      "weapon": "flamethrower",
+      "tick": 53291
+    },
+    {
+      "killer": 27,
+      "assister": 30,
+      "victim": 33,
+      "weapon": "tf_projectile_rocket",
+      "tick": 53341
+    },
+    {
+      "killer": 37,
+      "assister": 30,
+      "victim": 31,
+      "weapon": "scattergun",
+      "tick": 53368
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 53464
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 38,
+      "weapon": "pistol_scout",
+      "tick": 53474
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 28,
+      "weapon": "scattergun",
+      "tick": 53730
+    },
+    {
+      "killer": 35,
+      "assister": 4,
+      "victim": 31,
+      "weapon": "tf_projectile_rocket",
+      "tick": 53791
+    },
+    {
+      "killer": 32,
+      "assister": null,
+      "victim": 38,
+      "weapon": "deflect_rocket",
+      "tick": 53871
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 33,
+      "weapon": "deflect_promode",
+      "tick": 54012
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 27,
+      "weapon": "minigun",
+      "tick": 54145
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 22,
+      "weapon": "scattergun",
+      "tick": 54195
+    },
+    {
+      "killer": 37,
+      "assister": null,
+      "victim": 28,
+      "weapon": "maxgun",
+      "tick": 54317
+    },
+    {
+      "killer": 22,
+      "assister": null,
+      "victim": 37,
+      "weapon": "sniperrifle",
+      "tick": 54506
+    },
+    {
+      "killer": 26,
+      "assister": 35,
+      "victim": 33,
+      "weapon": "scattergun",
+      "tick": 54650
+    }
+  ],
+  "rounds": [],
+  "startTick": 72,
+  "intervalPerTick": 0.014999999664723873
+}
