@@ -2,6 +2,7 @@ import {Stream} from "stream";
 import {BitStream} from 'bit-buffer';
 import {Parser} from './Parser';
 import {StreamParser} from './StreamParser';
+import {PacketType} from "./Parser/Message/Packet";
 
 export class Demo {
 	stream: BitStream;
@@ -11,9 +12,14 @@ export class Demo {
 		this.stream = new BitStream(arrayBuffer);
 	}
 
-	getParser() {
+	getParser(fastMode: boolean = false) {
 		if (!this.parser) {
-			this.parser = new Parser(this.stream);
+			const skippedPackets = fastMode ? [
+					PacketType.packetEntities,
+					PacketType.tempEntities,
+					PacketType.entityMessage,
+				] : [];
+			this.parser          = new Parser(this.stream, skippedPackets);
 		}
 		return this.parser;
 	}

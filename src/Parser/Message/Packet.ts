@@ -37,7 +37,8 @@ export class Packet extends Parser {
 			const type = this.stream.readBits(6);
 			if (type !== 0) {
 				if (Packet.parsers[type]) {
-					let packet = Packet.parsers[type].call(this, this.stream, this.match);
+					const skip = this.skippedPackets.indexOf(type) !== -1;
+					const packet = Packet.parsers[type].call(this, this.stream, this.match, skip);
 					packets.push(packet);
 				} else {
 					throw new Error('Unknown packet type ' + type + " just parsed a " + PacketType[lastPacketType]);
@@ -86,7 +87,7 @@ export class Packet extends Parser {
 	};
 }
 
-enum PacketType {
+export enum PacketType {
 	file              = 2,
 	netTick           = 3,
 	stringCmd         = 4,

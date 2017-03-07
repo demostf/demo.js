@@ -1,4 +1,4 @@
-import {Packet} from './Parser/Message/Packet';
+import {Packet, PacketType} from './Parser/Message/Packet';
 import {ConsoleCmd} from './Parser/Message/ConsoleCmd';
 import {StringTable} from './Parser/Message/StringTable';
 import {DataTable} from './Parser/Message/DataTable';
@@ -12,12 +12,14 @@ import {Header} from "./Data/Header";
 export class Parser extends EventEmitter {
 	stream: BitStream;
 	match: Match;
+	skipPackets: PacketType[];
 
-	constructor(stream: BitStream) {
+	constructor(stream: BitStream, skipPackets: PacketType[] = []) {
 		super();
 		this.stream = stream;
 		this.match  = new Match();
 		this.on('packet', this.match.handlePacket.bind(this.match));
+		this.skipPackets = skipPackets;
 	}
 
 	readHeader() {
@@ -62,15 +64,15 @@ export class Parser extends EventEmitter {
 		switch (type) {
 			case MessageType.Sigon:
 			case MessageType.Packet:
-				return new Packet(type, tick, data, length, match);
+				return new Packet(type, tick, data, length, match, this.skipPackets);
 			case MessageType.ConsoleCmd:
-				return new ConsoleCmd(type, tick, data, length, match);
+				return new ConsoleCmd(type, tick, data, length, match, this.skipPackets);
 			case MessageType.UserCmd:
-				return new UserCmd(type, tick, data, length, match);
+				return new UserCmd(type, tick, data, length, match, this.skipPackets);
 			case MessageType.DataTables:
-				return new DataTable(type, tick, data, length, match);
+				return new DataTable(type, tick, data, length, match, this.skipPackets);
 			case MessageType.StringTables:
-				return new StringTable(type, tick, data, length, match);
+				return new StringTable(type, tick, data, length, match, this.skipPackets);
 			default:
 				throw new Error("unknown message type");
 		}

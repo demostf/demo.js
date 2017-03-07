@@ -58,7 +58,7 @@ function getPacketEntityForExisting(entityId: number, match: Match, pvs: PVS) {
 	return new PacketEntity(serverClass, entityId, pvs);
 }
 
-export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesPacket { //26: packetEntities
+export function PacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { //26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -74,38 +74,41 @@ export function PacketEntities(stream: BitStream, match: Match): PacketEntitiesP
 	let entityId          = -1;
 
 	const receivedEntities: PacketEntity[] = [];
-	for (let i = 0; i < updatedEntries; i++) {
-		const diff = readUBitVar(stream);
-		entityId += 1 + diff;
-		const pvs  = readPVSType(stream);
-		if (pvs === PVS.ENTER) {
-			const packetEntity = readEnterPVS(stream, entityId, match);
-			applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
+	const removedEntityIds: number[] = [];
 
-			if (updatedBaseLine) {
-				const newBaseLine: SendProp[] = [];
-				newBaseLine.concat(packetEntity.props);
-				match.baseLineCache[packetEntity.serverClass.id] = packetEntity.clone();
-			}
-			packetEntity.inPVS = true;
-			receivedEntities.push(packetEntity);
-		} else if (pvs === PVS.PRESERVE) {
-			const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
-			applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
-			receivedEntities.push(packetEntity);
-		} else {
-			if(match.entityClasses[entityId]) {
-				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
+	if (!skip) {
+		for (let i = 0; i < updatedEntries; i++) {
+			const diff = readUBitVar(stream);
+			entityId += 1 + diff;
+			const pvs  = readPVSType(stream);
+			if (pvs === PVS.ENTER) {
+				const packetEntity = readEnterPVS(stream, entityId, match);
+				applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
+
+				if (updatedBaseLine) {
+					const newBaseLine: SendProp[] = [];
+					newBaseLine.concat(packetEntity.props);
+					match.baseLineCache[packetEntity.serverClass.id] = packetEntity.clone();
+				}
+				packetEntity.inPVS = true;
 				receivedEntities.push(packetEntity);
+			} else if (pvs === PVS.PRESERVE) {
+				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
+				applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				receivedEntities.push(packetEntity);
+			} else {
+				if (match.entityClasses[entityId]) {
+					const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
+					receivedEntities.push(packetEntity);
+				}
 			}
 		}
-	}
 
-	const removedEntityIds: number[] = [];
-	if (isDelta) {
-		while (stream.readBoolean()) {
-			const entityId = stream.readBits(11);
-			removedEntityIds.push(entityId);
+		if (isDelta) {
+			while (stream.readBoolean()) {
+				const entityId = stream.readBits(11);
+				removedEntityIds.push(entityId);
+			}
 		}
 	}
 

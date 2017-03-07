@@ -1,7 +1,8 @@
 import {BitStream} from 'bit-buffer';
 import {Match} from '../../Data/Match';
 import {Packet} from "../../Data/Packet";
-import {SendTable} from "../../Data/SendTable";
+import {MessageType} from "../../Parser";
+import {PacketType} from "./Packet";
 
 export abstract class Parser {
 	type: any;
@@ -9,14 +10,16 @@ export abstract class Parser {
 	stream: BitStream;
 	length: number;
 	match: Match;
+	skippedPackets: PacketType[];
 
-	constructor(type, tick, stream, length, match) {
-		this.type = type;
-		this.tick = tick;
-		this.stream = stream;
-		this.length = length;//length in bytes
-		this.match = match;
+	constructor(type: MessageType, tick: number, stream: BitStream, length: number, match: Match, skippedPacket: PacketType[] = []) {
+		this.type           = type;
+		this.tick           = tick;
+		this.stream         = stream;
+		this.length         = length;//length in bytes
+		this.match          = match;
+		this.skippedPackets = skippedPacket;
 	}
 
-	abstract parse():Packet[]|string;
+	abstract parse(): Packet[]|string;
 }

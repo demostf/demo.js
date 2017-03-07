@@ -26,7 +26,7 @@ var echo = function (data) {
 fs.readFile(argv._[0], function (err, data) {
 	if (err) throw err;
 	var demo = Demo.fromNodeBuffer(data);
-	var parser = demo.getParser();
+	var parser = demo.getParser(true);
 	var head = parser.readHeader();
 	if (argv.head) {
 		echo(head);

@@ -4,35 +4,37 @@ import {Match} from "../../Data/Match";
 import {PacketEntity, PVS} from "../../Data/PacketEntity";
 import {applyEntityUpdate} from "../EntityDecoder";
 
-export function TempEntities(stream: BitStream, match: Match): TempEntitiesPacket { // 10: classInfo
+export function TempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
 	const length      = readVarInt(stream);
 	const end         = stream.index + length;
 
 	let entity: PacketEntity|null = null;
 	let entities: PacketEntity[]  = [];
-	for (let i = 0; i < entityCount; i++) {
-		const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
-		if (stream.readBoolean()) {
-			const classId     = stream.readBits(match.classBits);
-			const serverClass = match.serverClasses[classId - 1];
-			// no clue why the -1 but it works
-			// maybe because world (id=0) can never be temp
-			// but it's not like the -1 saves any space
-			const sendTable = match.getSendTable(serverClass.dataTable);
-			entity          = new PacketEntity(serverClass, 0, PVS.ENTER);
-			applyEntityUpdate(entity, sendTable, stream);
-			entities.push(entity);
-		} else {
-			if (entity) {
-				applyEntityUpdate(entity, match.getSendTable(entity.serverClass.dataTable), stream);
+	if (!skip) {
+		for (let i = 0; i < entityCount; i++) {
+			const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
+			if (stream.readBoolean()) {
+				const classId     = stream.readBits(match.classBits);
+				const serverClass = match.serverClasses[classId - 1];
+				// no clue why the -1 but it works
+				// maybe because world (id=0) can never be temp
+				// but it's not like the -1 saves any space
+				const sendTable = match.getSendTable(serverClass.dataTable);
+				entity          = new PacketEntity(serverClass, 0, PVS.ENTER);
+				applyEntityUpdate(entity, sendTable, stream);
+				entities.push(entity);
 			} else {
-				throw new Error("no entity set to update");
+				if (entity) {
+					applyEntityUpdate(entity, match.getSendTable(entity.serverClass.dataTable), stream);
+				} else {
+					throw new Error("no entity set to update");
+				}
 			}
 		}
-	}
-	if (end - stream.index > 8) {
-		throw new Error("unexpected content after TempEntities");
+		if (end - stream.index > 8) {
+			throw new Error("unexpected content after TempEntities");
+		}
 	}
 
 	stream.index = end;

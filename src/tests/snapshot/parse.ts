@@ -2,11 +2,11 @@ import {readFileSync} from 'fs';
 import {Demo} from "../../Demo";
 import * as assert from 'assert';
 
-function testDemo(name: string) {
+function testDemo(name: string, fastMode: boolean = false) {
 	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}.json`, 'utf8'));
 	const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 	const demo   = Demo.fromNodeBuffer(source);
-	const parser = demo.getParser();
+	const parser = demo.getParser(fastMode);
 	parser.readHeader();
 	parser.parseBody();
 	const parsed = parser.match.getState();
@@ -14,6 +14,10 @@ function testDemo(name: string) {
 }
 
 suite('Parse basic demo info', () => {
+	test('Fast mode', () => {
+		testDemo('snakewater', true);
+	});
+
 	test('Parse snakewater.dem', () => {
 		testDemo('snakewater');
 	});
