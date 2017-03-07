@@ -14,15 +14,6 @@ var echo = function (data) {
 	console.log(string);
 };
 
-//var stream = fs.createReadStream(argv._[0]);
-//
-//var demo = Demo.fromNodeStream(stream);
-//var parser = demo.getParser();
-//parser.on('done', function (state) {
-//	echo(state);
-//});
-//parser.start();
-
 fs.readFile(argv._[0], function (err, data) {
 	if (err) throw err;
 	var demo = Demo.fromNodeBuffer(data);
