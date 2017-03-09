@@ -4,6 +4,9 @@ import {StringTableEntry} from "../Data/StringTable";
 
 export function handleStringTable(packet: StringTablePacket, match: Match) {
 	for (const table of packet.tables) {
+		if (!match.getStringTable(table.name)) {
+			match.stringTables.push(table);
+		}
 		if (table.name === 'userinfo') {
 			for (const userData of table.entries) {
 				if (userData.extraData) {

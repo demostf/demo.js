@@ -59,7 +59,6 @@ export function CreateStringTable(stream: BitStream, match: Match): StringTableP
 
 	parseStringTable(data, table, entityCount, match);
 
-	match.stringTables.push(table);
 	return {
 		packetType: 'stringTable',
 		tables:      [table]
