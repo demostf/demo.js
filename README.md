@@ -1,5 +1,7 @@
 # demo.js
 
+[![Build Status](https://travis-ci.org/icewind1991/demo.js.svg?branch=master)](https://travis-ci.org/icewind1991/demo.js)
+
 Parsing of TF2 demo files in node.js and the browser
 
 ## usage
