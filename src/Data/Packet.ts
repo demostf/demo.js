@@ -11,6 +11,11 @@ export interface StringTablePacket {
 	tables: StringTable[];
 }
 
+export interface ConsoleCmdPacket {
+	packetType: 'consoleCmd';
+	command: string;
+}
+
 export interface DataTablePacket {
 	packetType: 'dataTable';
 	tables: SendTable[];
@@ -149,4 +154,5 @@ export type Packet = BSPDecalPacket |
 	VoiceInitPacket |
 	VoiceDataPacket |
 	MenuPacket |
+	ConsoleCmdPacket |
 	CmdKeyValuesPacket;
