@@ -8,7 +8,7 @@ export class SendPropDefinition {
 	highValue: number;
 	bitCount: number;
 	table: SendTable|null;
-	numElements: number|null;
+	numElements: number;
 	arrayProperty: SendPropDefinition|null;
 	ownerTableName: string;
 
@@ -21,7 +21,7 @@ export class SendPropDefinition {
 		this.highValue      = 0;
 		this.bitCount       = 0;
 		this.table          = null;
-		this.numElements    = null;
+		this.numElements    = 0;
 		this.arrayProperty  = null;
 		this.ownerTableName = ownerTableName;
 	}
