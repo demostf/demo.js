@@ -21,5 +21,5 @@ export abstract class Parser {
 		this.skippedPackets = skippedPacket;
 	}
 
-	abstract parse(): Packet[]|string;
+	abstract parse(): Packet[];
 }
