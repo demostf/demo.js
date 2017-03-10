@@ -94,7 +94,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					}
 				}
 				if (prop.definition.ownerTableName === 'm_iAmmo') {
-					if (prop.value && prop.value > 0) {
+					if (prop.value !== null && prop.value > 0) {
 						player.ammo[parseInt(prop.definition.name, 10)] = <number>prop.value;
 					}
 				}
