@@ -140,6 +140,9 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			break;
 		case 'CWeaponMedigun':
 			const weapon = <CWeaponMedigun>match.weaponMap[entity.entityIndex];
+			if (!weapon) {
+				return;
+			}
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				switch (propName) {
