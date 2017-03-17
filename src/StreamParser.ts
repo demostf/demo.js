@@ -8,7 +8,7 @@ export class StreamParser extends Parser {
 	header: any;
 	sourceStream: Stream;
 
-	constructor(stream) {
+	constructor(stream: Stream) {
 		super(new BitStream(new ArrayBuffer(0)));
 		this.sourceStream = stream;
 		this.on('packet', this.match.handlePacket.bind(this.match));
