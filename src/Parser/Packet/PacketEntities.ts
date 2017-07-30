@@ -1,16 +1,16 @@
+import {BitStream} from 'bit-buffer';
+import {Match} from '../../Data/Match';
+import {PacketEntitiesPacket} from '../../Data/Packet';
 import {PacketEntity, PVS} from '../../Data/PacketEntity';
 import {SendProp} from '../../Data/SendProp';
-import {PacketEntitiesPacket} from "../../Data/Packet";
-import {BitStream} from 'bit-buffer';
-import {Match} from "../../Data/Match";
-import {readUBitVar} from "../readBitVar";
-import {applyEntityUpdate} from "../EntityDecoder";
+import {applyEntityUpdate} from '../EntityDecoder';
+import {readUBitVar} from '../readBitVar';
 
 const pvsMap = {
 	0: PVS.PRESERVE,
 	2: PVS.ENTER,
 	1: PVS.LEAVE,
-	3: PVS.LEAVE + PVS.DELETE
+	3: PVS.LEAVE + PVS.DELETE,
 };
 
 function readPVSType(stream: BitStream): PVS {
@@ -58,7 +58,7 @@ function getPacketEntityForExisting(entityId: number, match: Match, pvs: PVS) {
 	return new PacketEntity(serverClass, entityId, pvs);
 }
 
-export function PacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { //26: packetEntities
+export function PacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -106,8 +106,7 @@ export function PacketEntities(stream: BitStream, match: Match, skip: boolean = 
 
 		if (isDelta) {
 			while (stream.readBoolean()) {
-				const entityId = stream.readBits(11);
-				removedEntityIds.push(entityId);
+				removedEntityIds.push(stream.readBits(11));
 			}
 		}
 	}
@@ -117,12 +116,12 @@ export function PacketEntities(stream: BitStream, match: Match, skip: boolean = 
 		packetType:      'packetEntities',
 		entities:        receivedEntities,
 		removedEntities: removedEntityIds,
-		maxEntries:      maxEntries,
-		isDelta:         isDelta,
-		delta:           delta,
-		baseLine:        baseLine,
-		updatedEntries:  updatedEntries,
-		length:          length,
-		updatedBaseLine: updatedBaseLine
+		maxEntries,
+		isDelta,
+		delta,
+		baseLine,
+		updatedEntries,
+		length,
+		updatedBaseLine,
 	};
 }

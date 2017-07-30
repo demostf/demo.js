@@ -1,11 +1,11 @@
-import {PacketEntitiesPacket} from "../Data/Packet";
-import {Match} from "../Data/Match";
-import {PacketEntity, PVS} from "../Data/PacketEntity";
-import {Vector} from "../Data/Vector";
-import {Player, LifeState} from "../Data/Player";
-import {CWeaponMedigun, Weapon} from "../Data/Weapon";
-import {Building, Sentry, Dispenser, Teleporter} from "../Data/Building";
-import {SendProp} from "../Data/SendProp";
+import {Building, Dispenser, Sentry, Teleporter} from '../Data/Building';
+import {Match} from '../Data/Match';
+import {PacketEntitiesPacket} from '../Data/Packet';
+import {PacketEntity, PVS} from '../Data/PacketEntity';
+import {LifeState, Player} from '../Data/Player';
+import {SendProp} from '../Data/SendProp';
+import {Vector} from '../Data/Vector';
+import {CWeaponMedigun, Weapon} from '../Data/Weapon';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const removedEntityId of packet.removedEntities) {
@@ -29,8 +29,8 @@ function saveEntity(packetEntity: PacketEntity, match: Match) {
 function handleEntity(entity: PacketEntity, match: Match) {
 	for (const prop of entity.props) {
 		if (prop.definition.ownerTableName === 'DT_AttributeContainer' && prop.definition.name === 'm_hOuter') {
-			if (!match.outerMap[<number>prop.value]) {
-				match.outerMap[<number>prop.value] = entity.entityIndex;
+			if (!match.outerMap[prop.value as number]) {
+				match.outerMap[prop.value as number] = entity.entityIndex;
 			}
 		}
 	}
@@ -40,43 +40,43 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			if (!match.weaponMap[entity.entityIndex]) {
 				match.weaponMap[entity.entityIndex] = {
 					className: entity.serverClass.name,
-					owner:     <number>prop.value
-				}
+					owner:     prop.value as number,
+				};
 			}
 		}
 	}
 
 	switch (entity.serverClass.name) {
 		case 'CWorld':
-			match.world.boundaryMin = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMins').value;
-			match.world.boundaryMax = <Vector>entity.getProperty('DT_WORLD', 'm_WorldMaxs').value;
+			match.world.boundaryMin = entity.getProperty('DT_WORLD', 'm_WorldMins').value as Vector;
+			match.world.boundaryMax = entity.getProperty('DT_WORLD', 'm_WorldMaxs').value as Vector;
 			break;
 		case 'CTFPlayer':
 			/**
-			 "DT_TFPlayerScoringDataExclusive.m_iCaptures": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iDefenses": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iKills": 5,
-			 "DT_TFPlayerScoringDataExclusive.m_iDeaths": 17,
-			 "DT_TFPlayerScoringDataExclusive.m_iSuicides": 7,
-			 "DT_TFPlayerScoringDataExclusive.m_iDominations": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iRevenge": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iBuildingsBuilt": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iBuildingsDestroyed": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iHeadshots": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iBackstabs": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iHealPoints": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iInvulns": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iTeleports": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iDamageDone": 847,
-			 "DT_TFPlayerScoringDataExclusive.m_iCrits": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iResupplyPoints": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iKillAssists": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iBonusPoints": 0,
-			 "DT_TFPlayerScoringDataExclusive.m_iPoints": 6,
-			 "DT_TFPlayerSharedLocal.m_nDesiredDisguiseTeam": 0,
-			 "DT_TFPlayerSharedLocal.m_nDesiredDisguiseClass": 0,
-			 "DT_TFPlayerShared.m_iKillStreak": 0,
-			 "DT_TFPlayerShared.m_flCloakMeter": 100,
+			 * "DT_TFPlayerScoringDataExclusive.m_iCaptures": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iDefenses": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iKills": 5,
+			 * "DT_TFPlayerScoringDataExclusive.m_iDeaths": 17,
+			 * "DT_TFPlayerScoringDataExclusive.m_iSuicides": 7,
+			 * "DT_TFPlayerScoringDataExclusive.m_iDominations": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iRevenge": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iBuildingsBuilt": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iBuildingsDestroyed": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iHeadshots": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iBackstabs": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iHealPoints": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iInvulns": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iTeleports": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iDamageDone": 847,
+			 * "DT_TFPlayerScoringDataExclusive.m_iCrits": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iResupplyPoints": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iKillAssists": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iBonusPoints": 0,
+			 * "DT_TFPlayerScoringDataExclusive.m_iPoints": 6,
+			 * "DT_TFPlayerSharedLocal.m_nDesiredDisguiseTeam": 0,
+			 * "DT_TFPlayerSharedLocal.m_nDesiredDisguiseClass": 0,
+			 * "DT_TFPlayerShared.m_iKillStreak": 0,
+			 * "DT_TFPlayerShared.m_flCloakMeter": 100,
 			 */
 
 			const player: Player = (match.playerMap[entity.entityIndex]) ?
@@ -90,44 +90,44 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			for (const prop of entity.props) {
 				if (prop.definition.ownerTableName === 'm_hMyWeapons') {
 					if (prop.value !== 2097151) {
-						player.weaponIds[parseInt(prop.definition.name, 10)] = <number>prop.value;
+						player.weaponIds[parseInt(prop.definition.name, 10)] = prop.value as number;
 					}
 				}
 				if (prop.definition.ownerTableName === 'm_iAmmo') {
 					if (prop.value !== null && prop.value > 0) {
-						player.ammo[parseInt(prop.definition.name, 10)] = <number>prop.value;
+						player.ammo[parseInt(prop.definition.name, 10)] = prop.value as number;
 					}
 				}
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				switch (propName) {
 					case 'DT_BasePlayer.m_iHealth':
-						player.health = <number>prop.value;
+						player.health = prop.value as number;
 						break;
 					case 'DT_BasePlayer.m_iMaxHealth':
-						player.maxHealth = <number>prop.value;
+						player.maxHealth = prop.value as number;
 						break;
 					case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
-						player.position.x = (<Vector>prop.value).x;
-						player.position.y = (<Vector>prop.value).y;
+						player.position.x = (prop.value as Vector).x;
+						player.position.y = (prop.value as Vector).y;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
-						player.position.x = (<Vector>prop.value).x;
-						player.position.y = (<Vector>prop.value).y;
+						player.position.x = (prop.value as Vector).x;
+						player.position.y = (prop.value as Vector).y;
 						break;
 					case 'DT_TFLocalPlayerExclusive.m_vecOrigin[2]':
-						player.position.z = <number>prop.value;
+						player.position.z = prop.value as number;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
-						player.position.z = <number>prop.value;
+						player.position.z = prop.value as number;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
-						player.viewAngle = <number>prop.value;
+						player.viewAngle = prop.value as number;
 						break;
 					case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[1]':
-						player.viewAngle = <number>prop.value;
+						player.viewAngle = prop.value as number;
 						break;
 					case 'DT_BasePlayer.m_lifeState':
-						player.lifeState = <number>prop.value;
+						player.lifeState = prop.value as number;
 						break;
 					case 'DT_BaseCombatCharacter.m_hActiveWeapon':
 						for (let i = 0; i < player.weapons.length; i++) {
@@ -139,7 +139,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			}
 			break;
 		case 'CWeaponMedigun':
-			const weapon = <CWeaponMedigun>match.weaponMap[entity.entityIndex];
+			const weapon = match.weaponMap[entity.entityIndex] as CWeaponMedigun;
 			if (!weapon) {
 				return;
 			}
@@ -147,27 +147,27 @@ function handleEntity(entity: PacketEntity, match: Match) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				switch (propName) {
 					case 'DT_WeaponMedigun.m_hHealingTarget':
-						weapon.healTarget = <number>prop.value;
+						weapon.healTarget = prop.value as number;
 						break;
 					case 'DT_TFWeaponMedigunDataNonLocal.m_flChargeLevel':
-						weapon.chargeLevel = <number>prop.value;
+						weapon.chargeLevel = prop.value as number;
 						break;
 					case 'DT_LocalTFWeaponMedigunData.m_flChargeLevel':
-						weapon.chargeLevel = <number>prop.value;
+						weapon.chargeLevel = prop.value as number;
 						break;
 				}
 			}
 			break;
 		case'CTFTeam':
 			try {
-				const teamId = <number>entity.getProperty('DT_Team', 'm_iTeamNum').value;
+				const teamId = entity.getProperty('DT_Team', 'm_iTeamNum').value as number;
 				if (!match.teams[teamId]) {
 					match.teams[teamId]               = {
-						name:       <string>entity.getProperty('DT_Team', 'm_szTeamname').value,
-						score:      <number>entity.getProperty('DT_Team', 'm_iScore').value,
-						roundsWon:  <number>entity.getProperty('DT_Team', 'm_iRoundsWon').value,
-						players:    <number[]>entity.getProperty('DT_Team', '"player_array"').value,
-						teamNumber: <number>teamId
+						name:       entity.getProperty('DT_Team', 'm_szTeamname').value as string,
+						score:      entity.getProperty('DT_Team', 'm_iScore').value as number,
+						roundsWon:  entity.getProperty('DT_Team', 'm_iRoundsWon').value as number,
+						players:    entity.getProperty('DT_Team', '"player_array"').value as number[],
+						teamNumber: teamId as number,
 					};
 					match.teamMap[entity.entityIndex] = match.teams[teamId];
 				}
@@ -177,16 +177,16 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 					switch (propName) {
 						case 'DT_Team.m_iScore':
-							team.score = <number>prop.value;
+							team.score = prop.value as number;
 							break;
 						case 'DT_Team.m_szTeamname':
-							team.name = <string>prop.value;
+							team.name = prop.value as string;
 							break;
 						case 'DT_Team.m_iRoundsWon':
-							team.roundsWon = <number>prop.value;
+							team.roundsWon = prop.value as number;
 							break;
 						case 'DT_Team."player_array"':
-							team.players = <number[]>prop.value;
+							team.players = prop.value as number[];
 							break;
 
 					}
@@ -212,34 +212,34 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					shieldLevel:      0,
 					isMini:           false,
 					team:             0,
-					angle:            0
+					angle:            0,
 				};
 			}
-			const sentry = <Sentry>match.buildings[entity.entityIndex];
+			const sentry = match.buildings[entity.entityIndex] as Sentry;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(sentry, prop, propName);
 				switch (propName) {
 					case 'DT_ObjectSentrygun.m_bPlayerControlled':
-						sentry.playerControlled = <number>prop.value > 0;
+						sentry.playerControlled = prop.value as number > 0;
 						break;
 					case 'DT_ObjectSentrygun.m_hAutoAimTarget':
-						sentry.autoAimTarget = <number>prop.value;
+						sentry.autoAimTarget = prop.value as number;
 						break;
 					case 'DT_ObjectSentrygun.m_nShieldLevel':
-						sentry.shieldLevel = <number>prop.value;
+						sentry.shieldLevel = prop.value as number;
 						break;
 					case 'DT_ObjectSentrygun.m_iAmmoShells':
-						sentry.ammoShells = <number>prop.value;
+						sentry.ammoShells = prop.value as number;
 						break;
 					case 'DT_ObjectSentrygun.m_iAmmoRockets':
-						sentry.ammoRockets = <number>prop.value;
+						sentry.ammoRockets = prop.value as number;
 						break;
 					case 'DT_BaseObject.m_bMiniBuilding':
-						sentry.isMini = <number>prop.value > 1;
+						sentry.isMini = prop.value as number > 1;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
-						sentry.angle = <number>prop.value;
+						sentry.angle = prop.value as number;
 						break;
 				}
 			}
@@ -261,19 +261,19 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					team:       0,
 					healing:    [],
 					metal:      0,
-					angle:      0
+					angle:      0,
 				};
 			}
-			const dispenser = <Dispenser>match.buildings[entity.entityIndex];
+			const dispenser = match.buildings[entity.entityIndex] as Dispenser;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(dispenser, prop, propName);
 				switch (propName) {
 					case 'DT_ObjectDispenser.m_iAmmoMetal':
-						dispenser.metal = <number>prop.value;
+						dispenser.metal = prop.value as number;
 						break;
 					case 'DT_ObjectDispenser."healing_array"':
-						dispenser.healing = <number[]>prop.value;
+						dispenser.healing = prop.value as number[];
 						break;
 				}
 			}
@@ -299,31 +299,31 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					rechargeDuration: 0,
 					timesUsed:        0,
 					angle:            0,
-					yawToExit:        0
+					yawToExit:        0,
 				};
 			}
-			const teleporter = <Teleporter>match.buildings[entity.entityIndex];
+			const teleporter = match.buildings[entity.entityIndex] as Teleporter;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(teleporter, prop, propName);
 				switch (propName) {
 					case 'DT_ObjectTeleporter.m_flRechargeTime':
-						teleporter.rechargeTime = <number>prop.value;
+						teleporter.rechargeTime = prop.value as number;
 						break;
 					case 'DT_ObjectTeleporter.m_flCurrentRechargeDuration':
-						teleporter.rechargeDuration = <number>prop.value;
+						teleporter.rechargeDuration = prop.value as number;
 						break;
 					case 'DT_ObjectTeleporter.m_iTimesUsed':
-						teleporter.timesUsed = <number>prop.value;
+						teleporter.timesUsed = prop.value as number;
 						break;
 					case 'DT_ObjectTeleporter.m_bMatchBuilding':
-						teleporter.otherEnd = <number>prop.value;
+						teleporter.otherEnd = prop.value as number;
 						break;
 					case 'DT_ObjectTeleporter.m_flYawToExit':
-						teleporter.yawToExit = <number>prop.value;
+						teleporter.yawToExit = prop.value as number;
 						break;
 					case 'DT_BaseObject.m_iObjectMode':
-						teleporter.isEntrance = <number>prop.value === 0;
+						teleporter.isEntrance = prop.value as number === 0;
 						break;
 				}
 			}
@@ -334,7 +334,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 		case 'CTFPlayerResource':
 			for (const prop of entity.props) {
 				const playerId = parseInt(prop.definition.name, 10);
-				const value    = <number>prop.value;
+				const value    = prop.value as number;
 				if (!match.playerResources[playerId]) {
 					match.playerResources[playerId] = {
 						alive:           false,
@@ -359,7 +359,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						score:           0,
 						team:            0,
 						totalScore:      0,
-						damage:          0
+						damage:          0,
 					};
 				}
 				const playerResource = match.playerResources[playerId];
@@ -458,31 +458,31 @@ function handleEntity(entity: PacketEntity, match: Match) {
 function applyBuildingProp(building: Building, prop: SendProp, propName: string) {
 	switch (propName) {
 		case 'DT_BaseObject.m_iUpgradeLevel':
-			building.level = <number>prop.value;
+			building.level = prop.value as number;
 			break;
 		case 'DT_BaseObject.m_hBuilder':
-			building.builder = <number>prop.value;
+			building.builder = prop.value as number;
 			break;
 		case 'DT_BaseObject.m_iMaxHealth':
-			building.maxHealth = <number>prop.value;
+			building.maxHealth = prop.value as number;
 			break;
 		case 'DT_BaseObject.m_iHealth':
-			building.health = <number>prop.value;
+			building.health = prop.value as number;
 			break;
 		case 'DT_BaseObject.m_bBuilding':
-			building.isBuilding = <number>prop.value > 0;
+			building.isBuilding = prop.value as number > 0;
 			break;
 		case 'DT_BaseObject.m_bHasSapper':
-			building.isSapped = <number>prop.value > 0;
+			building.isSapped = prop.value as number > 0;
 			break;
 		case 'DT_BaseEntity.m_vecOrigin':
-			building.position = <Vector>prop.value;
+			building.position = prop.value as Vector;
 			break;
 		case 'DT_BaseEntity.m_iTeamNum':
-			building.team = <number>prop.value;
+			building.team = prop.value as number;
 			break;
 		case 'DT_BaseEntity.m_angRotation':
-			building.angle = (<Vector>prop.value).y;
+			building.angle = (prop.value as Vector).y;
 			break;
 	}
 }

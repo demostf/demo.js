@@ -1,5 +1,5 @@
-import {VoiceInitPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
+import {VoiceInitPacket} from '../../Data/Packet';
 
 export function VoiceInit(stream: BitStream): VoiceInitPacket {
 	const codec     = stream.readASCIIString();
@@ -8,8 +8,8 @@ export function VoiceInit(stream: BitStream): VoiceInitPacket {
 	const extraData = (codec === 'vaudio_celt' && quality === 255) ? stream.readUint16() : 0;
 	return {
 		packetType: 'voiceInit',
-		codec:      codec,
-		quality:    quality,
-		extraData:  extraData
+		codec,
+		quality,
+		extraData,
 	};
 }

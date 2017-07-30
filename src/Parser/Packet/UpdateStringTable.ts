@@ -1,7 +1,7 @@
-import {StringTablePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {Match} from "../../Data/Match";
-import {parseStringTable} from "../StringTableParser";
+import {Match} from '../../Data/Match';
+import {StringTablePacket} from '../../Data/Packet';
+import {parseStringTable} from '../StringTableParser';
 
 export function UpdateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: updateStringTable
 	const tableId = stream.readBits(5);
@@ -21,6 +21,6 @@ export function UpdateStringTable(stream: BitStream, match: Match): StringTableP
 
 	return {
 		packetType: 'stringTable',
-		tables:      [table]
+		tables:      [table],
 	};
 }

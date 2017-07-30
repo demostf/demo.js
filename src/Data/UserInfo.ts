@@ -1,5 +1,5 @@
 export interface UserInfo {
-	name: string
+	name: string;
 	userId: number;
 	steamId: string;
 	entityId: number;

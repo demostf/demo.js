@@ -18,3 +18,7 @@ build: node_modules
 .PHONY: test
 test: node_modules
 	node node_modules/.bin/mocha --opts mocha.opts
+
+.PHONY: lint
+lint: node_modules
+	node_modules/.bin/tslint -p tsconfig.json

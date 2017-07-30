@@ -1,51 +1,40 @@
-import {Stream} from "stream";
 import {BitStream} from 'bit-buffer';
 import {Parser} from './Parser';
-import {StreamParser} from './StreamParser';
-import {PacketType} from "./Parser/Message/Packet";
+import {PacketType} from './Parser/Message/Packet';
+import {StreamDemo} from './StreamDemo';
+
+export {StreamDemo} from './StreamDemo';
 
 export class Demo {
-	stream: BitStream;
-	parser: Parser|null;
-
-	constructor(arrayBuffer: ArrayBuffer) {
-		this.stream = new BitStream(arrayBuffer);
-	}
-
-	getParser(fastMode: boolean = false) {
-		if (!this.parser) {
-			const skippedPackets = fastMode ? [
-					PacketType.packetEntities,
-					PacketType.tempEntities,
-					PacketType.entityMessage,
-				] : [];
-			this.parser          = new Parser(this.stream, skippedPackets);
-		}
-		return this.parser;
-	}
-
-	static fromNodeBuffer(nodeBuffer) {
+	public static fromNodeBuffer(nodeBuffer) {
 		const arrayBuffer = new ArrayBuffer(nodeBuffer.length);
-		const view        = new Uint8Array(arrayBuffer);
+		const view = new Uint8Array(arrayBuffer);
 		for (let i = 0; i < nodeBuffer.length; ++i) {
 			view[i] = nodeBuffer[i];
 		}
 		return new Demo(arrayBuffer);
 	}
 
-	static fromNodeStream(nodeStream) {
+	public static fromNodeStream(nodeStream) {
 		return new StreamDemo(nodeStream);
 	}
-}
 
-export class StreamDemo {
-	stream: Stream;
+	public stream: BitStream;
+	public parser: Parser | null;
 
-	constructor(nodeStream: Stream) {
-		this.stream = nodeStream;
+	constructor(arrayBuffer: ArrayBuffer) {
+		this.stream = new BitStream(arrayBuffer);
 	}
 
-	getParser() {
-		return new StreamParser(this.stream);
+	public getParser(fastMode: boolean = false) {
+		if (!this.parser) {
+			const skippedPackets = fastMode ? [
+				PacketType.packetEntities,
+				PacketType.tempEntities,
+				PacketType.entityMessage,
+			] : [];
+			this.parser = new Parser(this.stream, skippedPackets);
+		}
+		return this.parser;
 	}
 }

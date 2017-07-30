@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
-import {StringTable, StringTableEntry} from "../Data/StringTable";
-import {logBase2} from "../Math";
-import {Match} from "../Data/Match";
+import {Match} from '../Data/Match';
+import {StringTable, StringTableEntry} from '../Data/StringTable';
+import {logBase2} from '../Math';
 
 export function parseStringTable(stream: BitStream, table: StringTable, entries: number, match: Match) {
 	const entryBits = logBase2(table.maxEntries);
@@ -19,7 +19,7 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 		lastEntry = entryIndex;
 
 		if (entryIndex < 0 || entryIndex > table.maxEntries) {
-			throw new Error("Invalid string index for stringtable");
+			throw new Error('Invalid string index for stringtable');
 		}
 
 		let value;
@@ -67,7 +67,7 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 		} else {
 			table.entries[entryIndex] = {
 				text:      value,
-				extraData: userData
+				extraData: userData,
 			};
 			history.push(table.entries[entryIndex]);
 		}

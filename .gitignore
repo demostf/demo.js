@@ -2,3 +2,5 @@ node_modules
 build
 *.dem
 *.txt
+*.lock
+log

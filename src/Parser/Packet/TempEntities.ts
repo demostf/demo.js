@@ -1,8 +1,8 @@
-import {TempEntitiesPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {Match} from "../../Data/Match";
-import {PacketEntity, PVS} from "../../Data/PacketEntity";
-import {applyEntityUpdate} from "../EntityDecoder";
+import {Match} from '../../Data/Match';
+import {TempEntitiesPacket} from '../../Data/Packet';
+import {PacketEntity, PVS} from '../../Data/PacketEntity';
+import {applyEntityUpdate} from '../EntityDecoder';
 
 export function TempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
@@ -10,10 +10,10 @@ export function TempEntities(stream: BitStream, match: Match, skip: boolean = fa
 	const end         = stream.index + length;
 
 	let entity: PacketEntity|null = null;
-	let entities: PacketEntity[]  = [];
+	const entities: PacketEntity[]  = [];
 	if (!skip) {
 		for (let i = 0; i < entityCount; i++) {
-			const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; //unused it seems
+			const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; // unused it seems
 			if (stream.readBoolean()) {
 				const classId     = stream.readBits(match.classBits);
 				const serverClass = match.serverClasses[classId - 1];
@@ -28,20 +28,20 @@ export function TempEntities(stream: BitStream, match: Match, skip: boolean = fa
 				if (entity) {
 					applyEntityUpdate(entity, match.getSendTable(entity.serverClass.dataTable), stream);
 				} else {
-					throw new Error("no entity set to update");
+					throw new Error('no entity set to update');
 				}
 			}
 		}
 		if (end - stream.index > 8) {
-			throw new Error("unexpected content after TempEntities");
+			throw new Error('unexpected content after TempEntities');
 		}
 	}
 
 	stream.index = end;
 	return {
 		packetType: 'tempEntities',
-		entities:   entities
-	}
+		entities,
+	};
 }
 
 function readVarInt(stream: BitStream) {
@@ -50,7 +50,7 @@ function readVarInt(stream: BitStream) {
 		const byte = stream.readUint8();
 		result |= ((byte & 0x7F) << run);
 
-		if ((byte >> 7) == 0) {
+		if ((byte >> 7) === 0) {
 			return result;
 		}
 	}

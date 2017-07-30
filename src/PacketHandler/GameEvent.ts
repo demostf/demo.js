@@ -1,66 +1,82 @@
-import {GameEventPacket} from "../Data/Packet";
-import {Match} from "../Data/Match";
-import {DeathEventValues, RoundWinEventValues, PlayerSpawnEventValues, ObjectDestroyedValues} from "../Data/GameEvent";
+import {DeathEventValues, ObjectDestroyedValues, PlayerSpawnEventValues, RoundWinEventValues} from '../Data/GameEvent';
+import {Match} from '../Data/Match';
+import {GameEventPacket} from '../Data/Packet';
 
 export function handleGameEvent(packet: GameEventPacket, match: Match) {
 	switch (packet.event.name) {
-		case 'player_death': {
-			const values = <DeathEventValues>packet.event.values;
-			while (values.assister > 256 && values.assister < (1024 * 16)) {
-				values.assister -= 256;
-			}
-			const assister = values.assister < 256 ? values.assister : null;
-			// todo get player names, not same id as the name string table (entity id?)
-			while (values.attacker > 256) {
-				values.attacker -= 256;
-			}
-			while (values.userid > 256) {
-				values.userid -= 256;
-			}
-			match.deaths.push({
-				killer:   values.attacker,
-				assister: assister,
-				victim:   values.userid,
-				weapon:   values.weapon,
-				tick:     match.tick
-			});
-		}
+		case 'player_death':
+			handlePlayerDeath(packet, match);
 			break;
-		case 'teamplay_round_win': {
-			const values = <RoundWinEventValues>packet.event.values;
-			if (values.winreason !== 6) {// 6 = timelimit
-				match.rounds.push({
-					winner:   values.team === 2 ? 'red' : 'blue',
-					length:   values.round_time,
-					end_tick: match.tick
-				});
-			}
-		}
+		case 'teamplay_round_win':
+			handleRoundWin(packet, match);
 			break;
-		case 'player_spawn': {
-			const values    = <PlayerSpawnEventValues>packet.event.values;
-			const userId    = values.userid;
-			const userState = match.getUserInfo(userId);
-			const player    = match.playerMap[userState.entityId];
-			userState.team  = values.team === 2 ? 'red' : 'blue';
-			const classId   = values.class;
-			if (player) {
-				player.classId = classId;
-				player.team    = values.team;
-			}
-			if (!userState.classes[classId]) {
-				userState.classes[classId] = 0;
-			}
-			userState.classes[classId]++;
-		}
+		case 'player_spawn':
+			handlePlayerSpawn(packet, match);
 			break;
-		case 'object_destroyed': {
-			const values = <ObjectDestroyedValues>packet.event.values;
-			delete match.buildings[values.index];
-		}
+		case 'object_destroyed':
+			handleObjectDestroyed(packet, match);
 			break;
 		case 'teamplay_round_start':
-			match.buildings = {};
+			handleRoundStart(packet, match);
 			break;
 	}
+}
+
+function handlePlayerDeath(packet: GameEventPacket, match: Match) {
+	const values = packet.event.values as DeathEventValues;
+	while (values.assister > 256 && values.assister < (1024 * 16)) {
+		values.assister -= 256;
+	}
+	const assister = values.assister < 256 ? values.assister : null;
+	// todo get player names, not same id as the name string table (entity id?)
+	while (values.attacker > 256) {
+		values.attacker -= 256;
+	}
+	while (values.userid > 256) {
+		values.userid -= 256;
+	}
+	match.deaths.push({
+		killer: values.attacker,
+		assister,
+		victim: values.userid,
+		weapon: values.weapon,
+		tick: match.tick,
+	});
+}
+
+function handleRoundWin(packet: GameEventPacket, match: Match) {
+	const values = packet.event.values as RoundWinEventValues;
+	if (values.winreason !== 6) {// 6 = timelimit
+		match.rounds.push({
+			winner: values.team === 2 ? 'red' : 'blue',
+			length: values.round_time,
+			end_tick: match.tick,
+		});
+	}
+}
+
+function handlePlayerSpawn(packet: GameEventPacket, match: Match) {
+	const values = packet.event.values as PlayerSpawnEventValues;
+	const userId = values.userid;
+	const userState = match.getUserInfo(userId);
+	const player = match.playerMap[userState.entityId];
+	userState.team = values.team === 2 ? 'red' : 'blue';
+	const classId = values.class;
+	if (player) {
+		player.classId = classId;
+		player.team = values.team;
+	}
+	if (!userState.classes[classId]) {
+		userState.classes[classId] = 0;
+	}
+	userState.classes[classId]++;
+}
+
+function handleObjectDestroyed(packet: GameEventPacket, match: Match) {
+	const values = packet.event.values as ObjectDestroyedValues;
+	delete match.buildings[values.index];
+}
+
+function handleRoundStart(packet: GameEventPacket, match: Match) {
+	match.buildings = {};
 }

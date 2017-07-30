@@ -1,55 +1,35 @@
-import {SendPropDefinition, SendPropType, SendPropFlag} from './SendPropDefinition';
+import {SendPropDefinition, SendPropFlag, SendPropType} from './SendPropDefinition';
 
 export class SendTable {
-	name: string;
-	props: SendPropDefinition[];
-	private _flattenedProps: SendPropDefinition[];
+	public name: string;
+	public props: SendPropDefinition[];
+	private cachedFlattenedProps: SendPropDefinition[];
 
 	constructor(name) {
 		this.name            = name;
 		this.props           = [];
-		this._flattenedProps = [];
+		this.cachedFlattenedProps = [];
 	}
 
-	addProp(prop) {
+	public addProp(prop) {
 		this.props.push(prop);
 	}
 
-	private flatten() {
-		let excludes: SendPropDefinition[] = this.excludes;
-		let props: SendPropDefinition[]    = [];
-		this.getAllProps(excludes, props);
-
-		// sort often changed props before the others
-		let start = 0;
-		for (let i = 0; i < props.length; i++) {
-			if (props[i].hasFlag(SendPropFlag.SPROP_CHANGES_OFTEN)) {
-				if (i != start) {
-					const temp   = props[i];
-					props[i]     = props[start];
-					props[start] = temp;
-				}
-				start++;
-			}
-		}
-		this._flattenedProps = props;
-	}
-
-	getAllProps(excludes: SendPropDefinition[], props: SendPropDefinition[]) {
-		let localProps = [];
+	public getAllProps(excludes: SendPropDefinition[], props: SendPropDefinition[]) {
+		const localProps = [];
 		this.getAllPropsIteratorProps(excludes, localProps, props);
 		for (const localProp of localProps) {
 			props.push(localProp);
 		}
 	}
 
-	getAllPropsIteratorProps(excludes: SendPropDefinition[], props: SendPropDefinition[], childProps: SendPropDefinition[]) {
+	public getAllPropsIteratorProps(excludes: SendPropDefinition[], props: SendPropDefinition[], childProps: SendPropDefinition[]) {
 		for (const prop of this.props) {
 			if (prop.hasFlag(SendPropFlag.SPROP_EXCLUDE) || excludes.indexOf(prop) !== -1) {
 				continue;
 			}
 			if (excludes.filter((exclude) => {
-					return exclude.name == prop.name && exclude.excludeDTName == prop.ownerTableName;
+					return exclude.name === prop.name && exclude.excludeDTName === prop.ownerTableName;
 				}).length > 0) {
 				continue;
 			}
@@ -67,10 +47,10 @@ export class SendTable {
 	}
 
 	get flattenedProps() {
-		if (this._flattenedProps.length === 0) {
+		if (this.cachedFlattenedProps.length === 0) {
 			this.flatten();
 		}
-		return this._flattenedProps;
+		return this.cachedFlattenedProps;
 	}
 
 	get excludes() {
@@ -84,7 +64,24 @@ export class SendTable {
 		}
 		return result;
 	}
+
+	private flatten() {
+		const excludes: SendPropDefinition[] = this.excludes;
+		const props: SendPropDefinition[]    = [];
+		this.getAllProps(excludes, props);
+
+		// sort often changed props before the others
+		let start = 0;
+		for (let i = 0; i < props.length; i++) {
+			if (props[i].hasFlag(SendPropFlag.SPROP_CHANGES_OFTEN)) {
+				if (i !== start) {
+					const temp   = props[i];
+					props[i]     = props[start];
+					props[start] = temp;
+				}
+				start++;
+			}
+		}
+		this.cachedFlattenedProps = props;
+	}
 }
-
-
-

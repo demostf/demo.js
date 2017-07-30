@@ -1,6 +1,6 @@
-import {StringTablePacket} from "../Data/Packet";
-import {Match} from "../Data/Match";
-import {StringTableEntry} from "../Data/StringTable";
+import {Match} from '../Data/Match';
+import {StringTablePacket} from '../Data/Packet';
+import {StringTableEntry} from '../Data/StringTable';
 
 export function handleStringTable(packet: StringTablePacket, match: Match) {
 	for (const table of packet.tables) {

@@ -1,7 +1,7 @@
-import {BitStream} from "bit-buffer";
+import {BitStream} from 'bit-buffer';
 export interface StringTable {
 	name: string;
-	entries: StringTableEntry[],
+	entries: StringTableEntry[];
 	maxEntries: number;
 	fixedUserDataSize?: number;
 	fixedUserDataSizeBits?: number;

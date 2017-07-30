@@ -1,4 +1,4 @@
-import {BitStream} from "bit-buffer";
+import {BitStream} from 'bit-buffer';
 export function readBitVar(stream: BitStream, signed?: boolean): number {
 	const type = stream.readBits(2);
 	switch (type) {
@@ -16,8 +16,7 @@ export function readBitVar(stream: BitStream, signed?: boolean): number {
 
 export const readUBitVar = readBitVar;
 
-
-export function readVarInt(stream: BitStream, signed:boolean = false) {
+export function readVarInt(stream: BitStream, signed: boolean = false) {
 	let result = 0;
 	for (let i = 0; i < 35; i += 7) {
 		const byte = stream.readBits(8);

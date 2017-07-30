@@ -1,12 +1,12 @@
 import {BitStream} from 'bit-buffer';
-import {Parser, MessageType} from './Parser';
-import {Stream} from "stream";
 import {Buffer} from 'buffer';
+import {Stream} from 'stream';
+import {MessageType, Parser} from './Parser';
 
 export class StreamParser extends Parser {
-	buffer: Buffer;
-	header: any;
-	sourceStream: Stream;
+	public header: any;
+	private buffer: Buffer;
+	private sourceStream: Stream;
 
 	constructor(stream: Stream) {
 		super(new BitStream(new ArrayBuffer(0)));
@@ -16,18 +16,18 @@ export class StreamParser extends Parser {
 		this.buffer = new Buffer(0);
 	}
 
-	eatBuffer(length) {
-		this.buffer = shrinkBuffer(this.buffer, length);
-	}
-
-	start() {
+	public start() {
 		this.sourceStream.on('data', this.handleData.bind(this));
-		this.sourceStream.on('end', function () {
+		this.sourceStream.on('end', function() {
 			this.emit('done', this.match);
 		}.bind(this));
 	}
 
-	handleData(data) {
+	private eatBuffer(length) {
+		this.buffer = shrinkBuffer(this.buffer, length);
+	}
+
+	private handleData(data) {
 		this.buffer = Buffer.concat([this.buffer, data]);
 		if (this.header === null) {
 			if (this.buffer.length > 1072) {
@@ -39,14 +39,13 @@ export class StreamParser extends Parser {
 		}
 	}
 
-	readStreamMessage() {
+	private readStreamMessage() {
 		if (this.buffer.length < 9) { // 9 byte minimum message header (type, tick, length)
 			return;
 		}
 		const stream = new BitStream(this.buffer);
 		const type   = stream.readBits(8);
 		if (type === MessageType.Stop) {
-			console.log('stop');
 			return;
 		}
 		const tick = stream.readInt32();
@@ -72,11 +71,9 @@ export class StreamParser extends Parser {
 		headerSize += extraHeader + 4;
 
 		if (this.buffer.length < (headerSize + length)) {
-			console.log('wants ' + length);
 			return;
 		}
 
-		console.log('got message ' + tick);
 		const messageStream = stream.readBitStream(length * 8);
 		const message = this.parseMessage(messageStream, type, tick, length, this.match);
 		this.handleMessage(message);
@@ -85,7 +82,7 @@ export class StreamParser extends Parser {
 
 function shrinkBuffer(buffer, length) {
 	if (length < 0) {
-		throw 'cant shrink by negative length ' + length;
+		throw new Error('cant shrink by negative length ' + length);
 	}
 	return buffer.slice(length, buffer.length);
 }

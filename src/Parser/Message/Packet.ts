@@ -1,26 +1,25 @@
 import * as ParserGenerator from '../Packet/ParserGenerator';
 
-import {Parser} from './Parser';
 import {BSPDecal} from '../Packet/BSPDecal';
 import {ClassInfo} from '../Packet/ClassInfo';
+import {CmdKeyValues} from '../Packet/CmdKeyValues';
 import {CreateStringTable} from '../Packet/CreateStringTable';
 import {EntityMessage} from '../Packet/EntityMessage';
 import {GameEvent} from '../Packet/GameEvent';
 import {GameEventList} from '../Packet/GameEventList';
+import {Menu} from '../Packet/Menu';
 import {PacketEntities} from '../Packet/PacketEntities';
+import {PacketParserMap} from '../Packet/Parser';
 import {ParseSounds} from '../Packet/ParseSounds';
 import {SetConVar} from '../Packet/SetConVar';
+import {TempEntities} from '../Packet/TempEntities';
 import {UpdateStringTable} from '../Packet/UpdateStringTable';
 import {UserMessage} from '../Packet/UserMessage';
-import {PacketParserMap} from '../Packet/Parser';
-import {TempEntities} from '../Packet/TempEntities';
-import {VoiceInit} from '../Packet/VoiceInit';
 import {VoiceData} from '../Packet/VoiceData';
-import {Menu} from '../Packet/Menu';
-import {CmdKeyValues} from '../Packet/CmdKeyValues';
+import {VoiceInit} from '../Packet/VoiceInit';
+import {Parser} from './Parser';
 
-import {GameEventDefinitionMap} from "../../Data/GameEvent";
-
+import {GameEventDefinitionMap} from '../../Data/GameEvent';
 
 import {Packet as IPacket} from '../../Data/Packet';
 
@@ -30,30 +29,7 @@ import {Packet as IPacket} from '../../Data/Packet';
 // https://github.com/LestaD/SourceEngine2007/blob/master/src_main/common/netmessages.cpp
 
 export class Packet extends Parser {
-	parse() {
-		let packets: IPacket[] = [];
-		let lastPacketType     = 0;
-		while (this.bitsLeft > 6) { // last 6 bits for NOOP
-			const type = this.stream.readBits(6);
-			if (type !== 0) {
-				if (Packet.parsers[type]) {
-					const skip = this.skippedPackets.indexOf(type) !== -1;
-					const packet = Packet.parsers[type].call(this, this.stream, this.match, skip);
-					packets.push(packet);
-				} else {
-					throw new Error('Unknown packet type ' + type + " just parsed a " + PacketType[lastPacketType]);
-				}
-				lastPacketType = type;
-			}
-		}
-		return packets;
-	}
-
-	get bitsLeft() {
-		return (this.length * 8) - this.stream.index;
-	}
-
-	static parsers: PacketParserMap = {
+	private static parsers: PacketParserMap = {
 		2:  ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 		3:  ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
 		4:  ParserGenerator.make('stringCmd', 'command{s}'),
@@ -83,8 +59,31 @@ export class Packet extends Parser {
 		29: Menu,
 		30: GameEventList,
 		31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
-		32: CmdKeyValues
+		32: CmdKeyValues,
 	};
+
+	public parse() {
+		const packets: IPacket[] = [];
+		let lastPacketType     = 0;
+		while (this.bitsLeft > 6) { // last 6 bits for NOOP
+			const type = this.stream.readBits(6);
+			if (type !== 0) {
+				if (Packet.parsers[type]) {
+					const skip = this.skippedPackets.indexOf(type) !== -1;
+					const packet = Packet.parsers[type].call(this, this.stream, this.match, skip);
+					packets.push(packet);
+				} else {
+					throw new Error('Unknown packet type ' + type + ' just parsed a ' + PacketType[lastPacketType]);
+				}
+				lastPacketType = type;
+			}
+		}
+		return packets;
+	}
+
+	get bitsLeft() {
+		return (this.length * 8) - this.stream.index;
+	}
 }
 
 export enum PacketType {
@@ -114,5 +113,5 @@ export enum PacketType {
 	menu              = 29,
 	gameEventList     = 30,
 	getCvarValue      = 30,
-	cmdKeyValues      = 32
+	cmdKeyValues      = 32,
 }

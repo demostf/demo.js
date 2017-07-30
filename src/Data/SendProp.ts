@@ -1,16 +1,16 @@
-import {SendPropDefinition} from "./SendPropDefinition";
-import {Vector} from "./Vector";
+import {SendPropDefinition} from './SendPropDefinition';
+import {Vector} from './Vector';
 
 export class SendProp {
-	definition: SendPropDefinition;
-	value: SendPropValue|null;
+	public definition: SendPropDefinition;
+	public value: SendPropValue|null;
 
 	constructor(definition: SendPropDefinition) {
 		this.definition = definition;
 		this.value = null;
 	}
 
-	clone():SendProp {
+	public clone(): SendProp {
 		const prop = new SendProp(this.definition);
 		prop.value = this.value;
 		return prop;

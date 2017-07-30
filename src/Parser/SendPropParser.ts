@@ -1,11 +1,12 @@
-import {SendPropDefinition, SendPropType, SendPropFlag} from '../Data/SendPropDefinition';
-import {Vector} from "../Data/Vector";
-import {BitStream} from "bit-buffer";
-import {SendPropValue, SendPropArrayValue} from "../Data/SendProp";
-import {readVarInt} from "./readBitVar";
+import {BitStream} from 'bit-buffer';
+import {SendPropArrayValue, SendPropValue} from '../Data/SendProp';
+import {SendPropDefinition, SendPropFlag, SendPropType} from '../Data/SendPropDefinition';
+import {Vector} from '../Data/Vector';
+import {logBase2} from '../Math';
+import {readVarInt} from './readBitVar';
 
 export class SendPropParser {
-	static decode(propDefinition: SendPropDefinition, stream: BitStream): SendPropValue {
+	public static decode(propDefinition: SendPropDefinition, stream: BitStream): SendPropValue {
 		switch (propDefinition.type) {
 			case SendPropType.DPT_Int:
 				return SendPropParser.readInt(propDefinition, stream);
@@ -23,7 +24,7 @@ export class SendPropParser {
 		throw new Error('Unknown property type');
 	}
 
-	static readInt(propDefinition: SendPropDefinition, stream: BitStream) {
+	public static readInt(propDefinition: SendPropDefinition, stream: BitStream) {
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_VARINT)) {
 			return readVarInt(stream, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		} else {
@@ -31,13 +32,10 @@ export class SendPropParser {
 		}
 	}
 
-	static readArray(propDefinition: SendPropDefinition, stream: BitStream): SendPropArrayValue[] {
-		let maxElements = propDefinition.numElements;
-		let numBits     = 1;
-		while ((maxElements >>= 1) != 0)
-			numBits++;
+	public static readArray(propDefinition: SendPropDefinition, stream: BitStream): SendPropArrayValue[] {
+		const numBits = logBase2(propDefinition.numElements) + 1;
 
-		const count                        = stream.readBits(numBits);
+		const count = stream.readBits(numBits);
 		const values: SendPropArrayValue[] = [];
 		if (!propDefinition.arrayProperty) {
 			throw new Error('Array of undefined type');
@@ -52,25 +50,25 @@ export class SendPropParser {
 		return values;
 	}
 
-	static readString(stream: BitStream): string {
+	public static readString(stream: BitStream): string {
 		const length = stream.readBits(9);
 		return stream.readASCIIString(length);
 	}
 
-	static readVector(propDefinition: SendPropDefinition, stream: BitStream): Vector {
+	public static readVector(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
 		const z = SendPropParser.readFloat(propDefinition, stream);
 		return new Vector(x, y, z);
 	}
 
-	static readVectorXY(propDefinition: SendPropDefinition, stream: BitStream): Vector {
+	public static readVectorXY(propDefinition: SendPropDefinition, stream: BitStream): Vector {
 		const x = SendPropParser.readFloat(propDefinition, stream);
 		const y = SendPropParser.readFloat(propDefinition, stream);
 		return new Vector(x, y, 0);
 	}
 
-	static readFloat(propDefinition: SendPropDefinition, stream: BitStream): number {
+	public static readFloat(propDefinition: SendPropDefinition, stream: BitStream): number {
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD)) {
 			return SendPropParser.readBitCoord(stream);
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_COORD_MP)) {
@@ -84,36 +82,36 @@ export class SendPropParser {
 		} else if (propDefinition.hasFlag(SendPropFlag.SPROP_NORMAL)) {
 			return SendPropParser.readBitNormal(stream);
 		} else {
-			const raw        = stream.readBits(propDefinition.bitCount);
+			const raw = stream.readBits(propDefinition.bitCount);
 			const percentage = raw / ((1 << propDefinition.bitCount) - 1);
 			return propDefinition.lowValue + (propDefinition.highValue - propDefinition.lowValue) * percentage;
 		}
 	}
 
-	static readBitNormal(stream: BitStream) {
+	public static readBitNormal(stream: BitStream) {
 		const isNegative = stream.readBoolean();
-		const fractVal   = stream.readBits(11);
-		const value      = fractVal * (1 / ((1 << 11) - 1));
+		const fractVal = stream.readBits(11);
+		const value = fractVal * (1 / ((1 << 11) - 1));
 		return (isNegative) ? -value : value;
 	}
 
-	static readBitCoord(stream: BitStream) {
-		const hasIntVal   = stream.readBoolean();
+	public static readBitCoord(stream: BitStream) {
+		const hasIntVal = stream.readBoolean();
 		const hasFractVal = stream.readBoolean();
 
 		if (hasIntVal || hasFractVal) {
 			const isNegative = stream.readBoolean();
-			const intVal     = (hasIntVal) ? stream.readBits(14) + 1 : 0;
-			const fractVal   = (hasFractVal) ? stream.readBits(5) : 0;
-			const value      = intVal + fractVal * (1 / (1 << 5));
+			const intVal = (hasIntVal) ? stream.readBits(14) + 1 : 0;
+			const fractVal = (hasFractVal) ? stream.readBits(5) : 0;
+			const value = intVal + fractVal * (1 / (1 << 5));
 			return (isNegative) ? -value : value;
 		}
 
 		return 0;
 	}
 
-	static readBitCoordMP(propDefinition: SendPropDefinition, stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
-		let value      = 0;
+	public static readBitCoordMP(propDefinition: SendPropDefinition, stream: BitStream, isIntegral: boolean, isLowPrecision: boolean): number {
+		let value = 0;
 		let isNegative = false;
 		const inBounds = stream.readBoolean();
 
@@ -127,7 +125,7 @@ export class SendPropParser {
 				} else {
 					value = stream.readBits(14) + 1;
 					if (value < (1 << 11)) {
-						throw new Error("Something's fishy...");
+						throw new Error('Something\'s fishy...');
 					}
 				}
 			}

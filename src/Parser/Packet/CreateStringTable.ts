@@ -1,12 +1,12 @@
-import {StringTablePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {logBase2} from "../../Math";
-import {readVarInt} from "../readBitVar";
+import {StringTablePacket} from '../../Data/Packet';
+import {logBase2} from '../../Math';
+import {readVarInt} from '../readBitVar';
 
-import {uncompress} from "snappyjs";
-import {StringTable} from "../../Data/StringTable";
-import {parseStringTable} from "../StringTableParser";
-import {Match} from "../../Data/Match";
+import {uncompress} from 'snappyjs';
+import {Match} from '../../Data/Match';
+import {StringTable} from '../../Data/StringTable';
+import {parseStringTable} from '../StringTableParser';
 
 export function CreateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: createStringTable
 	const tableName   = stream.readASCIIString();
@@ -38,12 +38,12 @@ export function CreateStringTable(stream: BitStream, match: Match): StringTableP
 		const compressedData = data.readArrayBuffer(compressedByteSize - 4); // 4 magic bytes
 
 		if (magic !== 'SNAP') {
-			throw new Error("Unknown compressed stringtable format");
+			throw new Error('Unknown compressed stringtable format');
 		}
 
 		const decompressedData = uncompress(compressedData);
 		if (decompressedData.byteLength !== decompressedByteSize) {
-			throw new Error("Incorrect length of decompressed stringtable");
+			throw new Error('Incorrect length of decompressed stringtable');
 		}
 
 		data = new BitStream(decompressedData.buffer);
@@ -52,15 +52,15 @@ export function CreateStringTable(stream: BitStream, match: Match): StringTableP
 	const table: StringTable = {
 		name:                  tableName,
 		entries:               [],
-		maxEntries:            maxEntries,
+		maxEntries,
 		fixedUserDataSize:     userDataSize,
-		fixedUserDataSizeBits: userDataSizeBits
+		fixedUserDataSizeBits: userDataSizeBits,
 	};
 
 	parseStringTable(data, table, entityCount, match);
 
 	return {
 		packetType: 'stringTable',
-		tables:      [table]
+		tables:      [table],
 	};
 }

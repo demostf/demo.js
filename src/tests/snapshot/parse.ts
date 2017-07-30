@@ -1,6 +1,6 @@
-import {readFileSync} from 'fs';
-import {Demo} from "../../Demo";
 import * as assert from 'assert';
+import {readFileSync} from 'fs';
+import {Demo} from '../../Demo';
 
 function testDemo(name: string, fastMode: boolean = false) {
 	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}.json`, 'utf8'));

@@ -1,7 +1,7 @@
-import {GameEventListPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {GameEventEntry, GameEventDefinitionMap} from "../../Data/GameEvent";
-import {Match} from "../../Data/Match";
+import {GameEventDefinitionMap, GameEventEntry} from '../../Data/GameEvent';
+import {Match} from '../../Data/Match';
+import {GameEventListPacket} from '../../Data/Packet';
 
 export function GameEventList(stream: BitStream, match: Match): GameEventListPacket { // 30: gameEventList
 	// list of game events and parameters
@@ -15,19 +15,19 @@ export function GameEventList(stream: BitStream, match: Match): GameEventListPac
 		const entries: GameEventEntry[] = [];
 		while (type !== 0) {
 			entries.push({
-				type: type,
-				name: stream.readASCIIString()
+				type,
+				name: stream.readASCIIString(),
 			});
 			type = stream.readBits(3);
 		}
 		eventList[id] = {
-			id:      id,
-			name:    name,
-			entries: entries
+			id,
+			name,
+			entries,
 		};
 	}
 	return {
 		packetType: 'gameEventList',
-		eventList:  eventList
-	}
+		eventList,
+	};
 }

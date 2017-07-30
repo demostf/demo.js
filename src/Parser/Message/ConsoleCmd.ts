@@ -1,11 +1,11 @@
-import {ConsoleCmdPacket} from "../../Data/Packet";
+import {ConsoleCmdPacket} from '../../Data/Packet';
 import {Parser} from './Parser';
 
 export class ConsoleCmd extends Parser {
-	parse(): ConsoleCmdPacket[] {
+	public parse(): ConsoleCmdPacket[] {
 		return [{
 			packetType: 'consoleCmd',
-			command: this.stream.readUTF8String()
+			command: this.stream.readUTF8String(),
 		}];
 	}
 }

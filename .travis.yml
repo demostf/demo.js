@@ -9,3 +9,4 @@ install:
 - make node_modules
 script:
 - make test
+- make lint

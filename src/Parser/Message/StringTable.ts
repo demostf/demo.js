@@ -1,9 +1,9 @@
+import {StringTablePacket} from '../../Data/Packet';
+import {StringTable as StringTableObject, StringTableEntry} from '../../Data/StringTable';
 import {Parser} from './Parser';
-import {StringTableEntry, StringTable as StringTableObject} from "../../Data/StringTable";
-import {StringTablePacket} from "../../Data/Packet";
 
 export class StringTable extends Parser {
-	parse(): StringTablePacket[] {
+	public parse(): StringTablePacket[] {
 		// we get the tables from the packets
 		// return [{
 		// 	packetType: 'stringTable',
@@ -11,22 +11,22 @@ export class StringTable extends Parser {
 		// }];
 		// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
 		const tableCount                = this.stream.readUint8();
-		let tables: StringTableObject[] = [];
+		const tables: StringTableObject[] = [];
 		let extraDataLength;
 		for (let i = 0; i < tableCount; i++) {
-			let entries: StringTableEntry[] = [];
+			const entries: StringTableEntry[] = [];
 			const tableName                 = this.stream.readASCIIString();
 			const entryCount                = this.stream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
 				let entry: StringTableEntry;
 				try {
 					entry = {
-						text: this.stream.readUTF8String()
+						text: this.stream.readUTF8String(),
 					};
 				} catch (e) {
 					return [{
 						packetType: 'stringTable',
-						tables:     tables
+						tables,
 					}];
 				}
 				if (this.stream.readBoolean()) {
@@ -36,7 +36,7 @@ export class StringTable extends Parser {
 						// seems to happen in POV demos after the MyM update
 						return [{
 							packetType: 'stringTable',
-							tables:     tables
+							tables,
 						}];
 					}
 					entry.extraData = this.stream.readBitStream(extraDataLength * 8);
@@ -46,13 +46,13 @@ export class StringTable extends Parser {
 			const table: StringTableObject = {
 				entries,
 				name:       tableName,
-				maxEntries: entryCount
+				maxEntries: entryCount,
 			};
 			tables.push(table);
 			if (this.stream.readBits(1)) {
 				this.stream.readASCIIString();
 				if (this.stream.readBits(1)) {
-					//throw 'more extra data not implemented';
+					// throw 'more extra data not implemented';
 					extraDataLength = this.stream.readBits(16);
 					this.stream.readBits(extraDataLength);
 				}
@@ -60,26 +60,7 @@ export class StringTable extends Parser {
 		}
 		return [{
 			packetType: 'stringTable',
-			tables:     tables
+			tables,
 		}];
-	}
-
-	readExtraData(length): string[] {
-		const end          = this.stream.index + (length * 8);
-		let data: string[] = [];
-		//console.log(this.stream.readUTF8String());
-		data.push(this.stream.readUTF8String());
-		while (this.stream.index < end && this.stream.index < (this.stream.length - 7)) { // -7 because we need a full byte
-			try {
-				let string = this.stream.readUTF8String();
-				if (string) {
-					data.push(string);
-				}
-			} catch (e) {
-				return data;
-			}
-		}
-		this.stream.index = end;
-		return data;
 	}
 }

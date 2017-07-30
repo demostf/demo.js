@@ -1,9 +1,9 @@
-import {UserMessagePacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
-import {make} from './ParserGenerator';
+import {UserMessagePacket} from '../../Data/Packet';
 import {SayText2} from '../UserMessage/SayText2';
+import {make} from './ParserGenerator';
 
-enum UserMessageType{
+enum UserMessageType {
 	Geiger              = 0,
 	Train               = 1,
 	HudText             = 2,
@@ -61,12 +61,12 @@ enum UserMessageType{
 	HapPunch            = 54,
 	HapSetDrag          = 55,
 	HapSet              = 56,
-	HapMeleeContact     = 57
+	HapMeleeContact     = 57,
 }
 
 const userMessageParsers = {
 	4: SayText2,
-	5: make('textMsg', 'destType{8}text{s}')
+	5: make('textMsg', 'destType{8}text{s}'),
 };
 
 export function UserMessage(stream: BitStream): UserMessagePacket { // 23: user message
@@ -79,7 +79,7 @@ export function UserMessage(stream: BitStream): UserMessagePacket { // 23: user 
 	} else {
 		result = {
 			packetType: 'unknownUserMessage',
-			type:       type
+			type,
 		};
 	}
 	stream.index = pos + length;

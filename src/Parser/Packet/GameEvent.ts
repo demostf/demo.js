@@ -1,31 +1,30 @@
-import {GameEventPacket} from "../../Data/Packet";
 import {BitStream} from 'bit-buffer';
 import {
-	GameEventType, GameEventValue, GameEventEntry, GameEventDefinition, GameEvent as IGameEvent,
-	GameEventValueMap, GameEventDefinitionMap
-} from "../../Data/GameEvent";
-import {Match} from "../../Data/Match";
+	GameEvent as IGameEvent, GameEventDefinition, GameEventDefinitionMap, GameEventEntry, GameEventType,
+	GameEventValue, GameEventValueMap,
+} from '../../Data/GameEvent';
+import {Match} from '../../Data/Match';
+import {GameEventPacket} from '../../Data/Packet';
 
-const parseGameEvent = function (eventId: number, stream: BitStream, events: GameEventDefinitionMap): IGameEvent {
+function parseGameEvent(eventId: number, stream: BitStream, events: GameEventDefinitionMap): IGameEvent {
 	if (!events[eventId]) {
-		throw new Error('unknown event type')
+		throw new Error('unknown event type');
 	}
 	const eventDescription: GameEventDefinition = events[eventId];
-	const values: GameEventValueMap             = {};
-	for (let i = 0; i < eventDescription.entries.length; i++) {
-		const entry: GameEventEntry = eventDescription.entries[i];
-		const value                 = getGameEventValue(stream, entry);
+	const values: GameEventValueMap = {};
+	for (const entry of eventDescription.entries) {
+		const value = getGameEventValue(stream, entry);
 		if (value) {
 			values[entry.name] = value;
 		}
 	}
 	return {
-		name:   eventDescription.name,
-		values: values
+		name: eventDescription.name,
+		values,
 	};
-};
+}
 
-const getGameEventValue = function (stream: BitStream, entry: GameEventEntry): GameEventValue|null {
+function getGameEventValue(stream: BitStream, entry: GameEventEntry): GameEventValue | null {
 	switch (entry.type) {
 		case GameEventType.STRING:
 			return stream.readUTF8String();
@@ -44,17 +43,16 @@ const getGameEventValue = function (stream: BitStream, entry: GameEventEntry): G
 		default:
 			throw new Error('invalid game event type');
 	}
-};
-
+}
 
 export function GameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
-	const length  = stream.readBits(11);
-	const end     = stream.index + length;
+	const length = stream.readBits(11);
+	const end = stream.index + length;
 	const eventId = stream.readBits(9);
-	const event   = parseGameEvent(eventId, stream, match.eventDefinitions);
+	const event = parseGameEvent(eventId, stream, match.eventDefinitions);
 	stream.index = end;
 	return {
 		packetType: 'gameEvent',
-		event:      event
-	}
+		event,
+	};
 }

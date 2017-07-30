@@ -1,30 +1,30 @@
+import {Packet} from '../../Data/Packet';
 import {Parser} from './Parser';
-import {Packet} from "../../Data/Packet";
 
 export function make(name: string, definition: string): Parser {
-	const parts = definition.substr(0, definition.length - 1).split('}');//remove leading } to prevent empty part
-	const items = parts.map(function (part) {
+	const parts = definition.substr(0, definition.length - 1).split('}'); // remove leading } to prevent empty part
+	const items = parts.map((part) => {
 		return part.split('{');
 	});
-	return function (stream):Packet {
-		let result = {
-			'packetType': name
+	return (stream) => {
+		const result = {
+			packetType: name,
 		};
 		try {
-			for (let i = 0; i < items.length; i++) {
-				const value = readItem(stream, items[i][1], result);
-				if (items[i][0] !== '_') {
-					result[items[i][0]] = value;
+			for (const group of items) {
+				const value = readItem(stream, group[1], result);
+				if (group[0] !== '_') {
+					result[group[0]] = value;
 				}
 			}
 		} catch (e) {
 			throw new Error('Failed reading pattern ' + definition + '. ' + e);
 		}
-		return <Packet>result;
-	}
+		return result as Packet;
+	};
 }
 
-const readItem = function (stream, description, data) {
+function readItem(stream, description, data) {
 	let length;
 	if (description[0] === 'b') {
 		return stream.readBoolean();
@@ -46,4 +46,4 @@ const readItem = function (stream, description, data) {
 	} else {
 		return stream.readBits(parseInt(description, 10), true);
 	}
-};
+}

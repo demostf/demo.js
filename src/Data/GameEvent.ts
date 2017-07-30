@@ -15,13 +15,13 @@ export interface GameEventEntry {
 }
 
 export enum GameEventType {
-	STRING  = 1,
-	FLOAT   = 2,
-	LONG    = 3,
-	SHORT   = 4,
-	BYTE    = 5,
+	STRING = 1,
+	FLOAT = 2,
+	LONG = 3,
+	SHORT = 4,
+	BYTE = 5,
 	BOOLEAN = 6,
-	LOCAL   = 7
+	LOCAL = 7,
 }
 
 export interface DeathEventValues {
@@ -40,7 +40,7 @@ export interface RoundWinEventValues {
 export interface PlayerSpawnEventValues {
 	userid: number;
 	team: number;
-	'class': number
+	'class': number;
 }
 
 export interface ObjectDestroyedValues {
@@ -52,9 +52,9 @@ export interface ObjectDestroyedValues {
 	index: number;
 }
 
-export type GameEventValue = string|number|boolean;
+export type GameEventValue = string | number | boolean;
 
-export type GameEventValueMap = {
+export interface GameEventValueMap {
 	[name: string]: GameEventValue;
 }
 
@@ -64,6 +64,6 @@ export type GameEventValues = GameEventValueMap |
 	PlayerSpawnEventValues |
 	ObjectDestroyedValues;
 
-export type GameEventDefinitionMap = {
+export interface GameEventDefinitionMap {
 	[id: number]: GameEventDefinition;
 }

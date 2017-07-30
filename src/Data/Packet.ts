@@ -1,10 +1,10 @@
-import {StringTable} from "./StringTable";
-import {Vector} from "./Vector";
-import {GameEvent, GameEventDefinitionMap} from "./GameEvent";
-import {PacketEntity} from "./PacketEntity";
-import {SendTable} from "./SendTable";
-import {ServerClass} from "./ServerClass";
-import {BitStream} from "bit-buffer";
+import {BitStream} from 'bit-buffer';
+import {GameEvent, GameEventDefinitionMap} from './GameEvent';
+import {PacketEntity} from './PacketEntity';
+import {SendTable} from './SendTable';
+import {ServerClass} from './ServerClass';
+import {StringTable} from './StringTable';
+import {Vector} from './Vector';
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
@@ -35,11 +35,11 @@ export interface ClassInfoPacket {
 	packetType: 'classInfo';
 	number: number;
 	create: boolean;
-	entries: {
+	entries: Array<{
 		classId: number;
 		className: string;
 		dataTableName: string;
-	}[]
+	}>;
 }
 
 export interface EntityMessagePacket {
@@ -66,7 +66,7 @@ export interface PacketEntitiesPacket {
 	maxEntries: number;
 	isDelta: boolean;
 	delta: number;
-	baseLine : number;
+	baseLine: number;
 	updatedEntries: number;
 	length: number;
 	updatedBaseLine: boolean;
@@ -113,7 +113,7 @@ export interface VoiceInitPacket {
 	packetType: 'voiceInit';
 	codec: string;
 	quality: number;
-	extraData: number
+	extraData: number;
 }
 
 export interface VoiceDataPacket {
