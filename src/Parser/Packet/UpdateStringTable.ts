@@ -3,7 +3,7 @@ import {Match} from '../../Data/Match';
 import {StringTablePacket} from '../../Data/Packet';
 import {parseStringTable} from '../StringTableParser';
 
-export function UpdateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: updateStringTable
+export function ParseUpdateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: updateStringTable
 	const tableId = stream.readBits(5);
 
 	const multipleChanged = stream.readBoolean();

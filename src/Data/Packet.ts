@@ -107,6 +107,7 @@ export interface TextMessagePacket {
 export interface UnknownUserMessagePacket {
 	packetType: 'unknownUserMessage';
 	type: number;
+	data: BitStream;
 }
 
 export interface VoiceInitPacket {

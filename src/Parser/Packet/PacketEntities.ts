@@ -58,7 +58,7 @@ function getPacketEntityForExisting(entityId: number, match: Match, pvs: PVS) {
 	return new PacketEntity(serverClass, entityId, pvs);
 }
 
-export function PacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
+export function ParsePacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs

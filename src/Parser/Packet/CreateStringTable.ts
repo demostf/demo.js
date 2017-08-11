@@ -8,7 +8,7 @@ import {Match} from '../../Data/Match';
 import {StringTable} from '../../Data/StringTable';
 import {parseStringTable} from '../StringTableParser';
 
-export function CreateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: createStringTable
+export function ParseCreateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: createStringTable
 	const tableName   = stream.readASCIIString();
 	const maxEntries  = stream.readUint16();
 	const encodeBits  = logBase2(maxEntries);

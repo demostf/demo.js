@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {VoiceDataPacket} from '../../Data/Packet';
 
-export function VoiceData(stream: BitStream): VoiceDataPacket {
+export function ParseVoiceData(stream: BitStream): VoiceDataPacket {
 	// 'client{8}proximity{8}length{16}_{$length}'
 	const client    = stream.readUint8();
 	const proximity = stream.readUint8();

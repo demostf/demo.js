@@ -3,7 +3,7 @@ import {GameEventDefinitionMap, GameEventEntry} from '../../Data/GameEvent';
 import {Match} from '../../Data/Match';
 import {GameEventListPacket} from '../../Data/Packet';
 
-export function GameEventList(stream: BitStream, match: Match): GameEventListPacket { // 30: gameEventList
+export function ParseGameEventList(stream: BitStream, match: Match): GameEventListPacket { // 30: gameEventList
 	// list of game events and parameters
 	const numEvents                         = stream.readBits(9);
 	const length                            = stream.readBits(20);

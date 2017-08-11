@@ -4,7 +4,7 @@ import {TempEntitiesPacket} from '../../Data/Packet';
 import {PacketEntity, PVS} from '../../Data/PacketEntity';
 import {applyEntityUpdate} from '../EntityDecoder';
 
-export function TempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
+export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
 	const length      = readVarInt(stream);
 	const end         = stream.index + length;

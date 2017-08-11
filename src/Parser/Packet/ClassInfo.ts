@@ -2,7 +2,7 @@ import {BitStream} from 'bit-buffer';
 import {ClassInfoPacket} from '../../Data/Packet';
 import {logBase2} from '../../Math';
 
-export function ClassInfo(stream: BitStream): ClassInfoPacket { // 10: classInfo
+export function ParseClassInfo(stream: BitStream): ClassInfoPacket { // 10: classInfo
 	const count       = stream.readBits(16);
 	const create       = stream.readBoolean();
 	const entries: any[] = [];

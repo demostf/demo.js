@@ -22,9 +22,9 @@ function getCoord(stream) {
 }
 
 function getVecCoord(stream): Vector {
-	const hasX = !!stream.readBits(1);
-	const hasY = !!stream.readBits(1);
-	const hasZ = !!stream.readBits(1);
+	const hasX = stream.readBoolean();
+	const hasY = stream.readBoolean();
+	const hasZ = stream.readBoolean();
 	return {
 		x: hasX ? getCoord(stream) : 0,
 		y: hasY ? getCoord(stream) : 0,
@@ -32,7 +32,7 @@ function getVecCoord(stream): Vector {
 	};
 }
 
-export function BSPDecal(stream: BitStream): BSPDecalPacket { // 21: BSPDecal
+export function ParseBSPDecal(stream: BitStream): BSPDecalPacket { // 21: ParseBSPDecal
 	let modelIndex = 0;
 	let entIndex = 0;
 	const position = getVecCoord(stream);

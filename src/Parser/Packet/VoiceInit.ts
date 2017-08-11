@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {VoiceInitPacket} from '../../Data/Packet';
 
-export function VoiceInit(stream: BitStream): VoiceInitPacket {
+export function ParseVoiceInit(stream: BitStream): VoiceInitPacket {
 	const codec     = stream.readASCIIString();
 	const quality   = stream.readUint8();
 	// no clue, from 2017-2-14 update

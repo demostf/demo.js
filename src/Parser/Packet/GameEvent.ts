@@ -45,7 +45,7 @@ function getGameEventValue(stream: BitStream, entry: GameEventEntry): GameEventV
 	}
 }
 
-export function GameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
+export function ParseGameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
 	const length = stream.readBits(11);
 	const end = stream.index + length;
 	const eventId = stream.readBits(9);

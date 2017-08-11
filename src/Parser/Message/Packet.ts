@@ -1,22 +1,22 @@
 import * as ParserGenerator from '../Packet/ParserGenerator';
 
-import {BSPDecal} from '../Packet/BSPDecal';
-import {ClassInfo} from '../Packet/ClassInfo';
-import {CmdKeyValues} from '../Packet/CmdKeyValues';
-import {CreateStringTable} from '../Packet/CreateStringTable';
-import {EntityMessage} from '../Packet/EntityMessage';
-import {GameEvent} from '../Packet/GameEvent';
-import {GameEventList} from '../Packet/GameEventList';
-import {Menu} from '../Packet/Menu';
-import {PacketEntities} from '../Packet/PacketEntities';
+import {ParseBSPDecal} from '../Packet/BSPDecal';
+import {ParseClassInfo} from '../Packet/ClassInfo';
+import {ParseCmdKeyValues} from '../Packet/CmdKeyValues';
+import {ParseCreateStringTable} from '../Packet/CreateStringTable';
+import {ParseEntityMessage} from '../Packet/EntityMessage';
+import {ParseGameEvent} from '../Packet/GameEvent';
+import {ParseGameEventList} from '../Packet/GameEventList';
+import {ParseMenu} from '../Packet/Menu';
+import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketParserMap} from '../Packet/Parser';
-import {ParseSounds} from '../Packet/ParseSounds';
-import {SetConVar} from '../Packet/SetConVar';
-import {TempEntities} from '../Packet/TempEntities';
-import {UpdateStringTable} from '../Packet/UpdateStringTable';
-import {UserMessage} from '../Packet/UserMessage';
-import {VoiceData} from '../Packet/VoiceData';
-import {VoiceInit} from '../Packet/VoiceInit';
+import {ParseParseSounds} from '../Packet/ParseSounds';
+import {ParseSetConVar} from '../Packet/SetConVar';
+import {ParseTempEntities} from '../Packet/TempEntities';
+import {ParseUpdateStringTable} from '../Packet/UpdateStringTable';
+import {ParseUserMessage} from '../Packet/UserMessage';
+import {ParseVoiceData} from '../Packet/VoiceData';
+import {ParseVoiceInit} from '../Packet/VoiceInit';
 import {Parser} from './Parser';
 
 import {GameEventDefinitionMap} from '../../Data/GameEvent';
@@ -33,33 +33,33 @@ export class Packet extends Parser {
 		2:  ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
 		3:  ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
 		4:  ParserGenerator.make('stringCmd', 'command{s}'),
-		5:  SetConVar,
+		5:  ParseSetConVar,
 		6:  ParserGenerator.make('sigOnState', 'state{8}count{32}'),
 		7:  ParserGenerator.make('print', 'value{s}'),
 		8:  ParserGenerator.make('serverInfo',
 			'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 			'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 			'game{s}map{s}skybox{s}serverName{s}replay{b}'),
-		10: ClassInfo,
+		10: ParseClassInfo,
 		11: ParserGenerator.make('setPause', 'paused{b}'),
-		12: CreateStringTable,
-		13: UpdateStringTable,
-		14: VoiceInit,
-		15: VoiceData,
-		17: ParseSounds,
+		12: ParseCreateStringTable,
+		13: ParseUpdateStringTable,
+		14: ParseVoiceInit,
+		15: ParseVoiceData,
+		17: ParseParseSounds,
 		18: ParserGenerator.make('setView', 'index{11}'),
 		19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
-		21: BSPDecal,
-		23: UserMessage,
-		24: EntityMessage,
-		25: GameEvent,
-		26: PacketEntities,
-		27: TempEntities,
+		21: ParseBSPDecal,
+		23: ParseUserMessage,
+		24: ParseEntityMessage,
+		25: ParseGameEvent,
+		26: ParsePacketEntities,
+		27: ParseTempEntities,
 		28: ParserGenerator.make('preFetch', 'index{14}'),
-		29: Menu,
-		30: GameEventList,
+		29: ParseMenu,
+		30: ParseGameEventList,
 		31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
-		32: CmdKeyValues,
+		32: ParseCmdKeyValues,
 	};
 
 	public parse() {

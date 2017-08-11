@@ -6,6 +6,9 @@ import {EntityMessagePacket} from '../../Data/Packet';
 
 const baseParser = make('entityMessage', 'index{11}classId{9}length{11}data{$length}');
 
-export function EntityMessage(stream: BitStream, match: Match): EntityMessagePacket { // 24: entityMessage
-	return baseParser(stream) as EntityMessagePacket; // todo parse data further?
+export function ParseEntityMessage(stream: BitStream, match: Match): EntityMessagePacket { // 24: entityMessage
+	const basePacketData: EntityMessagePacket = baseParser(stream) as EntityMessagePacket;
+	// entity messages seem pretty unimportant, they are unreliable messages and from testing only the "clear decals"
+	// message seems to be used in practice, probably safe to just leave as is
+	return basePacketData; // todo parse data further?
 }
