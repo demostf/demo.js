@@ -2,10 +2,10 @@ import {Packet} from '../../Data/Packet';
 import {PacketHandler, Parser} from './Parser';
 
 export function make(name: string, definition: string): PacketHandler {
-	const parts = definition.substr(0, definition.length - 1).split('}'); // remove leading } to prevent empty part
+	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');
-	});
+	}).filter(part => part[0]);
 	return {
 		parser: (stream) => {
 			const result = {

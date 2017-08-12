@@ -1,4 +1,4 @@
-import * as ParserGenerator from '../Packet/ParserGenerator';
+import {make} from '../Packet/ParserGenerator';
 
 import {ParseBSPDecal} from '../Packet/BSPDecal';
 import {ParseClassInfo} from '../Packet/ClassInfo';
@@ -29,35 +29,35 @@ import {Packet as IPacket} from '../../Data/Packet';
 
 export class Packet extends Parser {
 	private static parsers: PacketParserMap = {
-		2: ParserGenerator.make('file', 'transferId{32}fileName{s}requested{b}'),
-		3: ParserGenerator.make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
-		4: ParserGenerator.make('stringCmd', 'command{s}'),
+		2: make('file', 'transferId{32}fileName{s}requested{b}'),
+		3: make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
+		4: make('stringCmd', 'command{s}'),
 		5: {parser: ParseSetConVar, encoder: voidEncoder},
-		6: ParserGenerator.make('sigOnState', 'state{8}count{32}'),
-		7: ParserGenerator.make('print', 'value{s}'),
-		8: ParserGenerator.make('serverInfo',
+		6: make('sigOnState', 'state{8}count{32}'),
+		7: make('print', 'value{s}'),
+		8: make('serverInfo',
 			'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 			'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 			'game{s}map{s}skybox{s}serverName{s}replay{b}'),
 		10: {parser: ParseClassInfo, encoder: voidEncoder},
-		11: ParserGenerator.make('setPause', 'paused{b}'),
+		11: make('setPause', 'paused{b}'),
 		12: {parser: ParseCreateStringTable, encoder: voidEncoder},
 		13: {parser: ParseUpdateStringTable, encoder: voidEncoder},
 		14: {parser: ParseVoiceInit, encoder: voidEncoder},
 		15: {parser: ParseVoiceData, encoder: voidEncoder},
 		17: {parser: ParseParseSounds, encoder: voidEncoder},
-		18: ParserGenerator.make('setView', 'index{11}'),
-		19: ParserGenerator.make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
+		18: make('setView', 'index{11}'),
+		19: make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
 		21: {parser: ParseBSPDecal, encoder: voidEncoder},
 		23: {parser: ParseUserMessage, encoder: voidEncoder},
 		24: {parser: ParseEntityMessage, encoder: voidEncoder},
 		25: {parser: ParseGameEvent, encoder: voidEncoder},
 		26: {parser: ParsePacketEntities, encoder: voidEncoder},
 		27: {parser: ParseTempEntities, encoder: voidEncoder},
-		28: ParserGenerator.make('preFetch', 'index{14}'),
+		28: make('preFetch', 'index{14}'),
 		29: {parser: ParseMenu, encoder: voidEncoder},
 		30: {parser: ParseGameEventList, encoder: voidEncoder},
-		31: ParserGenerator.make('getCvarValue', 'cookie{32}value{s}'),
+		31: make('getCvarValue', 'cookie{32}value{s}'),
 		32: {parser: ParseCmdKeyValues, encoder: voidEncoder},
 	};
 
