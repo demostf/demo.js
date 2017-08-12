@@ -1,5 +1,6 @@
 import {Packet} from '../../Data/Packet';
 import {PacketHandler} from './Parser';
+import {BitStream} from 'bit-buffer';
 
 export function make(name: string, definition: string): PacketHandler {
 	const parts = definition.split('}');
@@ -31,7 +32,7 @@ export function make(name: string, definition: string): PacketHandler {
 	};
 }
 
-function readItem(stream, description, data) {
+function readItem(stream: BitStream, description: string, data) {
 	if (description[0] === 'b') {
 		return stream.readBoolean();
 	} else if (description[0] === 's') {
@@ -54,25 +55,25 @@ function readItem(stream, description, data) {
 	}
 }
 
-function writeItem(stream, description, data, value) {
+function writeItem(stream: BitStream, description: string, data, value: boolean | string | number) {
 	if (description[0] === 'b') {
-		return stream.writeBoolean(value);
+		return stream.writeBoolean(value as boolean);
 	} else if (description[0] === 's') {
 		if (description.length === 1) {
-			return stream.writeUTF8String(value);
+			return stream.writeUTF8String(value as string);
 		} else {
 			const length = parseInt(description.substr(1), 10);
-			return stream.writeUTF8String(value, length);
+			return stream.writeUTF8String(value as string, length);
 		}
 	} else if (description === 'f32') {
-		return stream.writeFloat32(value);
+		return stream.writeFloat32(value as number);
 	} else if (description[0] === 'u') {
 		const length = parseInt(description.substr(1), 10);
-		return stream.writeBits(value, length);
+		return stream.writeBits(value as number, length);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);
-		return stream.writeBits(value, data[variable]);
+		return stream.writeBits(value as number, data[variable]);
 	} else {
-		return stream.writeBits(value, parseInt(description, 10), true);
+		return stream.writeBits(value as number, parseInt(description, 10));
 	}
 }

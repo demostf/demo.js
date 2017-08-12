@@ -9,7 +9,7 @@
   "jsnext:main": "build/es6/index.js",
   "module": "build/es6/index.js",
   "dependencies": {
-    "bit-buffer": "^0.1.0",
+    "bit-buffer": "^0.2.0",
     "clone": "^2.1.0",
     "minimist": "1.1.x",
     "snappyjs": "^0.5.0"

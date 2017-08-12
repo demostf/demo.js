@@ -32,7 +32,7 @@ export function ParseClassInfo(stream: BitStream): ClassInfoPacket { // 10: clas
 
 export function EncodeClassInfo(packet: ClassInfoPacket, stream: BitStream) {
 	stream.writeUint16(packet.number);
-	stream.writeBoolean(packet.create ? 1 : 0);
+	stream.writeBoolean(packet.create);
 	if (!packet.create) {
 		const bits = logBase2(packet.number) + 1;
 		for (const entry of packet.entries) {

@@ -29,8 +29,8 @@ suite('Parser generator', () => {
 
 	test('Boolean', () => {
 		const stream = new BitStream(new ArrayBuffer(64));
-		stream.writeBoolean(1);
-		stream.writeBoolean(0);
+		stream.writeBoolean(true);
+		stream.writeBoolean(false);
 		stream.writeASCIIString('remaining');
 		stream.index = 0;
 

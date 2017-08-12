@@ -1,18 +1,18 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {Packet} from '../../../../Data/Packet';
-import {Encoder, Parser} from '../../../../Parser/Packet/Parser';
-import {isArray} from 'util';
 
 export function getStream(data: string | number[]) {
-	if (isArray(data)) {
-		const array = new Uint8Array(data as number[]);
-		return new BitStream(array.buffer);
-	} else {
+	if (typeof data === 'string') {
 		const buffer = new Buffer(data + '\0remaining dummy data');
 		return new BitStream(buffer);
+	} else {
+		const array = new Uint8Array(data as number[]);
+		return new BitStream(array.buffer);
 	}
 }
+
+export type Encoder = (data: any, stream: BitStream) => void;
 
 export function assertEncoder(parser: Parser, encoder: Encoder, data: any, length: number = 0) {
 	const stream = new BitStream(new ArrayBuffer(64));
@@ -28,9 +28,11 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	stream.index = 0;
 
 	const result = parser(stream);
-	assert.deepEqual(data, result);
+	assert.deepEqual(data, result, 'Re-decoded value not equal to original value');
 	assert.equal(pos, stream.index, 'Number of bits used for encoding and parsing not equal');
 }
+
+export type Parser = (stream: BitStream) => any;
 
 export function assertParser(parser: Parser, stream: BitStream, expected: any, length: number) {
 	const start = stream.index;
