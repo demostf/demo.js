@@ -24,7 +24,7 @@ suite('Parser generator', () => {
 	});
 
 	test('Null terminated string', () => {
-		assertGeneratedParser('foo{s}', getStream('dummy'), {foo: 'dummy'}, 5 * 8);
+		assertGeneratedParser('foo{s}', getStream('dummy\0'), {foo: 'dummy'}, 6 * 8);
 	});
 
 	test('Boolean', () => {

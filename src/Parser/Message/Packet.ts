@@ -11,7 +11,7 @@ import {ParseMenu} from '../Packet/Menu';
 import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketParserMap, voidEncoder} from '../Packet/Parser';
 import {ParseParseSounds} from '../Packet/ParseSounds';
-import {ParseSetConVar} from '../Packet/SetConVar';
+import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {ParseTempEntities} from '../Packet/TempEntities';
 import {ParseUpdateStringTable} from '../Packet/UpdateStringTable';
 import {ParseUserMessage} from '../Packet/UserMessage';
@@ -32,7 +32,7 @@ export class Packet extends Parser {
 		2: make('file', 'transferId{32}fileName{s}requested{b}'),
 		3: make('netTick', 'tick{32}frameTime{16}stdDev{16}'),
 		4: make('stringCmd', 'command{s}'),
-		5: {parser: ParseSetConVar, encoder: voidEncoder},
+		5: {parser: ParseSetConVar, encoder: EncodeSetConVar},
 		6: make('sigOnState', 'state{8}count{32}'),
 		7: make('print', 'value{s}'),
 		8: make('serverInfo',

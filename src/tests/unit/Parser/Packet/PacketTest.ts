@@ -4,7 +4,7 @@ import {Packet} from '../../../../Data/Packet';
 import {Encoder, Parser} from '../../../../Parser/Packet/Parser';
 
 export function getStream(data: string) {
-	const buffer = new Buffer(data);
+	const buffer = new Buffer(data + '\0remaining dummy data');
 	return new BitStream(buffer);
 }
 
