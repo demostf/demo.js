@@ -2,10 +2,16 @@ import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {Packet} from '../../../../Data/Packet';
 import {Encoder, Parser} from '../../../../Parser/Packet/Parser';
+import {isArray} from 'util';
 
-export function getStream(data: string) {
-	const buffer = new Buffer(data + '\0remaining dummy data');
-	return new BitStream(buffer);
+export function getStream(data: string | number[]) {
+	if (isArray(data)) {
+		const array = new Uint8Array(data as number[]);
+		return new BitStream(array.buffer);
+	} else {
+		const buffer = new Buffer(data + '\0remaining dummy data');
+		return new BitStream(buffer);
+	}
 }
 
 export function assertEncoder(parser: Parser, encoder: Encoder, data: any, length: number = 0) {

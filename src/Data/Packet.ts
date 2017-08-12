@@ -35,11 +35,11 @@ export interface ClassInfoPacket {
 	packetType: 'classInfo';
 	number: number;
 	create: boolean;
-	entries: Array<{
+	entries: {
 		classId: number;
 		className: string;
 		dataTableName: string;
-	}>;
+	}[];
 }
 
 export interface EntityMessagePacket {

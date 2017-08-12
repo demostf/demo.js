@@ -1,7 +1,7 @@
 import {make} from '../Packet/ParserGenerator';
 
 import {ParseBSPDecal} from '../Packet/BSPDecal';
-import {ParseClassInfo} from '../Packet/ClassInfo';
+import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {ParseCmdKeyValues} from '../Packet/CmdKeyValues';
 import {ParseCreateStringTable} from '../Packet/CreateStringTable';
 import {ParseEntityMessage} from '../Packet/EntityMessage';
@@ -39,7 +39,7 @@ export class Packet extends Parser {
 			'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 			'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 			'game{s}map{s}skybox{s}serverName{s}replay{b}'),
-		10: {parser: ParseClassInfo, encoder: voidEncoder},
+		10: {parser: ParseClassInfo, encoder: EncodeClassInfo},
 		11: make('setPause', 'paused{b}'),
 		12: {parser: ParseCreateStringTable, encoder: voidEncoder},
 		13: {parser: ParseUpdateStringTable, encoder: voidEncoder},
