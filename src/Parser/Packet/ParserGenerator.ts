@@ -1,5 +1,5 @@
 import {Packet} from '../../Data/Packet';
-import {PacketHandler, Parser} from './Parser';
+import {PacketHandler, voidEncoder} from './Parser';
 
 export function make(name: string, definition: string): PacketHandler {
 	const parts = definition.split('}');
@@ -23,26 +23,24 @@ export function make(name: string, definition: string): PacketHandler {
 			}
 			return result as Packet;
 		},
-		encoder: (packet, match, stream) => {
-		}
+		encoder: voidEncoder
 	};
 }
 
 function readItem(stream, description, data) {
-	let length;
 	if (description[0] === 'b') {
 		return stream.readBoolean();
 	} else if (description[0] === 's') {
 		if (description.length === 1) {
 			return stream.readUTF8String();
 		} else {
-			length = parseInt(description.substr(1), 10);
+			const length = parseInt(description.substr(1), 10);
 			return stream.readASCIIString(length);
 		}
 	} else if (description === 'f32') {
 		return stream.readFloat32();
 	} else if (description[0] === 'u') {
-		length = parseInt(description.substr(1), 10);
+		const length = parseInt(description.substr(1), 10);
 		return stream.readBits(length);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);

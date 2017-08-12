@@ -19,6 +19,10 @@ build: node_modules
 test: node_modules
 	node node_modules/.bin/mocha --opts mocha.opts
 
+.PHONY: unit
+unit: node_modules
+	node node_modules/.bin/mocha --opts unit.mocha.opts
+
 .PHONY: lint
 lint: node_modules
 	node_modules/.bin/tslint -p tsconfig.json
