@@ -1,26 +1,30 @@
 import {Packet} from '../../Data/Packet';
-import {Parser} from './Parser';
+import {PacketHandler, Parser} from './Parser';
 
-export function make(name: string, definition: string): Parser {
+export function make(name: string, definition: string): PacketHandler {
 	const parts = definition.substr(0, definition.length - 1).split('}'); // remove leading } to prevent empty part
 	const items = parts.map((part) => {
 		return part.split('{');
 	});
-	return (stream) => {
-		const result = {
-			packetType: name,
-		};
-		try {
-			for (const group of items) {
-				const value = readItem(stream, group[1], result);
-				if (group[0] !== '_') {
-					result[group[0]] = value;
+	return {
+		parser: (stream) => {
+			const result = {
+				packetType: name,
+			};
+			try {
+				for (const group of items) {
+					const value = readItem(stream, group[1], result);
+					if (group[0] !== '_') {
+						result[group[0]] = value;
+					}
 				}
+			} catch (e) {
+				throw new Error('Failed reading pattern ' + definition + '. ' + e);
 			}
-		} catch (e) {
-			throw new Error('Failed reading pattern ' + definition + '. ' + e);
+			return result as Packet;
+		},
+		encoder: (packet, match, stream) => {
 		}
-		return result as Packet;
 	};
 }
 

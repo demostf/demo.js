@@ -2,6 +2,7 @@ import {BitStream} from 'bit-buffer';
 import {UserMessagePacket} from '../../Data/Packet';
 import {SayText2} from '../UserMessage/SayText2';
 import {make} from './ParserGenerator';
+import {voidEncoder} from './Parser';
 
 enum UserMessageType {
 	Geiger = 0,
@@ -65,7 +66,7 @@ enum UserMessageType {
 }
 
 const userMessageParsers = {
-	4: SayText2,
+	4: {parser: SayText2, voidEncoder},
 	5: make('textMsg', 'destType{8}text{s}'),
 };
 
@@ -74,7 +75,7 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 	const length = stream.readBits(11);
 	const messageData = stream.readBitStream(length);
 
-	return userMessageParsers[type] ? userMessageParsers[type](messageData) : {
+	return userMessageParsers[type] ? userMessageParsers[type].parser(messageData) : {
 		packetType: 'unknownUserMessage',
 		type,
 		data: messageData,
