@@ -3,7 +3,7 @@ import {Match} from '../../Data/Match';
 import {Packet} from '../../Data/Packet';
 
 export type Parser = (stream: BitStream, match?: Match, skip?: boolean) => Packet;
-export type Encoder = (packet: Packet, match: Match, stream: BitStream) => void;
+export type Encoder = (packet: Packet, stream: BitStream, match?: Match) => void;
 
 export interface PacketHandler {
 	parser: Parser,

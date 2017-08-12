@@ -1,5 +1,5 @@
 import {Packet} from '../../Data/Packet';
-import {PacketHandler, voidEncoder} from './Parser';
+import {PacketHandler} from './Parser';
 
 export function make(name: string, definition: string): PacketHandler {
 	const parts = definition.split('}');
@@ -23,7 +23,11 @@ export function make(name: string, definition: string): PacketHandler {
 			}
 			return result as Packet;
 		},
-		encoder: voidEncoder
+		encoder: (packet, stream) => {
+			for (const group of items) {
+				writeItem(stream, group[1], packet, packet[group[0]]);
+			}
+		}
 	};
 }
 
@@ -47,5 +51,28 @@ function readItem(stream, description, data) {
 		return stream.readBits(data[variable]);
 	} else {
 		return stream.readBits(parseInt(description, 10), true);
+	}
+}
+
+function writeItem(stream, description, data, value) {
+	if (description[0] === 'b') {
+		return stream.writeBoolean(value);
+	} else if (description[0] === 's') {
+		if (description.length === 1) {
+			return stream.writeUTF8String(value);
+		} else {
+			const length = parseInt(description.substr(1), 10);
+			return stream.writeUTF8String(value, length);
+		}
+	} else if (description === 'f32') {
+		return stream.writeFloat32(value);
+	} else if (description[0] === 'u') {
+		const length = parseInt(description.substr(1), 10);
+		return stream.writeBits(value, length);
+	} else if (description[0] === '$') {
+		const variable = description.substr(1);
+		return stream.writeBits(value, data[variable]);
+	} else {
+		return stream.writeBits(value, parseInt(description, 10), true);
 	}
 }
