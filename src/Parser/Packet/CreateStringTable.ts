@@ -1,27 +1,26 @@
 import {BitStream} from 'bit-buffer';
-import {StringTablePacket} from '../../Data/Packet';
+import {CreateStringTablePacket} from '../../Data/Packet';
 import {logBase2} from '../../Math';
-import {readVarInt} from '../readBitVar';
+import {readVarInt, writeVarInt} from '../readBitVar';
 
 import {uncompress} from 'snappyjs';
-import {Match} from '../../Data/Match';
 import {StringTable} from '../../Data/StringTable';
-import {parseStringTable} from '../StringTableParser';
+import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
 
-export function ParseCreateStringTable(stream: BitStream, match: Match): StringTablePacket { // 12: createStringTable
-	const tableName   = stream.readASCIIString();
-	const maxEntries  = stream.readUint16();
-	const encodeBits  = logBase2(maxEntries);
+export function ParseCreateStringTable(stream: BitStream): CreateStringTablePacket { // 12: createStringTable
+	const tableName = stream.readASCIIString();
+	const maxEntries = stream.readUint16();
+	const encodeBits = logBase2(maxEntries);
 	const entityCount = stream.readBits(encodeBits + 1);
 
 	const bitCount = readVarInt(stream);
 
-	let userDataSize     = 0;
+	let userDataSize = 0;
 	let userDataSizeBits = 0;
 
 	// userdata fixed size
 	if (stream.readBoolean()) {
-		userDataSize     = stream.readBits(12);
+		userDataSize = stream.readBits(12);
 		userDataSizeBits = stream.readBits(4);
 	}
 
@@ -31,7 +30,7 @@ export function ParseCreateStringTable(stream: BitStream, match: Match): StringT
 
 	if (isCompressed) {
 		const decompressedByteSize = data.readUint32();
-		const compressedByteSize   = data.readUint32();
+		const compressedByteSize = data.readUint32();
 
 		const magic = data.readASCIIString(4);
 
@@ -50,17 +49,45 @@ export function ParseCreateStringTable(stream: BitStream, match: Match): StringT
 	}
 
 	const table: StringTable = {
-		name:                  tableName,
-		entries:               [],
+		name: tableName,
+		entries: [],
 		maxEntries,
-		fixedUserDataSize:     userDataSize,
+		fixedUserDataSize: userDataSize,
 		fixedUserDataSizeBits: userDataSizeBits,
 	};
 
-	parseStringTable(data, table, entityCount, match);
+	table.entries = parseStringTableEntries(data, table, entityCount);
 
 	return {
-		packetType: 'stringTable',
-		tables:      [table],
+		packetType: 'createStringTable',
+		table: table,
 	};
+}
+
+export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream: BitStream) {
+	stream.writeASCIIString(packet.table.name);
+	stream.writeUint16(packet.table.maxEntries);
+	const encodeBits = logBase2(packet.table.maxEntries);
+	stream.writeBits(packet.table.entries.length, encodeBits + 1);
+
+	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table)));
+	encodeStringTableEntries(entryData, packet.table);
+
+	const entryLength = entryData.index;
+	entryData.index = 0;
+
+	writeVarInt(entryLength, stream);
+
+	if (packet.table.fixedUserDataSize && packet.table.fixedUserDataSizeBits) {
+		stream.writeBoolean(true);
+		stream.writeBits(packet.table.fixedUserDataSize, 12);
+		stream.writeBits(packet.table.fixedUserDataSizeBits, 4);
+	} else {
+		stream.writeBoolean(false);
+	}
+
+	// we never compress table data
+	stream.writeBoolean(false);
+
+	stream.writeBitStream(entryData, entryLength);
 }

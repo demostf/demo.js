@@ -3,18 +3,15 @@ import {Match} from '../Data/Match';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
 import {logBase2} from '../Math';
 
-export function parseStringTable(stream: BitStream, table: StringTable, entries: number, match: Match) {
+export function parseStringTableEntries(stream: BitStream, table: StringTable, entryCount: number, existingEntries: StringTableEntry[] = []): StringTableEntry[] {
 	const entryBits = logBase2(table.maxEntries);
-	let lastEntry   = -1;
+	const entries: StringTableEntry[] = [];
+	let lastEntry = -1;
 
 	const history: StringTableEntry[] = [];
 
-	for (let i = 0; i < entries; i++) {
-		let entryIndex = lastEntry + 1;
-
-		if (!stream.readBoolean()) {
-			entryIndex = stream.readBits(entryBits);
-		}
+	for (let i = 0; i < entryCount; i++) {
+		const entryIndex = (!stream.readBoolean()) ? stream.readBits(entryBits) : lastEntry + 1;
 
 		lastEntry = entryIndex;
 
@@ -28,7 +25,7 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 			const subStringCheck = stream.readBoolean();
 
 			if (subStringCheck) {
-				const index       = stream.readBits(5);
+				const index = stream.readBits(5);
 				const bytesToCopy = stream.readBits(5);
 
 				const restOfString = stream.readASCIIString();
@@ -43,19 +40,19 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 			}
 		}
 
-		let userData: BitStream|undefined;
+		let userData: BitStream | undefined;
 
 		if (stream.readBoolean()) {
 			if (table.fixedUserDataSize && table.fixedUserDataSizeBits) {
 				userData = stream.readBitStream(table.fixedUserDataSizeBits);
 			} else {
 				const userDataBytes = stream.readBits(14);
-				userData            = stream.readBitStream(userDataBytes * 8);
+				userData = stream.readBitStream(userDataBytes * 8);
 			}
 		}
 
-		if (table.entries[entryIndex]) {
-			const existingEntry = table.entries[entryIndex];
+		if (existingEntries[entryIndex]) {
+			const existingEntry: StringTableEntry = {...existingEntries[entryIndex]};
 			if (userData) {
 				existingEntry.extraData = userData;
 			}
@@ -63,16 +60,67 @@ export function parseStringTable(stream: BitStream, table: StringTable, entries:
 			if (value) {
 				existingEntry.text = value;
 			}
+			entries[entryIndex] = existingEntry;
 			history.push(existingEntry);
 		} else {
-			table.entries[entryIndex] = {
-				text:      value,
+			entries[entryIndex] = {
+				text: value,
 				extraData: userData,
 			};
-			history.push(table.entries[entryIndex]);
+			console.log(entries[entryIndex]);
+			history.push(entries[entryIndex]);
 		}
 		if (history.length > 32) {
 			history.shift();
+		}
+	}
+
+	return entries;
+}
+
+export function guessStringTableEntryLength(table: StringTable): number {
+	// a rough guess of how many bytes are needed to encode the table entries
+	const entryBytes = Math.ceil(logBase2(table.maxEntries) / 8);
+	return table.entries.reduce((length: number, entry: StringTableEntry) => {
+		return length +
+			entryBytes +
+			1 + // misc boolean
+			entry.text.length + 1 + // +1 for null termination
+			(entry.extraData ? Math.ceil(entry.extraData.length / 8) : 0);
+	}, 1);
+}
+
+export function encodeStringTableEntries(stream: BitStream, table: StringTable) {
+	const entryBits = logBase2(table.maxEntries);
+	let lastIndex = -1;
+	for (let i = 0; i < table.entries.length; i++) {
+		if (table.entries[i]) {
+			const entry = table.entries[i];
+			if (i !== lastIndex) {
+				stream.writeBoolean(false);
+				stream.writeBits(i, entryBits);
+			} else {
+				stream.writeBoolean(true);
+			}
+
+			// we always encode a value
+			stream.writeBoolean(true);
+			// we don't encode substring optimizations
+			stream.writeBoolean(false);
+
+			stream.writeASCIIString(entry.text);
+
+			if (entry.extraData) {
+				stream.writeBoolean(true);
+
+				if (!table.fixedUserDataSizeBits) {
+					stream.writeBits(Math.ceil(entry.extraData.length / 8), 14);
+				}
+				stream.writeBitStream(entry.extraData);
+				entry.extraData.index = 0;
+			} else {
+				stream.writeBoolean(false);
+			}
 		}
 	}
 }

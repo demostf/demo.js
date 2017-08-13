@@ -10,13 +10,13 @@ export class StringTable extends Parser {
 		// 	tables:     []
 		// }];
 		// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
-		const tableCount                = this.stream.readUint8();
+		const tableCount = this.stream.readUint8();
 		const tables: StringTableObject[] = [];
 		let extraDataLength;
 		for (let i = 0; i < tableCount; i++) {
 			const entries: StringTableEntry[] = [];
-			const tableName                 = this.stream.readASCIIString();
-			const entryCount                = this.stream.readUint16();
+			const tableName = this.stream.readASCIIString();
+			const entryCount = this.stream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
 				let entry: StringTableEntry;
 				try {
@@ -45,7 +45,7 @@ export class StringTable extends Parser {
 			}
 			const table: StringTableObject = {
 				entries,
-				name:       tableName,
+				name: tableName,
 				maxEntries: entryCount,
 			};
 			tables.push(table);

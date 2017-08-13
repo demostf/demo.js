@@ -11,6 +11,16 @@ export interface StringTablePacket {
 	tables: StringTable[];
 }
 
+export interface CreateStringTablePacket {
+	packetType: 'createStringTable';
+	table: StringTable;
+}
+
+export interface UpdateStringTablePacket {
+	packetType: 'updateStringTable';
+	table: StringTable;
+}
+
 export interface ConsoleCmdPacket {
 	packetType: 'consoleCmd';
 	command: string;
@@ -81,7 +91,7 @@ export interface ParseSoundsPacket {
 
 export interface SetConVarPacket {
 	packetType: 'setConVar';
-	vars: {[key: string]: string};
+	vars: { [key: string]: string };
 }
 
 export interface TempEntitiesPacket {
@@ -142,6 +152,8 @@ export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUser
 
 export type Packet = BSPDecalPacket |
 	StringTablePacket |
+	CreateStringTablePacket |
+	UpdateStringTablePacket |
 	DataTablePacket |
 	ClassInfoPacket |
 	EntityMessagePacket |

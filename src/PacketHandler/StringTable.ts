@@ -1,34 +1,42 @@
 import {Match} from '../Data/Match';
-import {StringTablePacket} from '../Data/Packet';
-import {StringTableEntry} from '../Data/StringTable';
+import {CreateStringTablePacket, StringTablePacket, UpdateStringTablePacket} from '../Data/Packet';
+import {StringTable, StringTableEntry} from '../Data/StringTable';
 
-export function handleStringTable(packet: StringTablePacket, match: Match) {
+export function handleStringTable(packet: CreateStringTablePacket | UpdateStringTablePacket, match: Match) {
+	handleTable(packet.table, match);
+}
+
+export function handleStringTables(packet: StringTablePacket, match: Match) {
 	for (const table of packet.tables) {
-		if (!match.getStringTable(table.name)) {
-			match.stringTables.push(table);
-		}
-		if (table.name === 'userinfo') {
-			for (const userData of table.entries) {
-				if (userData.extraData) {
-					if (userData.extraData.bitsLeft > (32 * 8)) {
-						const name    = userData.extraData.readUTF8String(32);
-						const userId  = userData.extraData.readUint32();
-						const steamId = userData.extraData.readUTF8String();
-						if (steamId) {
-							const userState    = match.getUserInfo(userId);
-							userState.name     = name;
-							userState.steamId  = steamId;
-							userState.entityId = parseInt(userData.text, 10) + 1;
-						}
+		handleTable(table, match);
+	}
+}
+
+function handleTable(table: StringTable, match: Match) {
+	if (!match.getStringTable(table.name)) {
+		match.stringTables.push(table);
+	}
+	if (table.name === 'userinfo') {
+		for (const userData of table.entries) {
+			if (userData.extraData) {
+				if (userData.extraData.bitsLeft > (32 * 8)) {
+					const name = userData.extraData.readUTF8String(32);
+					const userId = userData.extraData.readUint32();
+					const steamId = userData.extraData.readUTF8String();
+					if (steamId) {
+						const userState = match.getUserInfo(userId);
+						userState.name = name;
+						userState.steamId = steamId;
+						userState.entityId = parseInt(userData.text, 10) + 1;
 					}
 				}
 			}
 		}
-		if (table.name === 'instancebaseline') {
-			for (const instanceBaseLine of table.entries) {
-				if (instanceBaseLine) {
-					saveInstanceBaseLine(instanceBaseLine, match);
-				}
+	}
+	if (table.name === 'instancebaseline') {
+		for (const instanceBaseLine of table.entries) {
+			if (instanceBaseLine) {
+				saveInstanceBaseLine(instanceBaseLine, match);
 			}
 		}
 	}
