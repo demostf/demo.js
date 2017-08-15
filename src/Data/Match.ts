@@ -4,7 +4,7 @@ import {handleGameEvent} from '../PacketHandler/GameEvent';
 import {handleGameEventList} from '../PacketHandler/GameEventList';
 import {handlePacketEntities} from '../PacketHandler/PacketEntities';
 import {handleSayText2} from '../PacketHandler/SayText2';
-import {handleStringTable, handleStringTables} from '../PacketHandler/StringTable';
+import {handleStringTable, handleStringTables, handleStringTableUpdate} from '../PacketHandler/StringTable';
 import {Building} from './Building';
 import {Death} from './Death';
 import {GameEventDefinitionMap} from './GameEvent';
@@ -149,8 +149,10 @@ export class Match {
 				handleStringTables(packet, this);
 				break;
 			case 'createStringTable':
-			case 'updateStringTable':
 				handleStringTable(packet, this);
+				break;
+			case 'updateStringTable':
+				handleStringTableUpdate(packet, this);
 				break;
 			case 'gameEventList':
 				handleGameEventList(packet, this);

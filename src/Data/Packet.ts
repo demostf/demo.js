@@ -3,7 +3,7 @@ import {GameEvent, GameEventDefinitionMap} from './GameEvent';
 import {PacketEntity} from './PacketEntity';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
-import {StringTable} from './StringTable';
+import {StringTable, StringTableEntry} from './StringTable';
 import {Vector} from './Vector';
 
 export interface StringTablePacket {
@@ -18,7 +18,8 @@ export interface CreateStringTablePacket {
 
 export interface UpdateStringTablePacket {
 	packetType: 'updateStringTable';
-	table: StringTable;
+	entries: StringTableEntry[];
+	tableId: number;
 }
 
 export interface ConsoleCmdPacket {

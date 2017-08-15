@@ -13,7 +13,7 @@ import {PacketParserMap, voidEncoder} from '../Packet/Parser';
 import {ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {ParseTempEntities} from '../Packet/TempEntities';
-import {ParseUpdateStringTable} from '../Packet/UpdateStringTable';
+import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
 import {ParseUserMessage} from '../Packet/UserMessage';
 import {ParseVoiceData} from '../Packet/VoiceData';
 import {ParseVoiceInit} from '../Packet/VoiceInit';
@@ -42,7 +42,7 @@ export class Packet extends Parser {
 		10: {parser: ParseClassInfo, encoder: EncodeClassInfo},
 		11: make('setPause', 'paused{b}'),
 		12: {parser: ParseCreateStringTable, encoder: EncodeCreateStringTable},
-		13: {parser: ParseUpdateStringTable, encoder: voidEncoder},
+		13: {parser: ParseUpdateStringTable, encoder: EncodeUpdateStringTable},
 		14: {parser: ParseVoiceInit, encoder: voidEncoder},
 		15: {parser: ParseVoiceData, encoder: voidEncoder},
 		17: {parser: ParseParseSounds, encoder: voidEncoder},

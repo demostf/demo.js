@@ -1,5 +1,4 @@
 import {BitStream} from 'bit-buffer';
-import {Match} from '../Data/Match';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
 import {logBase2} from '../Math';
 
@@ -11,12 +10,12 @@ export function parseStringTableEntries(stream: BitStream, table: StringTable, e
 	const history: StringTableEntry[] = [];
 
 	for (let i = 0; i < entryCount; i++) {
-		const entryIndex = (!stream.readBoolean()) ? stream.readBits(entryBits) : lastEntry + 1;
+		const entryIndex = !stream.readBoolean() ? stream.readBits(entryBits) : lastEntry + 1;
 
 		lastEntry = entryIndex;
 
 		if (entryIndex < 0 || entryIndex > table.maxEntries) {
-			throw new Error('Invalid string index for stringtable');
+			throw new Error('Invalid string index for string table');
 		}
 
 		let value;
@@ -31,7 +30,7 @@ export function parseStringTableEntries(stream: BitStream, table: StringTable, e
 				const restOfString = stream.readASCIIString();
 
 				if (!history[index].text) {
-					value = restOfString; // best guess, happens in some pov demos but only for unimported tables it seems
+					value = restOfString; // best guess, happens in some pov demos but only for unimportant tables it seems
 				} else {
 					value = history[index].text.substr(0, bytesToCopy) + restOfString;
 				}
@@ -67,7 +66,6 @@ export function parseStringTableEntries(stream: BitStream, table: StringTable, e
 				text: value,
 				extraData: userData,
 			};
-			console.log(entries[entryIndex]);
 			history.push(entries[entryIndex]);
 		}
 		if (history.length > 32) {
@@ -78,10 +76,10 @@ export function parseStringTableEntries(stream: BitStream, table: StringTable, e
 	return entries;
 }
 
-export function guessStringTableEntryLength(table: StringTable): number {
+export function guessStringTableEntryLength(table: StringTable, entries: StringTableEntry[]): number {
 	// a rough guess of how many bytes are needed to encode the table entries
 	const entryBytes = Math.ceil(logBase2(table.maxEntries) / 8);
-	return table.entries.reduce((length: number, entry: StringTableEntry) => {
+	return entries.reduce((length: number, entry: StringTableEntry) => {
 		return length +
 			entryBytes +
 			1 + // misc boolean
@@ -90,13 +88,13 @@ export function guessStringTableEntryLength(table: StringTable): number {
 	}, 1);
 }
 
-export function encodeStringTableEntries(stream: BitStream, table: StringTable) {
+export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[]) {
 	const entryBits = logBase2(table.maxEntries);
 	let lastIndex = -1;
-	for (let i = 0; i < table.entries.length; i++) {
-		if (table.entries[i]) {
-			const entry = table.entries[i];
-			if (i !== lastIndex) {
+	for (let i = 0; i < entries.length; i++) {
+		if (entries[i]) {
+			const entry = entries[i];
+			if (i !== (lastIndex + 1)) {
 				stream.writeBoolean(false);
 				stream.writeBits(i, entryBits);
 			} else {
@@ -113,10 +111,14 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable) 
 			if (entry.extraData) {
 				stream.writeBoolean(true);
 
-				if (!table.fixedUserDataSizeBits) {
-					stream.writeBits(Math.ceil(entry.extraData.length / 8), 14);
+				entry.extraData.index = 0;
+				if (table.fixedUserDataSizeBits) {
+					stream.writeBitStream(entry.extraData, table.fixedUserDataSizeBits);
+				} else {
+					const byteLength = Math.ceil(entry.extraData.length / 8);
+					stream.writeBits(byteLength, 14);
+					stream.writeBitStream(entry.extraData, byteLength * 8);
 				}
-				stream.writeBitStream(entry.extraData);
 				entry.extraData.index = 0;
 			} else {
 				stream.writeBoolean(false);

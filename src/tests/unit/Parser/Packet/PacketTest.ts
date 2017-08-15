@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {Packet} from '../../../../Data/Packet';
+import {deepEqual} from '../../deepEqual';
 
 export function getStream(data: string | number[]) {
 	if (typeof data === 'string') {
@@ -28,14 +29,20 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	stream.index = 0;
 
 	const result = parser(stream);
-	assert.deepEqual(result, data, 'Re-decoded value not equal to original value');
+	deepEqual(result, data);
+	if (!deepEqual(result, data)) {
+		assert.deepEqual(result, data, 'Re-decoded value not equal to original value');
+	}
 	assert.equal(stream.index, pos, 'Number of bits used for encoding and parsing not equal');
 }
 
-export type Parser = (stream: BitStream) => any;
+export type Parser = (stream: BitStream, match?) => any;
 
 export function assertParser(parser: Parser, stream: BitStream, expected: any, length: number) {
 	const start = stream.index;
-	assert.deepEqual(parser(stream), expected);
+	const result = parser(stream);
+	if (!deepEqual(result, expected)) {
+		assert.deepEqual(result, expected);
+	}
 	assert.equal(stream.index - start, length, 'Unexpected number of bits consumed from stream');
 }

@@ -70,8 +70,8 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 	const encodeBits = logBase2(packet.table.maxEntries);
 	stream.writeBits(packet.table.entries.length, encodeBits + 1);
 
-	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table)));
-	encodeStringTableEntries(entryData, packet.table);
+	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table, packet.table.entries)));
+	encodeStringTableEntries(entryData, packet.table, packet.table.entries);
 
 	const entryLength = entryData.index;
 	entryData.index = 0;

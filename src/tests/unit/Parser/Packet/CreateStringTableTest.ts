@@ -87,8 +87,7 @@ suite('CreateStringTable', () => {
 	});
 
 	test('Encode createStringTable', () => {
-		// more bits are used for encoding because we don't do a lot of compression tricks
-		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket, 401);
-		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket2, 628);
+		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket, 388);
+		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket2, 615);
 	});
 });
