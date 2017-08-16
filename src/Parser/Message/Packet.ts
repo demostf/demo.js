@@ -1,6 +1,6 @@
 import {make} from '../Packet/ParserGenerator';
 
-import {ParseBSPDecal} from '../Packet/BSPDecal';
+import {EncodeBSPDecal, ParseBSPDecal} from '../Packet/BSPDecal';
 import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {ParseCmdKeyValues} from '../Packet/CmdKeyValues';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
@@ -48,7 +48,7 @@ export class Packet extends Parser {
 		17: {parser: ParseParseSounds, encoder: EncodeParseSounds},
 		18: make('setView', 'index{11}'),
 		19: make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
-		21: {parser: ParseBSPDecal, encoder: voidEncoder},
+		21: {parser: ParseBSPDecal, encoder: EncodeBSPDecal},
 		23: {parser: ParseUserMessage, encoder: voidEncoder},
 		24: {parser: ParseEntityMessage, encoder: voidEncoder},
 		25: {parser: ParseGameEvent, encoder: voidEncoder},
