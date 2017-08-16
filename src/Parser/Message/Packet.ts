@@ -10,7 +10,7 @@ import {ParseGameEventList} from '../Packet/GameEventList';
 import {ParseMenu} from '../Packet/Menu';
 import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketParserMap, voidEncoder} from '../Packet/Parser';
-import {ParseParseSounds} from '../Packet/ParseSounds';
+import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {ParseTempEntities} from '../Packet/TempEntities';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
@@ -45,7 +45,7 @@ export class Packet extends Parser {
 		13: {parser: ParseUpdateStringTable, encoder: EncodeUpdateStringTable},
 		14: {parser: ParseVoiceInit, encoder: EncodeVoiceInit},
 		15: {parser: ParseVoiceData, encoder: EncodeVoiceData},
-		17: {parser: ParseParseSounds, encoder: voidEncoder},
+		17: {parser: ParseParseSounds, encoder: EncodeParseSounds},
 		18: make('setView', 'index{11}'),
 		19: make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
 		21: {parser: ParseBSPDecal, encoder: voidEncoder},

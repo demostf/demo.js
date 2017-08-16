@@ -4,8 +4,8 @@ import {EncodeVoiceData, ParseVoiceData} from '../../../../Parser/Packet/VoiceDa
 
 const data = [5, 18, 24, 0, 123, 219, 1];
 
-suite('VoiceInit', () => {
-	test('Parse voiceInit', () => {
+suite('VoiceData', () => {
+	test('Parse voiceData', () => {
 		assertParser(ParseVoiceData, getStream(data), {
 			packetType: 'voiceData',
 			client: '5',
@@ -15,7 +15,7 @@ suite('VoiceInit', () => {
 		}, 56);
 	});
 
-	test('Encode voiceInit', () => {
+	test('Encode voiceData', () => {
 		assertEncoder(ParseVoiceData, EncodeVoiceData, {
 			packetType: 'voiceData',
 			client: '5',

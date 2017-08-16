@@ -23,9 +23,4 @@ export function EncodeVoiceData(packet: VoiceDataPacket, stream: BitStream) {
 	packet.data.index = 0;
 	stream.writeBitStream(packet.data, packet.length);
 	packet.data.index = 0;
-
-	const length = stream.index;
-
-	stream.index = 0;
-	console.log(stream.readArrayBuffer(Math.ceil(length / 8)));
 }

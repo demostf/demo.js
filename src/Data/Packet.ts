@@ -88,6 +88,7 @@ export interface ParseSoundsPacket {
 	reliable: boolean;
 	num: number;
 	length: number;
+	data: BitStream;
 }
 
 export interface SetConVarPacket {

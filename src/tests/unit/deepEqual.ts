@@ -49,16 +49,23 @@ function objEquiv(a, b, opts) {
 	if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
 		return false;
 	// an identical 'prototype' property.
-	if (a.prototype !== b.prototype) return false;
+	if (a.prototype !== b.prototype) {
+		return false;
+	}
 	//~~~I've managed to break Object.keys through screwy arguments passing.
 	//   Converting to array solves the problem.
 	if (isBuffer(a)) {
 		if (!isBuffer(b)) {
 			return false;
 		}
-		if (a.length !== b.length) return false;
+		if (a.length !== b.length) {
+			return false;
+		}
+
 		for (i = 0; i < a.length; i++) {
-			if (a[i] !== b[i]) return false;
+			if (a[i] !== b[i]) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -66,7 +73,9 @@ function objEquiv(a, b, opts) {
 		if (!isStream(b)) {
 			return false;
 		}
-		if (a.length !== b.length) return false;
+		if (a.length !== b.length) {
+			return false;
+		}
 		a.index = 0;
 		b.index = 0;
 		while (a.bitsLeft > 0) {
