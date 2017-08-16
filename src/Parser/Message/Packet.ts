@@ -16,7 +16,7 @@ import {ParseTempEntities} from '../Packet/TempEntities';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
 import {ParseUserMessage} from '../Packet/UserMessage';
 import {ParseVoiceData} from '../Packet/VoiceData';
-import {ParseVoiceInit} from '../Packet/VoiceInit';
+import {EncodeVoiceInit, ParseVoiceInit} from '../Packet/VoiceInit';
 import {Parser} from './Parser';
 
 import {Packet as IPacket} from '../../Data/Packet';
@@ -43,7 +43,7 @@ export class Packet extends Parser {
 		11: make('setPause', 'paused{b}'),
 		12: {parser: ParseCreateStringTable, encoder: EncodeCreateStringTable},
 		13: {parser: ParseUpdateStringTable, encoder: EncodeUpdateStringTable},
-		14: {parser: ParseVoiceInit, encoder: voidEncoder},
+		14: {parser: ParseVoiceInit, encoder: EncodeVoiceInit},
 		15: {parser: ParseVoiceData, encoder: voidEncoder},
 		17: {parser: ParseParseSounds, encoder: voidEncoder},
 		18: make('setView', 'index{11}'),
