@@ -15,7 +15,7 @@ import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {ParseTempEntities} from '../Packet/TempEntities';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
 import {ParseUserMessage} from '../Packet/UserMessage';
-import {ParseVoiceData} from '../Packet/VoiceData';
+import {EncodeVoiceData, ParseVoiceData} from '../Packet/VoiceData';
 import {EncodeVoiceInit, ParseVoiceInit} from '../Packet/VoiceInit';
 import {Parser} from './Parser';
 
@@ -44,7 +44,7 @@ export class Packet extends Parser {
 		12: {parser: ParseCreateStringTable, encoder: EncodeCreateStringTable},
 		13: {parser: ParseUpdateStringTable, encoder: EncodeUpdateStringTable},
 		14: {parser: ParseVoiceInit, encoder: EncodeVoiceInit},
-		15: {parser: ParseVoiceData, encoder: voidEncoder},
+		15: {parser: ParseVoiceData, encoder: EncodeVoiceData},
 		17: {parser: ParseParseSounds, encoder: voidEncoder},
 		18: make('setView', 'index{11}'),
 		19: make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
