@@ -47,6 +47,9 @@ function readItem(stream: BitStream, description: string, data) {
 	} else if (description[0] === 'u') {
 		const length = parseInt(description.substr(1), 10);
 		return stream.readBits(length);
+	} else if (description[0] === '$' && description.substr(description.length - 2) === '*8') {
+		const variable = description.substr(1, description.length - 3);
+		return stream.readBitStream(data[variable] * 8);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);
 		return stream.readBitStream(data[variable]);
@@ -70,6 +73,9 @@ function writeItem(stream: BitStream, description: string, data, value: boolean 
 	} else if (description[0] === 'u') {
 		const length = parseInt(description.substr(1), 10);
 		return stream.writeBits(value as number, length);
+	} else if (description[0] === '$' && description.substr(description.length - 2) === '*8') {
+		const variable = description.substr(1, description.length - 3);
+		return stream.writeBitStream(value as BitStream, data[variable] * 8);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);
 		return stream.writeBitStream(value as BitStream, data[variable]);

@@ -78,6 +78,32 @@ suite('Parser generator', () => {
 		assertGeneratedParser('length{u2}foo{$length}', stream, {length: 3, foo: expectedStream.readBitStream(3)}, 5);
 	});
 
+	test('Variable length *8', () => {
+		const stream = new BitStream(new ArrayBuffer(256));
+		stream.writeUint8(0b11111111);
+		stream.writeUint8(0b00001100);
+		stream.writeUint8(0b00001100);
+		stream.writeUint8(0b00001100);
+		stream.writeUint8(0b00001100);
+		stream.writeUint8(0b00001100);
+		stream.writeASCIIString('remaining');
+		stream.index = 0;
+
+		const expectedStream = new BitStream(new ArrayBuffer(256));
+		expectedStream.writeUint8(0b11111111);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.index = 2;
+
+		assertGeneratedParser('length{u2}foo{$length*8}', stream, {
+			length: 3,
+			foo: expectedStream.readBitStream(3 * 8)
+		}, 2 + 3 * 8);
+	});
+
 	test('Float32', () => {
 		const stream = new BitStream(new ArrayBuffer(64));
 		stream.writeFloat32(12.234233856201172);
@@ -120,6 +146,21 @@ suite('Parser generator', () => {
 			foo: 3,
 			bar: expectedStream.readBitStream(3)
 		}, 2 + 3);
+	});
+	test('Encode variable length*8', () => {
+		const expectedStream = new BitStream(new ArrayBuffer(256));
+		expectedStream.writeUint8(0b11111111);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.writeUint8(0b00001100);
+		expectedStream.index = 0;
+
+		assertGeneratedEncoder('foo{u2}bar{$foo*8}', {
+			foo: 3,
+			bar: expectedStream.readBitStream(3 * 8)
+		}, 2 + (3 * 8));
 	});
 	test('Encode float', () => {
 		assertGeneratedEncoder('foo{f32}', {

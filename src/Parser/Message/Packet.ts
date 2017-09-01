@@ -5,7 +5,6 @@ import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
 import {ParseGameEvent} from '../Packet/GameEvent';
 import {EncodeGameEventList, ParseGameEventList} from '../Packet/GameEventList';
-import {ParseMenu} from '../Packet/Menu';
 import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketParserMap, voidEncoder} from '../Packet/Parser';
 import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
@@ -53,7 +52,7 @@ export class Packet extends Parser {
 		26: {parser: ParsePacketEntities, encoder: voidEncoder},
 		27: {parser: ParseTempEntities, encoder: voidEncoder},
 		28: make('preFetch', 'index{14}'),
-		29: {parser: ParseMenu, encoder: voidEncoder},
+		29: make('menu', 'type{u16}length{u16}data{$length*8}'),
 		30: {parser: ParseGameEventList, encoder: EncodeGameEventList},
 		31: make('getCvarValue', 'cookie{32}value{s}'),
 		32: make('cmdKeyValues', 'length{32}data{$length}'),
