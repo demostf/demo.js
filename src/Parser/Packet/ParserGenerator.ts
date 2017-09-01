@@ -49,13 +49,13 @@ function readItem(stream: BitStream, description: string, data) {
 		return stream.readBits(length);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);
-		return stream.readBits(data[variable]);
+		return stream.readBitStream(data[variable]);
 	} else {
 		return stream.readBits(parseInt(description, 10), true);
 	}
 }
 
-function writeItem(stream: BitStream, description: string, data, value: boolean | string | number) {
+function writeItem(stream: BitStream, description: string, data, value: boolean | string | number | BitStream) {
 	if (description[0] === 'b') {
 		return stream.writeBoolean(value as boolean);
 	} else if (description[0] === 's') {
@@ -72,7 +72,7 @@ function writeItem(stream: BitStream, description: string, data, value: boolean 
 		return stream.writeBits(value as number, length);
 	} else if (description[0] === '$') {
 		const variable = description.substr(1);
-		return stream.writeBits(value as number, data[variable]);
+		return stream.writeBitStream(value as BitStream, data[variable]);
 	} else {
 		return stream.writeBits(value as number, parseInt(description, 10));
 	}

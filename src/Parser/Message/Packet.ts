@@ -4,7 +4,6 @@ import {EncodeBSPDecal, ParseBSPDecal} from '../Packet/BSPDecal';
 import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {ParseCmdKeyValues} from '../Packet/CmdKeyValues';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
-import {ParseEntityMessage} from '../Packet/EntityMessage';
 import {ParseGameEvent} from '../Packet/GameEvent';
 import {ParseGameEventList} from '../Packet/GameEventList';
 import {ParseMenu} from '../Packet/Menu';
@@ -50,7 +49,7 @@ export class Packet extends Parser {
 		19: make('fixAngle', 'relative{b}x{16}y{16}z{16}'),
 		21: {parser: ParseBSPDecal, encoder: EncodeBSPDecal},
 		23: {parser: ParseUserMessage, encoder: voidEncoder},
-		24: {parser: ParseEntityMessage, encoder: voidEncoder},
+		24: make('entityMessage', 'index{11}classId{9}length{11}data{$length}'),
 		25: {parser: ParseGameEvent, encoder: voidEncoder},
 		26: {parser: ParsePacketEntities, encoder: voidEncoder},
 		27: {parser: ParseTempEntities, encoder: voidEncoder},

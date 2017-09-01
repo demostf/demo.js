@@ -71,7 +71,11 @@ suite('Parser generator', () => {
 		stream.writeASCIIString('remaining');
 		stream.index = 0;
 
-		assertGeneratedParser('length{u2}foo{$length}', stream, {length: 3, foo: 7}, 5);
+		const expectedStream = new BitStream(new ArrayBuffer(4));
+		expectedStream.writeUint8(7);
+		expectedStream.index = 0;
+
+		assertGeneratedParser('length{u2}foo{$length}', stream, {length: 3, foo: expectedStream.readBitStream(3)}, 5);
 	});
 
 	test('Float32', () => {
@@ -108,9 +112,13 @@ suite('Parser generator', () => {
 		}, 2 + 12);
 	});
 	test('Encode variable length', () => {
+		const expectedStream = new BitStream(new ArrayBuffer(4));
+		expectedStream.writeUint8(7);
+		expectedStream.index = 0;
+
 		assertGeneratedEncoder('foo{u2}bar{$foo}', {
 			foo: 3,
-			bar: 4
+			bar: expectedStream.readBitStream(3)
 		}, 2 + 3);
 	});
 	test('Encode float', () => {
