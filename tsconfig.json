@@ -1,17 +1,18 @@
 {
-	"compilerOptions": {
-		"lib": [
-			"dom",
-			"es2015.promise",
-			"es5"
-		],
-		"module": "commonjs",
-		"target": "ES5",
-		"outDir": "build",
-		"rootDir": "src",
-		"declaration": true,
-		"strictNullChecks": true,
-		"sourceMap": true,
-		"moduleResolution": "node"
-	}
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015.promise",
+      "es5",
+      "ES2017"
+    ],
+    "module": "commonjs",
+    "target": "ES5",
+    "outDir": "build",
+    "rootDir": "src",
+    "declaration": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "moduleResolution": "node"
+  }
 }

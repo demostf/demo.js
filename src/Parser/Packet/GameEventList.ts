@@ -1,17 +1,18 @@
 import {BitStream} from 'bit-buffer';
-import {GameEventDefinitionMap, GameEventEntry} from '../../Data/GameEvent';
-import {Match} from '../../Data/Match';
+import {GameEventDefinition, GameEventDefinitionMap, GameEventEntry} from '../../Data/GameEvent';
 import {GameEventListPacket} from '../../Data/Packet';
 
-export function ParseGameEventList(stream: BitStream, match: Match): GameEventListPacket { // 30: gameEventList
+export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
+	const s = stream.index;
+
 	// list of game events and parameters
-	const numEvents                         = stream.readBits(9);
-	const length                            = stream.readBits(20);
+	const numEvents = stream.readBits(9);
+	const length = stream.readBits(20);
 	const eventList: GameEventDefinitionMap = {};
 	for (let i = 0; i < numEvents; i++) {
-		const id                        = stream.readBits(9);
-		const name                      = stream.readASCIIString();
-		let type                        = stream.readBits(3);
+		const id = stream.readBits(9);
+		const name = stream.readASCIIString();
+		let type = stream.readBits(3);
 		const entries: GameEventEntry[] = [];
 		while (type !== 0) {
 			entries.push({
@@ -30,4 +31,42 @@ export function ParseGameEventList(stream: BitStream, match: Match): GameEventLi
 		packetType: 'gameEventList',
 		eventList,
 	};
+}
+
+export function EncodeGameEventList(packet: GameEventListPacket, stream: BitStream) {
+	stream.writeBits(Object.keys(packet.eventList).length, 9);
+
+	const eventListBitLength = getEventListLength(Object.values(packet.eventList));
+	const eventListStream = new BitStream(new ArrayBuffer(Math.ceil(eventListBitLength / 8)));
+
+	for (const id in packet.eventList) {
+		const definition = packet.eventList[id] as GameEventDefinition;
+		eventListStream.writeBits(definition.id, 9);
+		eventListStream.writeASCIIString(definition.name);
+		for (const entry of definition.entries) {
+			eventListStream.writeBits(entry.type, 3);
+			eventListStream.writeASCIIString(entry.name);
+		}
+		eventListStream.writeBits(0, 3);
+	}
+
+	const finalLength = eventListStream.index;
+	stream.writeBits(finalLength, 20);
+
+	eventListStream.index = 0;
+	stream.writeBitStream(eventListStream);
+}
+
+function getEventListLength(eventList: GameEventDefinition[]) {
+	return eventList.reduce((length: number, entry: GameEventDefinition) => {
+		return length +
+			9 +
+			(entry.name.length + 1) * 8 +
+			3 +
+			entry.entries.reduce((length: number, event: GameEventEntry) => {
+				return length +
+					3
+					+ (event.name.length + 1) * 8;
+			}, 0);
+	}, 0);
 }
