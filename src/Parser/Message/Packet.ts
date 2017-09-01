@@ -2,7 +2,6 @@ import {make} from '../Packet/ParserGenerator';
 
 import {EncodeBSPDecal, ParseBSPDecal} from '../Packet/BSPDecal';
 import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
-import {ParseCmdKeyValues} from '../Packet/CmdKeyValues';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
 import {ParseGameEvent} from '../Packet/GameEvent';
 import {EncodeGameEventList, ParseGameEventList} from '../Packet/GameEventList';
@@ -57,7 +56,7 @@ export class Packet extends Parser {
 		29: {parser: ParseMenu, encoder: voidEncoder},
 		30: {parser: ParseGameEventList, encoder: EncodeGameEventList},
 		31: make('getCvarValue', 'cookie{32}value{s}'),
-		32: {parser: ParseCmdKeyValues, encoder: voidEncoder},
+		32: make('cmdKeyValues', 'length{32}data{$length}'),
 	};
 
 	public parse() {
