@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {Parser} from './Parser';
-import {PacketType} from './Parser/Message/Packet';
 import {StreamDemo} from './StreamDemo';
+import {PacketType} from './Data/Packet';
 
 export {StreamDemo} from './StreamDemo';
 
@@ -20,6 +20,7 @@ export class Demo {
 	}
 
 	public stream: BitStream;
+
 	public parser: Parser | null;
 
 	constructor(arrayBuffer: ArrayBuffer) {

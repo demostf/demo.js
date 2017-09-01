@@ -4,10 +4,11 @@ import {Header} from './Data/Header';
 import {Match} from './Data/Match';
 import {ConsoleCmd} from './Parser/Message/ConsoleCmd';
 import {DataTable} from './Parser/Message/DataTable';
-import {Packet, PacketType} from './Parser/Message/Packet';
+import {Packet} from './Parser/Message/Packet';
 import {Parser as MessageParser} from './Parser/Message/Parser';
 import {StringTable} from './Parser/Message/StringTable';
 import {UserCmd} from './Parser/Message/UserCmd';
+import {PacketType} from './Data/Packet';
 
 export class Parser extends EventEmitter {
 	public stream: BitStream;

@@ -1,35 +1,34 @@
 import {Packet} from '../../Data/Packet';
-import {PacketHandler} from './Parser';
+import {Encoder, PacketHandler, Parser} from './Parser';
 import {BitStream} from 'bit-buffer';
 
-export function make(name: string, definition: string): PacketHandler {
+export function make<P extends Packet>(name: P['packetType'], definition: string): PacketHandler<P> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');
 	}).filter(part => part[0]);
-	return {
-		parser: (stream) => {
-			const result = {
-				packetType: name,
-			};
-			try {
-				for (const group of items) {
-					const value = readItem(stream, group[1], result);
-					if (group[0] !== '_') {
-						result[group[0]] = value;
-					}
-				}
-			} catch (e) {
-				throw new Error('Failed reading pattern ' + definition + '. ' + e);
-			}
-			return result as Packet;
-		},
-		encoder: (packet, stream) => {
+	const parser: Parser<P> = (stream: BitStream) => {
+		const result = {
+			packetType: name,
+		};
+		try {
 			for (const group of items) {
-				writeItem(stream, group[1], packet, packet[group[0]]);
+				const value = readItem(stream, group[1], result);
+				if (group[0] !== '_') {
+					result[group[0]] = value;
+				}
 			}
+		} catch (e) {
+			throw new Error('Failed reading pattern ' + definition + '. ' + e);
+		}
+		return result as P;
+	};
+	const encoder: Encoder<P> = (packet: P, stream: BitStream) => {
+		for (const group of items) {
+			writeItem(stream, group[1], packet, packet[group[0]]);
 		}
 	};
+	return {parser, encoder};
 }
 
 function readItem(stream: BitStream, description: string, data) {

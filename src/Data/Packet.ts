@@ -6,34 +6,37 @@ import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
 import {Vector} from './Vector';
 
-export interface StringTablePacket {
+export interface BasePacket {
+}
+
+export interface StringTablePacket extends BasePacket {
 	packetType: 'stringTable';
 	tables: StringTable[];
 }
 
-export interface CreateStringTablePacket {
+export interface CreateStringTablePacket extends BasePacket {
 	packetType: 'createStringTable';
 	table: StringTable;
 }
 
-export interface UpdateStringTablePacket {
+export interface UpdateStringTablePacket extends BasePacket {
 	packetType: 'updateStringTable';
 	entries: StringTableEntry[];
 	tableId: number;
 }
 
-export interface ConsoleCmdPacket {
+export interface ConsoleCmdPacket extends BasePacket {
 	packetType: 'consoleCmd';
 	command: string;
 }
 
-export interface DataTablePacket {
+export interface DataTablePacket extends BasePacket {
 	packetType: 'dataTable';
 	tables: SendTable[];
 	serverClasses: ServerClass[];
 }
 
-export interface BSPDecalPacket {
+export interface BSPDecalPacket extends BasePacket {
 	packetType: 'bspDecal';
 	position: Vector;
 	textureIndex: number;
@@ -42,7 +45,7 @@ export interface BSPDecalPacket {
 	lowPriority: boolean;
 }
 
-export interface ClassInfoPacket {
+export interface ClassInfoPacket extends BasePacket {
 	packetType: 'classInfo';
 	number: number;
 	create: boolean;
@@ -53,24 +56,24 @@ export interface ClassInfoPacket {
 	}[];
 }
 
-export interface EntityMessagePacket {
+export interface EntityMessagePacket extends BasePacket {
 	packetType: 'entityMessage';
 	classId: number;
 	length: number;
 	data: string;
 }
 
-export interface GameEventPacket {
+export interface GameEventPacket extends BasePacket {
 	packetType: 'gameEvent';
 	event: GameEvent;
 }
 
-export interface GameEventListPacket {
+export interface GameEventListPacket extends BasePacket {
 	packetType: 'gameEventList';
 	eventList: GameEventDefinitionMap;
 }
 
-export interface PacketEntitiesPacket {
+export interface PacketEntitiesPacket extends BasePacket {
 	packetType: 'packetEntities';
 	entities: PacketEntity[];
 	removedEntities: number[];
@@ -83,7 +86,7 @@ export interface PacketEntitiesPacket {
 	updatedBaseLine: boolean;
 }
 
-export interface ParseSoundsPacket {
+export interface ParseSoundsPacket extends BasePacket {
 	packetType: 'parseSounds';
 	reliable: boolean;
 	num: number;
@@ -91,17 +94,17 @@ export interface ParseSoundsPacket {
 	data: BitStream;
 }
 
-export interface SetConVarPacket {
+export interface SetConVarPacket extends BasePacket {
 	packetType: 'setConVar';
-	vars: { [key: string]: string };
+	vars: {[key: string]: string};
 }
 
-export interface TempEntitiesPacket {
+export interface TempEntitiesPacket extends BasePacket {
 	packetType: 'tempEntities';
 	entities: PacketEntity[];
 }
 
-export interface SayText2Packet {
+export interface SayText2Packet extends BasePacket {
 	packetType: 'sayText2';
 	client: number;
 	raw: number;
@@ -110,26 +113,26 @@ export interface SayText2Packet {
 	text: string;
 }
 
-export interface TextMessagePacket {
+export interface TextMessagePacket extends BasePacket {
 	packetType: 'textMsg';
 	destType: number;
 	text: string;
 }
 
-export interface UnknownUserMessagePacket {
+export interface UnknownUserMessagePacket extends BasePacket {
 	packetType: 'unknownUserMessage';
 	type: number;
 	data: BitStream;
 }
 
-export interface VoiceInitPacket {
+export interface VoiceInitPacket extends BasePacket {
 	packetType: 'voiceInit';
 	codec: string;
 	quality: number;
 	extraData: number;
 }
 
-export interface VoiceDataPacket {
+export interface VoiceDataPacket extends BasePacket {
 	packetType: 'voiceData';
 	client: number;
 	proximity: number;
@@ -137,17 +140,99 @@ export interface VoiceDataPacket {
 	data: BitStream;
 }
 
-export interface MenuPacket {
+export interface MenuPacket extends BasePacket {
 	packetType: 'menu';
 	type: number;
 	length: number;
 	data: BitStream;
 }
 
-export interface CmdKeyValuesPacket {
+export interface CmdKeyValuesPacket extends BasePacket {
 	packetType: 'cmdKeyValues';
 	length: number;
 	data: BitStream;
+}
+
+export interface VoidPacket extends BasePacket {
+	packetType: 'void';
+}
+
+export interface FilePacket extends BasePacket {
+	packetType: 'file';
+	transferId: number;
+	fileName: string;
+	requested: boolean;
+}
+
+export interface NetTickPacket extends BasePacket {
+	packetType: 'netTick';
+	tick: number;
+	frameTime: number;
+	stdDev: number;
+}
+
+export interface StringCmdPacket extends BasePacket {
+	packetType: 'stringCmd';
+	command: string;
+}
+
+export interface SigOnStatePacket extends BasePacket {
+	packetType: 'sigOnState';
+	state: number;
+	count: number;
+}
+
+export interface PrintPacket extends BasePacket {
+	packetType: 'print';
+	value: string;
+}
+
+export interface ServerInfoPacket extends BasePacket {
+	packetType: 'serverInfo';
+	version: number;
+	serverCount: number;
+	stv: boolean;
+	dedicated: boolean;
+	maxCrc: number;
+	maxClasses: number;
+	mapHash: number;
+	playerCount: number;
+	maxPlayerCount: number;
+	intervalPerTick: number;
+	platform: string;
+	game: string;
+	skybox: string;
+	serverName: string;
+	replay: boolean;
+}
+
+export interface SetPausePacket extends BasePacket {
+	packetType: 'setPause';
+	paused: boolean;
+}
+
+export interface SetViewPacket extends BasePacket {
+	packetType: 'setView';
+	index: number;
+}
+
+export interface FixAnglePacket extends BasePacket {
+	packetType: 'fixAngle';
+	relative: boolean;
+	x: number;
+	y: number;
+	z: number;
+}
+
+export interface PreFetchPacket {
+	packetType: 'preFetch';
+	index: number;
+}
+
+export interface GetCvarValuePacket {
+	packetType: 'getCvarValue';
+	cookie: number;
+	value: string;
 }
 
 export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUserMessagePacket;
@@ -170,4 +255,46 @@ export type Packet = BSPDecalPacket |
 	VoiceDataPacket |
 	MenuPacket |
 	ConsoleCmdPacket |
-	CmdKeyValuesPacket;
+	CmdKeyValuesPacket |
+	VoidPacket |
+	FilePacket |
+	NetTickPacket |
+	StringCmdPacket |
+	SigOnStatePacket |
+	PrintPacket |
+	ServerInfoPacket |
+	SetPausePacket |
+	SetViewPacket |
+	FixAnglePacket |
+	PreFetchPacket |
+	GetCvarValuePacket;
+
+export enum PacketType {
+	file = 2,
+	netTick = 3,
+	stringCmd = 4,
+	setConVar = 5,
+	sigOnState = 6,
+	print = 7,
+	serverInfo = 8,
+	classInfo = 10,
+	setPause = 11,
+	createStringTable = 12,
+	updateStringTable = 13,
+	voiceInit = 14,
+	voiceData = 15,
+	parseSounds = 17,
+	setView = 18,
+	fixAngle = 19,
+	bspDecal = 21,
+	userMessage = 23,
+	entityMessage = 24,
+	gameEvent = 25,
+	packetEntities = 26,
+	tempEntities = 27,
+	preFetch = 28,
+	menu = 29,
+	gameEventList = 30,
+	getCvarValue = 31,
+	cmdKeyValues = 32,
+}

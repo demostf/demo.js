@@ -3,14 +3,14 @@ import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 function assertGeneratedParser(definition: string, stream: BitStream, expected: any, length: number) {
-	expected.packetType = 'packetName';
-	const {parser} = make('packetName', definition);
+	expected.packetType = 'void';
+	const {parser} = make('void', definition);
 	return assertParser(parser, stream, expected, length);
 }
 
 function assertGeneratedEncoder(definition: string, data: any, length: number = 0) {
-	data.packetType = 'packetName';
-	const {parser, encoder} = make('packetName', definition);
+	data.packetType = 'void';
+	const {parser, encoder} = make('void', definition);
 	return assertEncoder(parser, encoder, data, length);
 }
 
