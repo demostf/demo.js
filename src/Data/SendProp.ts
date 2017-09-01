@@ -3,7 +3,7 @@ import {Vector} from './Vector';
 
 export class SendProp {
 	public definition: SendPropDefinition;
-	public value: SendPropValue|null;
+	public value: SendPropValue | null;
 
 	constructor(definition: SendPropDefinition) {
 		this.definition = definition;

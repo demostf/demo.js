@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {logBase2} from '../Math';
 
-function makeUnsigned(value: number, signed?: boolean) {
+export function makeUnsigned(value: number, signed?: boolean) {
 	if (signed) {
 		const signBit = value < 0 ? 1 : 0;
 		return ((value ^ -signBit) << 1) + signBit;

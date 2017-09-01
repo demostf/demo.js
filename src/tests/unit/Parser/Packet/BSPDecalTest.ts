@@ -1,15 +1,17 @@
 import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {
-	EncodeBSPDecal, encodeCoord, encodeVecCoord, getCoord, getVecCoord,
+	EncodeBSPDecal, encodeVecCoord, getVecCoord,
 	ParseBSPDecal
 } from '../../../../Parser/Packet/BSPDecal';
+import {SendPropParser} from '../../../../Parser/SendPropParser';
+import {SendPropEncoder} from '../../../../Parser/SendPropEncoder';
 
 const data = [239, 236, 208, 85, 33, 127, 128, 9, 8];
 
 suite('BSPDecal', () => {
 	test('getCoord', () => {
-		assertParser(getCoord, getStream([157, 29, 186]), -948, 17);
+		assertParser(SendPropParser.readBitCoord, getStream([157, 29, 186]), -948, 17);
 	});
 
 	test('getVecCoord', () => {
@@ -21,11 +23,11 @@ suite('BSPDecal', () => {
 	});
 
 	test('encodeCoord', () => {
-		assertEncoder(getCoord, encodeCoord, 5, 17);
-		assertEncoder(getCoord, encodeCoord, -5, 17);
-		assertEncoder(getCoord, encodeCoord, 0.09375, 8);
-		assertEncoder(getCoord, encodeCoord, -6.09375, 22);
-		assertEncoder(getCoord, encodeCoord, 0, 2);
+		assertEncoder(SendPropParser.readBitCoord, SendPropEncoder.writeBitCoord, 5, 17);
+		assertEncoder(SendPropParser.readBitCoord, SendPropEncoder.writeBitCoord, -5, 17);
+		assertEncoder(SendPropParser.readBitCoord, SendPropEncoder.writeBitCoord, 0.09375, 8);
+		assertEncoder(SendPropParser.readBitCoord, SendPropEncoder.writeBitCoord, -6.09375, 22);
+		assertEncoder(SendPropParser.readBitCoord, SendPropEncoder.writeBitCoord, 0, 2);
 	});
 
 	test('encodeVecCoord', () => {
