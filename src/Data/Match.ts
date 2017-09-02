@@ -22,7 +22,7 @@ import {World} from './World';
 export class Match {
 	public tick: number;
 	public chat: any[];
-	public users: { [id: string]: UserInfo };
+	public users: Map<number, UserInfo>;
 	public deaths: Death[];
 	public rounds: any[];
 	public startTick: number;
@@ -31,16 +31,16 @@ export class Match {
 	public eventDefinitions: Map<number, GameEventDefinition>;
 	public world: World;
 	public players: Player[];
-	public playerMap: { [entityId: number]: Player };
-	public entityClasses: { [entityId: string]: ServerClass };
-	public sendTableMap: { [name: string]: SendTable };
-	public baseLineCache: { [serverClass: string]: PacketEntity };
-	public weaponMap: { [entityId: string]: Weapon };
-	public outerMap: { [outer: number]: number };
+	public playerMap: {[entityId: number]: Player};
+	public entityClasses: {[entityId: string]: ServerClass};
+	public sendTableMap: {[name: string]: SendTable};
+	public baseLineCache: {[serverClass: string]: PacketEntity};
+	public weaponMap: {[entityId: string]: Weapon};
+	public outerMap: {[outer: number]: number};
 	public teams: Team[];
-	public teamMap: { [entityId: string]: Team };
+	public teamMap: {[entityId: string]: Team};
 	public version: number;
-	public buildings: { [entityId: string]: Building } = {};
+	public buildings: {[entityId: string]: Building} = {};
 	public playerResources: PlayerResource[] = [];
 	public stringTables: StringTable[];
 	public sendTables: SendTable[];
@@ -49,7 +49,7 @@ export class Match {
 	constructor() {
 		this.tick = 0;
 		this.chat = [];
-		this.users = {};
+		this.users = new Map();
 		this.deaths = [];
 		this.rounds = [];
 		this.startTick = 0;
@@ -99,18 +99,15 @@ export class Match {
 
 	public getState() {
 		const users = {};
-		for (const key in this.users) {
-			if (this.users.hasOwnProperty(key)) {
-				const user = this.users[key];
-				users[key] = {
-					classes: user.classes,
-					name: user.name,
-					steamId: user.steamId,
-					userId: user.userId,
-				};
-				if (user.team) {
-					users[key].team = user.team;
-				}
+		for (const [key, user] of this.users.entries()) {
+			users[key] = {
+				classes: user.classes,
+				name: user.name,
+				steamId: user.steamId,
+				userId: user.userId,
+			};
+			if (user.team) {
+				users[key].team = user.team;
 			}
 		}
 
@@ -169,8 +166,9 @@ export class Match {
 		while (userId > 256) {
 			userId -= 256;
 		}
-		if (!this.users[userId]) {
-			this.users[userId] = {
+		const user = this.users.get(userId);
+		if (!user) {
+			const newUser = {
 				name: '',
 				userId,
 				steamId: '',
@@ -178,13 +176,14 @@ export class Match {
 				entityId: 0,
 				team: '',
 			};
+			this.users.set(userId, newUser);
+			return newUser;
 		}
-		return this.users[userId];
+		return user;
 	}
 
 	public getUserInfoForEntity(entity: PacketEntity): UserInfo {
-		for (const id of Object.keys(this.users)) {
-			const user = this.users[id];
+		for (const user of this.users.values()) {
 			if (user && user.entityId === entity.entityIndex) {
 				return user;
 			}
