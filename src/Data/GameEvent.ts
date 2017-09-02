@@ -63,7 +63,3 @@ export type GameEventValues = GameEventValueMap |
 	RoundWinEventValues |
 	PlayerSpawnEventValues |
 	ObjectDestroyedValues;
-
-export interface GameEventDefinitionMap {
-	[id: number]: GameEventDefinition;
-}

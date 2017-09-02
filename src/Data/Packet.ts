@@ -1,5 +1,5 @@
 import {BitStream} from 'bit-buffer';
-import {GameEvent, GameEventDefinitionMap} from './GameEvent';
+import {GameEvent, GameEventDefinition} from './GameEvent';
 import {PacketEntity} from './PacketEntity';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
@@ -70,7 +70,7 @@ export interface GameEventPacket extends BasePacket {
 
 export interface GameEventListPacket extends BasePacket {
 	packetType: 'gameEventList';
-	eventList: GameEventDefinitionMap;
+	eventList: Map<number, GameEventDefinition>;
 }
 
 export interface PacketEntitiesPacket extends BasePacket {

@@ -1,5 +1,5 @@
 import {BitStream} from 'bit-buffer';
-import {GameEventDefinition, GameEventDefinitionMap, GameEventEntry} from '../../Data/GameEvent';
+import {GameEventDefinition, GameEventEntry} from '../../Data/GameEvent';
 import {GameEventListPacket} from '../../Data/Packet';
 
 export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
@@ -8,7 +8,7 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 	// list of game events and parameters
 	const numEvents = stream.readBits(9);
 	const length = stream.readBits(20);
-	const eventList: GameEventDefinitionMap = {};
+	const eventList: Map<number, GameEventDefinition> = new Map();
 	for (let i = 0; i < numEvents; i++) {
 		const id = stream.readBits(9);
 		const name = stream.readASCIIString();
@@ -21,11 +21,11 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 			});
 			type = stream.readBits(3);
 		}
-		eventList[id] = {
+		eventList.set(id, {
 			id,
 			name,
 			entries,
-		};
+		});
 	}
 	return {
 		packetType: 'gameEventList',
@@ -34,13 +34,13 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 }
 
 export function EncodeGameEventList(packet: GameEventListPacket, stream: BitStream) {
-	stream.writeBits(Object.keys(packet.eventList).length, 9);
+	const definitions = Array.from(packet.eventList.values());
+	stream.writeBits(definitions.length, 9);
 
-	const eventListBitLength = getEventListLength(Object.values(packet.eventList));
+	const eventListBitLength = getEventListLength(definitions);
 	const eventListStream = new BitStream(new ArrayBuffer(Math.ceil(eventListBitLength / 8)));
 
-	for (const id in packet.eventList) {
-		const definition = packet.eventList[id] as GameEventDefinition;
+	for (const definition of definitions) {
 		eventListStream.writeBits(definition.id, 9);
 		eventListStream.writeASCIIString(definition.name);
 		for (const entry of definition.entries) {

@@ -7,7 +7,7 @@ import {handleSayText2} from '../PacketHandler/SayText2';
 import {handleStringTable, handleStringTables, handleStringTableUpdate} from '../PacketHandler/StringTable';
 import {Building} from './Building';
 import {Death} from './Death';
-import {GameEventDefinitionMap} from './GameEvent';
+import {GameEventDefinition} from './GameEvent';
 import {PacketEntity} from './PacketEntity';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
@@ -28,7 +28,7 @@ export class Match {
 	public startTick: number;
 	public intervalPerTick: number;
 	public staticBaseLines: BitStream[];
-	public eventDefinitions: GameEventDefinitionMap;
+	public eventDefinitions: Map<number, GameEventDefinition>;
 	public world: World;
 	public players: Player[];
 	public playerMap: { [entityId: number]: Player };
@@ -58,7 +58,7 @@ export class Match {
 		this.sendTables = [];
 		this.serverClasses = [];
 		this.staticBaseLines = [];
-		this.eventDefinitions = {};
+		this.eventDefinitions = new Map();
 		this.players = [];
 		this.playerMap = {};
 		this.world = {

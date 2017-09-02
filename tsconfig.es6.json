@@ -1,18 +1,18 @@
 {
-	"compilerOptions": {
-		"lib": [
-			"dom",
-			"es2015.promise",
-			"es5",
-			"ES2017"
-		],
-		"module": "ES6",
-		"target": "ES5",
-		"outDir": "build/es6",
-		"rootDir": "src",
-		"declaration": true,
-		"strictNullChecks": true,
-		"sourceMap": true,
-		"moduleResolution": "node"
-	}
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015.promise",
+      "es5",
+      "ES2017"
+    ],
+    "module": "ES6",
+    "target": "ES6",
+    "outDir": "build",
+    "rootDir": "src",
+    "declaration": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "moduleResolution": "node"
+  }
 }

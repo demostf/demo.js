@@ -7,7 +7,7 @@
       "ES2017"
     ],
     "module": "commonjs",
-    "target": "ES5",
+    "target": "ES6",
     "outDir": "build",
     "rootDir": "src",
     "declaration": true,

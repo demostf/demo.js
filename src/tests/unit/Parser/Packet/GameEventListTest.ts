@@ -2,14 +2,20 @@ import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {readFileSync} from 'fs';
 import {EncodeGameEventList, ParseGameEventList} from '../../../../Parser/Packet/GameEventList';
+import {GameEventListPacket} from '../../../../Data/Packet';
 
 const data = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventListData.json', 'utf8'));
-const expected = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventList.json', 'utf8'));
+const expectedSource = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventList.json', 'utf8'));
 
-const eventList = {
+const expected = {
+	packetType: 'gameEventList',
+	eventList: new Map(Object.entries(expectedSource.eventList))
+};
+
+const eventList: GameEventListPacket = {
 	'packetType': 'gameEventList',
-	'eventList': {
-		'0': {
+	'eventList': new Map([
+		[0, {
 			'id': 0,
 			'name': 'server_spawn',
 			'entries': [
@@ -54,8 +60,8 @@ const eventList = {
 					'name': 'password'
 				}
 			]
-		},
-		'1': {
+		}],
+		[1, {
 			'id': 1,
 			'name': 'server_changelevel_failed',
 			'entries': [
@@ -64,8 +70,8 @@ const eventList = {
 					'name': 'levelname'
 				}
 			]
-		},
-		'2': {
+		}],
+		[2, {
 			'id': 2,
 			'name': 'server_shutdown',
 			'entries': [
@@ -74,8 +80,8 @@ const eventList = {
 					'name': 'reason'
 				}
 			]
-		}
-	}
+		}]
+	])
 };
 
 suite('GameEventList', () => {
