@@ -38,11 +38,11 @@ function handleEntity(entity: PacketEntity, match: Match) {
 
 	for (const prop of entity.props) {
 		if (prop.definition.ownerTableName === 'DT_BaseCombatWeapon' && prop.definition.name === 'm_hOwner') {
-			if (!match.weaponMap[entity.entityIndex]) {
-				match.weaponMap[entity.entityIndex] = {
+			if (!match.weaponMap.has(entity.entityIndex)) {
+				match.weaponMap.set(entity.entityIndex, {
 					className: entity.serverClass.name,
 					owner: prop.value as number,
-				};
+				});
 			}
 		}
 	}
@@ -139,22 +139,21 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			}
 			break;
 		case 'CWeaponMedigun':
-			const weapon = match.weaponMap[entity.entityIndex] as CWeaponMedigun;
-			if (!weapon) {
-				return;
-			}
-			for (const prop of entity.props) {
-				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
-				switch (propName) {
-					case 'DT_WeaponMedigun.m_hHealingTarget':
-						weapon.healTarget = prop.value as number;
-						break;
-					case 'DT_TFWeaponMedigunDataNonLocal.m_flChargeLevel':
-						weapon.chargeLevel = prop.value as number;
-						break;
-					case 'DT_LocalTFWeaponMedigunData.m_flChargeLevel':
-						weapon.chargeLevel = prop.value as number;
-						break;
+			const weapon = match.weaponMap.get(entity.entityIndex) as CWeaponMedigun | undefined;
+			if (weapon && weapon.className === 'CWeaponMedigun') {
+				for (const prop of entity.props) {
+					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
+					switch (propName) {
+						case 'DT_WeaponMedigun.m_hHealingTarget':
+							weapon.healTarget = prop.value as number;
+							break;
+						case 'DT_TFWeaponMedigunDataNonLocal.m_flChargeLevel':
+							weapon.chargeLevel = prop.value as number;
+							break;
+						case 'DT_LocalTFWeaponMedigunData.m_flChargeLevel':
+							weapon.chargeLevel = prop.value as number;
+							break;
+					}
 				}
 			}
 			break;

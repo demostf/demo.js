@@ -31,6 +31,8 @@ export class Player {
 	}
 
 	get weapons(): Weapon[] {
-		return this.weaponIds.map((id) => this.match.weaponMap[this.match.outerMap[id]]);
+		return this.weaponIds
+			.map((id) => this.match.weaponMap.get(this.match.outerMap[id]) as Weapon)
+			.filter((weapon: Weapon | undefined) => (typeof weapon !== 'undefined'));
 	}
 }
