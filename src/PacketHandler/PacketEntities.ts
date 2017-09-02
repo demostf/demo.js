@@ -198,8 +198,8 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			}
 			break;
 		case 'CObjectSentrygun':
-			if (!match.buildings[entity.entityIndex]) {
-				match.buildings[entity.entityIndex] = {
+			if (!match.buildings.has(entity.entityIndex)) {
+				match.buildings.set(entity.entityIndex, {
 					type: 'sentry',
 					ammoRockets: 0,
 					ammoShells: 0,
@@ -216,9 +216,9 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					isMini: false,
 					team: 0,
 					angle: 0,
-				};
+				});
 			}
-			const sentry = match.buildings[entity.entityIndex] as Sentry;
+			const sentry = match.buildings.get(entity.entityIndex) as Sentry;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(sentry, prop, propName);
@@ -247,12 +247,12 @@ function handleEntity(entity: PacketEntity, match: Match) {
 				}
 			}
 			if (entity.pvs & PVS.LEAVE) {
-				delete match.buildings[entity.entityIndex];
+				match.buildings.delete(entity.entityIndex);
 			}
 			break;
 		case 'CObjectDispenser':
-			if (!match.buildings[entity.entityIndex]) {
-				match.buildings[entity.entityIndex] = {
+			if (!match.buildings.has(entity.entityIndex)) {
+				match.buildings.set(entity.entityIndex, {
 					type: 'dispenser',
 					builder: 0,
 					health: 0,
@@ -265,9 +265,9 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					healing: [],
 					metal: 0,
 					angle: 0,
-				};
+				});
 			}
-			const dispenser = match.buildings[entity.entityIndex] as Dispenser;
+			const dispenser = match.buildings.get(entity.entityIndex) as Dispenser;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(dispenser, prop, propName);
@@ -281,12 +281,12 @@ function handleEntity(entity: PacketEntity, match: Match) {
 				}
 			}
 			if (entity.pvs & PVS.LEAVE) {
-				delete match.buildings[entity.entityIndex];
+				match.buildings.delete(entity.entityIndex);
 			}
 			break;
 		case 'CObjectTeleporter':
-			if (!match.buildings[entity.entityIndex]) {
-				match.buildings[entity.entityIndex] = {
+			if (!match.buildings.has(entity.entityIndex)) {
+				match.buildings.set(entity.entityIndex, {
 					type: 'teleporter',
 					builder: 0,
 					health: 0,
@@ -303,9 +303,9 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					timesUsed: 0,
 					angle: 0,
 					yawToExit: 0,
-				};
+				});
 			}
-			const teleporter = match.buildings[entity.entityIndex] as Teleporter;
+			const teleporter = match.buildings.get(entity.entityIndex) as Teleporter;
 			for (const prop of entity.props) {
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				applyBuildingProp(teleporter, prop, propName);
@@ -331,7 +331,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 				}
 			}
 			if (entity.pvs & PVS.LEAVE) {
-				delete match.buildings[entity.entityIndex];
+				match.buildings.delete(entity.entityIndex);
 			}
 			break;
 		case 'CTFPlayerResource':

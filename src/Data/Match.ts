@@ -20,50 +20,32 @@ import {Weapon} from './Weapon';
 import {World} from './World';
 
 export class Match {
-	public tick: number;
-	public chat: any[];
-	public users: Map<number, UserInfo>;
-	public deaths: Death[];
-	public rounds: any[];
-	public startTick: number;
-	public intervalPerTick: number;
-	public staticBaseLines: BitStream[];
-	public eventDefinitions: Map<number, GameEventDefinition>;
-	public world: World;
-	public playerEntityMap: Map<EntityId, Player>;
+	public tick: number = 0;
+	public chat: any[] = [];
+	public users: Map<number, UserInfo> = new Map();
+	public deaths: Death[] = [];
+	public rounds: any[] = [];
+	public startTick: number = 0;
+	public intervalPerTick: number = 0;
+	public staticBaseLines: BitStream[] = [];
+	public eventDefinitions: Map<number, GameEventDefinition> = new Map();
+	public world: World = {
+		boundaryMin: {x: 0, y: 0, z: 0},
+		boundaryMax: {x: 0, y: 0, z: 0},
+	};
+	public playerEntityMap: Map<EntityId, Player> = new Map();
 	public entityClasses: Map<EntityId, ServerClass> = new Map();
 	public sendTables: Map<string, SendTable> = new Map();
 	public baseLineCache: Map<ServerClass, PacketEntity> = new Map();
 	public weaponMap: Map<EntityId, Weapon> = new Map();
 	public outerMap: Map<number, EntityId> = new Map();
 	public teams: Map<TeamNumber, Team> = new Map();
-	public teamEntityMap: Map<EntityId, Team>;
-	public version: number;
-	public buildings: {[entityId: string]: Building} = {};
+	public teamEntityMap: Map<EntityId, Team> = new Map();
+	public version: number = 0;
+	public buildings: Map<EntityId, Building> = new Map();
 	public playerResources: PlayerResource[] = [];
-	public stringTables: StringTable[];
-	public serverClasses: ServerClass[];
-
-	constructor() {
-		this.tick = 0;
-		this.chat = [];
-		this.users = new Map();
-		this.deaths = [];
-		this.rounds = [];
-		this.startTick = 0;
-		this.intervalPerTick = 0;
-		this.stringTables = [];
-		this.serverClasses = [];
-		this.staticBaseLines = [];
-		this.eventDefinitions = new Map();
-		this.playerEntityMap = new Map();
-		this.world = {
-			boundaryMin: {x: 0, y: 0, z: 0},
-			boundaryMax: {x: 0, y: 0, z: 0},
-		};
-		this.teamEntityMap = new Map();
-		this.version = 0;
-	}
+	public stringTables: StringTable[] = [];
+	public serverClasses: ServerClass[] = [];
 
 	public getSendTable(name) {
 		const table = this.sendTables.get(name);

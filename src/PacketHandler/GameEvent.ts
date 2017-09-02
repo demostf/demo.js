@@ -74,9 +74,9 @@ function handlePlayerSpawn(packet: GameEventPacket, match: Match) {
 
 function handleObjectDestroyed(packet: GameEventPacket, match: Match) {
 	const values = packet.event.values as ObjectDestroyedValues;
-	delete match.buildings[values.index];
+	match.buildings.delete(values.index);
 }
 
 function handleRoundStart(packet: GameEventPacket, match: Match) {
-	match.buildings = {};
+	match.buildings.clear();
 }
