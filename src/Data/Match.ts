@@ -30,8 +30,7 @@ export class Match {
 	public staticBaseLines: BitStream[];
 	public eventDefinitions: Map<number, GameEventDefinition>;
 	public world: World;
-	public players: Player[];
-	public playerMap: {[entityId: number]: Player};
+	public players: Map<number, Player>;
 	public entityClasses: {[entityId: string]: ServerClass};
 	public sendTableMap: {[name: string]: SendTable};
 	public baseLineCache: {[serverClass: string]: PacketEntity};
@@ -59,8 +58,7 @@ export class Match {
 		this.serverClasses = [];
 		this.staticBaseLines = [];
 		this.eventDefinitions = new Map();
-		this.players = [];
-		this.playerMap = {};
+		this.players = new Map();
 		this.world = {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0},
@@ -192,7 +190,7 @@ export class Match {
 	}
 
 	public getPlayerByUserId(userId: number): Player {
-		for (const player of this.players) {
+		for (const player of this.players.values()) {
 			if (player.user.userId === userId) {
 				return player;
 			}

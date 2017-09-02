@@ -40,7 +40,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			if (!match.weaponMap[entity.entityIndex]) {
 				match.weaponMap[entity.entityIndex] = {
 					className: entity.serverClass.name,
-					owner:     prop.value as number,
+					owner: prop.value as number,
 				};
 			}
 		}
@@ -79,12 +79,11 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			 * "DT_TFPlayerShared.m_flCloakMeter": 100,
 			 */
 
-			const player: Player = (match.playerMap[entity.entityIndex]) ?
-				match.playerMap[entity.entityIndex] :
+			const player: Player = (match.players.has(entity.entityIndex)) ?
+				match.players.get(entity.entityIndex) as Player :
 				new Player(match, match.getUserInfoForEntity(entity));
-			if (!match.playerMap[entity.entityIndex]) {
-				match.playerMap[entity.entityIndex] = player;
-				match.players.push(player);
+			if (!match.players.has(entity.entityIndex)) {
+				match.players.set(entity.entityIndex, player);
 			}
 
 			for (const prop of entity.props) {
@@ -162,11 +161,11 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			try {
 				const teamId = entity.getProperty('DT_Team', 'm_iTeamNum').value as number;
 				if (!match.teams[teamId]) {
-					match.teams[teamId]               = {
-						name:       entity.getProperty('DT_Team', 'm_szTeamname').value as string,
-						score:      entity.getProperty('DT_Team', 'm_iScore').value as number,
-						roundsWon:  entity.getProperty('DT_Team', 'm_iRoundsWon').value as number,
-						players:    entity.getProperty('DT_Team', '"player_array"').value as number[],
+					match.teams[teamId] = {
+						name: entity.getProperty('DT_Team', 'm_szTeamname').value as string,
+						score: entity.getProperty('DT_Team', 'm_iScore').value as number,
+						roundsWon: entity.getProperty('DT_Team', 'm_iRoundsWon').value as number,
+						players: entity.getProperty('DT_Team', '"player_array"').value as number[],
 						teamNumber: teamId as number,
 					};
 					match.teamMap[entity.entityIndex] = match.teams[teamId];
@@ -197,22 +196,22 @@ function handleEntity(entity: PacketEntity, match: Match) {
 		case 'CObjectSentrygun':
 			if (!match.buildings[entity.entityIndex]) {
 				match.buildings[entity.entityIndex] = {
-					type:             'sentry',
-					ammoRockets:      0,
-					ammoShells:       0,
-					autoAimTarget:    0,
-					builder:          0,
-					health:           0,
-					isBuilding:       false,
-					isSapped:         false,
-					level:            0,
-					maxHealth:        0,
+					type: 'sentry',
+					ammoRockets: 0,
+					ammoShells: 0,
+					autoAimTarget: 0,
+					builder: 0,
+					health: 0,
+					isBuilding: false,
+					isSapped: false,
+					level: 0,
+					maxHealth: 0,
 					playerControlled: false,
-					position:         new Vector(0, 0, 0),
-					shieldLevel:      0,
-					isMini:           false,
-					team:             0,
-					angle:            0,
+					position: new Vector(0, 0, 0),
+					shieldLevel: 0,
+					isMini: false,
+					team: 0,
+					angle: 0,
 				};
 			}
 			const sentry = match.buildings[entity.entityIndex] as Sentry;
@@ -250,18 +249,18 @@ function handleEntity(entity: PacketEntity, match: Match) {
 		case 'CObjectDispenser':
 			if (!match.buildings[entity.entityIndex]) {
 				match.buildings[entity.entityIndex] = {
-					type:       'dispenser',
-					builder:    0,
-					health:     0,
+					type: 'dispenser',
+					builder: 0,
+					health: 0,
 					isBuilding: false,
-					isSapped:   false,
-					level:      0,
-					maxHealth:  0,
-					position:   new Vector(0, 0, 0),
-					team:       0,
-					healing:    [],
-					metal:      0,
-					angle:      0,
+					isSapped: false,
+					level: 0,
+					maxHealth: 0,
+					position: new Vector(0, 0, 0),
+					team: 0,
+					healing: [],
+					metal: 0,
+					angle: 0,
 				};
 			}
 			const dispenser = match.buildings[entity.entityIndex] as Dispenser;
@@ -284,22 +283,22 @@ function handleEntity(entity: PacketEntity, match: Match) {
 		case 'CObjectTeleporter':
 			if (!match.buildings[entity.entityIndex]) {
 				match.buildings[entity.entityIndex] = {
-					type:             'teleporter',
-					builder:          0,
-					health:           0,
-					isBuilding:       false,
-					isSapped:         false,
-					level:            0,
-					maxHealth:        0,
-					position:         new Vector(0, 0, 0),
-					team:             0,
-					isEntrance:       false,
-					otherEnd:         0,
-					rechargeTime:     0,
+					type: 'teleporter',
+					builder: 0,
+					health: 0,
+					isBuilding: false,
+					isSapped: false,
+					level: 0,
+					maxHealth: 0,
+					position: new Vector(0, 0, 0),
+					team: 0,
+					isEntrance: false,
+					otherEnd: 0,
+					rechargeTime: 0,
 					rechargeDuration: 0,
-					timesUsed:        0,
-					angle:            0,
-					yawToExit:        0,
+					timesUsed: 0,
+					angle: 0,
+					yawToExit: 0,
 				};
 			}
 			const teleporter = match.buildings[entity.entityIndex] as Teleporter;
@@ -334,32 +333,32 @@ function handleEntity(entity: PacketEntity, match: Match) {
 		case 'CTFPlayerResource':
 			for (const prop of entity.props) {
 				const playerId = parseInt(prop.definition.name, 10);
-				const value    = prop.value as number;
+				const value = prop.value as number;
 				if (!match.playerResources[playerId]) {
 					match.playerResources[playerId] = {
-						alive:           false,
-						arenaSpectator:  false,
-						bonusPoints:     0,
-						chargeLevel:     0,
-						connected:       false,
-						damageAssists:   0,
-						damageBlocked:   0,
-						deaths:          0,
-						dominations:     0,
-						healing:         0,
-						healingAssist:   0,
-						health:          0,
-						killStreak:      0,
+						alive: false,
+						arenaSpectator: false,
+						bonusPoints: 0,
+						chargeLevel: 0,
+						connected: false,
+						damageAssists: 0,
+						damageBlocked: 0,
+						deaths: 0,
+						dominations: 0,
+						healing: 0,
+						healingAssist: 0,
+						health: 0,
+						killStreak: 0,
 						maxBuffedHealth: 0,
-						maxHealth:       0,
-						nextRespawn:     0,
-						ping:            0,
-						playerClass:     0,
-						playerLevel:     0,
-						score:           0,
-						team:            0,
-						totalScore:      0,
-						damage:          0,
+						maxHealth: 0,
+						nextRespawn: 0,
+						ping: 0,
+						playerClass: 0,
+						playerLevel: 0,
+						score: 0,
+						team: 0,
+						totalScore: 0,
+						damage: 0,
 					};
 				}
 				const playerResource = match.playerResources[playerId];

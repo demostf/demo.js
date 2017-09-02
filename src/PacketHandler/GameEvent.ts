@@ -59,7 +59,7 @@ function handlePlayerSpawn(packet: GameEventPacket, match: Match) {
 	const values = packet.event.values as PlayerSpawnEventValues;
 	const userId = values.userid;
 	const userState = match.getUserInfo(userId);
-	const player = match.playerMap[userState.entityId];
+	const player = match.players.get(userState.entityId);
 	userState.team = values.team === 2 ? 'red' : 'blue';
 	const classId = values.class;
 	if (player) {
