@@ -18,13 +18,15 @@ import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
 import {Weapon} from './Weapon';
 import {World} from './World';
+import {Round} from './Round';
+import {Chat} from './Chat';
 
 export class Match {
 	public tick: number = 0;
-	public chat: any[] = [];
+	public chat: Chat[] = [];
 	public users: Map<number, UserInfo> = new Map();
 	public deaths: Death[] = [];
-	public rounds: any[] = [];
+	public rounds: Round[] = [];
 	public startTick: number = 0;
 	public intervalPerTick: number = 0;
 	public staticBaseLines: BitStream[] = [];
