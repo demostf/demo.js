@@ -24,8 +24,9 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
 	const serial = stream.readBits(10); // unused serial number
 
-	if (match.baseLineCache[serverClass.id]) {
-		const result = match.baseLineCache[serverClass.id].clone();
+	const cachedBaseLine = match.baseLineCache.get(serverClass);
+	if (cachedBaseLine) {
+		const result = cachedBaseLine.clone();
 		result.entityIndex = entityId;
 		result.serialNumber = serial;
 		return result;
@@ -39,7 +40,7 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
 			applyEntityUpdate(entity, sendTable, staticBaseLine);
-			match.baseLineCache[serverClass.id] = entity.clone();
+			match.baseLineCache.set(serverClass, entity.clone());
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
@@ -89,7 +90,7 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 				if (updatedBaseLine) {
 					const newBaseLine: SendProp[] = [];
 					newBaseLine.concat(packetEntity.props);
-					match.baseLineCache[packetEntity.serverClass.id] = packetEntity.clone();
+					match.baseLineCache.set(packetEntity.serverClass, packetEntity.clone());
 				}
 				packetEntity.inPVS = true;
 				receivedEntities.push(packetEntity);

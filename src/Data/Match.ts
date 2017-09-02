@@ -32,8 +32,8 @@ export class Match {
 	public world: World;
 	public playerEntityMap: Map<EntityId, Player>;
 	public entityClasses: Map<EntityId, ServerClass> = new Map();
-	public sendTableMap: {[name: string]: SendTable};
-	public baseLineCache: {[serverClass: string]: PacketEntity};
+	public sendTables: Map<string, SendTable> = new Map();
+	public baseLineCache: Map<ServerClass, PacketEntity> = new Map();
 	public weaponMap: {[entityId: string]: Weapon};
 	public outerMap: {[outer: number]: number};
 	public teams: Map<TeamNumber, Team> = new Map();
@@ -42,7 +42,6 @@ export class Match {
 	public buildings: {[entityId: string]: Building} = {};
 	public playerResources: PlayerResource[] = [];
 	public stringTables: StringTable[];
-	public sendTables: SendTable[];
 	public serverClasses: ServerClass[];
 
 	constructor() {
@@ -54,7 +53,6 @@ export class Match {
 		this.startTick = 0;
 		this.intervalPerTick = 0;
 		this.stringTables = [];
-		this.sendTables = [];
 		this.serverClasses = [];
 		this.staticBaseLines = [];
 		this.eventDefinitions = new Map();
@@ -63,8 +61,6 @@ export class Match {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0},
 		};
-		this.sendTableMap = {};
-		this.baseLineCache = {};
 		this.weaponMap = {};
 		this.outerMap = {};
 		this.teamEntityMap = new Map();
@@ -72,14 +68,9 @@ export class Match {
 	}
 
 	public getSendTable(name) {
-		if (this.sendTableMap[name]) {
-			return this.sendTableMap[name];
-		}
-		for (const table of this.sendTables) {
-			if (table.name === name) {
-				this.sendTableMap[name] = table;
-				return table;
-			}
+		const table = this.sendTables.get(name);
+		if (table) {
+			return table;
 		}
 		throw new Error('unknown SendTable ' + name);
 	}
