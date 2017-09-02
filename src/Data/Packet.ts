@@ -1,10 +1,11 @@
 import {BitStream} from 'bit-buffer';
-import {GameEvent, GameEventDefinition} from './GameEvent';
+import {GameEventDefinition} from './GameEvent';
 import {PacketEntity} from './PacketEntity';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
 import {Vector} from './Vector';
+import {GameEvent, GameEventType} from './GameEventTypes';
 
 export interface BasePacket {
 }
@@ -70,7 +71,7 @@ export interface GameEventPacket extends BasePacket {
 
 export interface GameEventListPacket extends BasePacket {
 	packetType: 'gameEventList';
-	eventList: Map<number, GameEventDefinition>;
+	eventList: Map<number, GameEventDefinition<GameEvent['name']>>;
 }
 
 export interface PacketEntitiesPacket extends BasePacket {

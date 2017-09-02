@@ -1,20 +1,17 @@
-export interface GameEventDefinition {
-	id: number;
-	name: string;
-	entries: GameEventEntry[];
-}
+import {GameEvent} from './GameEventTypes';
 
-export interface GameEvent {
-	name: string;
-	values: GameEventValues;
+export interface GameEventDefinition<T extends GameEvent['name']> {
+	id: number;
+	name: T;
+	entries: GameEventEntry[];
 }
 
 export interface GameEventEntry {
 	name: string;
-	type: GameEventType;
+	type: GameEventValueType;
 }
 
-export enum GameEventType {
+export enum GameEventValueType {
 	STRING = 1,
 	FLOAT = 2,
 	LONG = 3,
@@ -24,42 +21,8 @@ export enum GameEventType {
 	LOCAL = 7,
 }
 
-export interface DeathEventValues {
-	attacker: number;
-	userid: number;
-	assister: number;
-	weapon: string;
-}
-
-export interface RoundWinEventValues {
-	winreason: number;
-	team: number;
-	round_time: number;
-}
-
-export interface PlayerSpawnEventValues {
-	userid: number;
-	team: number;
-	'class': number;
-}
-
-export interface ObjectDestroyedValues {
-	userid: number;
-	attacker: number;
-	weapon: string;
-	weapinid: number;
-	objecttype: number;
-	index: number;
-}
-
 export type GameEventValue = string | number | boolean;
 
-export interface GameEventValueMap {
+export interface GameEventValues {
 	[name: string]: GameEventValue;
 }
-
-export type GameEventValues = GameEventValueMap |
-	DeathEventValues |
-	RoundWinEventValues |
-	PlayerSpawnEventValues |
-	ObjectDestroyedValues;

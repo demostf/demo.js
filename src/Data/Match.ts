@@ -20,6 +20,7 @@ import {Weapon} from './Weapon';
 import {World} from './World';
 import {Round} from './Round';
 import {Chat} from './Chat';
+import {GameEvent} from './GameEventTypes';
 
 export class Match {
 	public tick: number = 0;
@@ -30,7 +31,7 @@ export class Match {
 	public startTick: number = 0;
 	public intervalPerTick: number = 0;
 	public staticBaseLines: BitStream[] = [];
-	public eventDefinitions: Map<number, GameEventDefinition> = new Map();
+	public eventDefinitions: Map<number, GameEventDefinition<GameEvent['name']>> = new Map();
 	public world: World = {
 		boundaryMin: {x: 0, y: 0, z: 0},
 		boundaryMax: {x: 0, y: 0, z: 0},

@@ -1,6 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {GameEventDefinition, GameEventEntry} from '../../Data/GameEvent';
 import {GameEventListPacket} from '../../Data/Packet';
+import {GameEvent} from '../../Data/GameEventTypes';
 
 export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
 	const s = stream.index;
@@ -8,10 +9,10 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 	// list of game events and parameters
 	const numEvents = stream.readBits(9);
 	const length = stream.readBits(20);
-	const eventList: Map<number, GameEventDefinition> = new Map();
+	const eventList: Map<number, GameEventDefinition<GameEvent['name']>> = new Map();
 	for (let i = 0; i < numEvents; i++) {
 		const id = stream.readBits(9);
-		const name = stream.readASCIIString();
+		const name = stream.readASCIIString() as GameEvent['name'];
 		let type = stream.readBits(3);
 		const entries: GameEventEntry[] = [];
 		while (type !== 0) {
@@ -57,8 +58,8 @@ export function EncodeGameEventList(packet: GameEventListPacket, stream: BitStre
 	stream.writeBitStream(eventListStream);
 }
 
-function getEventListLength(eventList: GameEventDefinition[]) {
-	return eventList.reduce((length: number, entry: GameEventDefinition) => {
+function getEventListLength(eventList: GameEventDefinition<GameEvent['name']>[]) {
+	return eventList.reduce((length: number, entry: GameEventDefinition<GameEvent['name']>) => {
 		return length +
 			9 +
 			(entry.name.length + 1) * 8 +

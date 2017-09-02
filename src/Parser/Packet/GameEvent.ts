@@ -1,47 +1,48 @@
 import {BitStream} from 'bit-buffer';
 import {
-	GameEvent as IGameEvent, GameEventDefinition, GameEventEntry, GameEventType,
-	GameEventValue, GameEventValueMap,
+	GameEventDefinition, GameEventEntry,
+	GameEventValue, GameEventValueType,
 } from '../../Data/GameEvent';
+import {GameEvent, GameEventType} from '../../Data/GameEventTypes';
 import {Match} from '../../Data/Match';
 import {GameEventPacket} from '../../Data/Packet';
 
-function parseGameEvent(eventId: number, stream: BitStream, events: Map<number, GameEventDefinition>): IGameEvent {
+function parseGameEvent(eventId: number, stream: BitStream, events: Map<number, GameEventDefinition<GameEventType>>) {
 	const eventDescription = events.get(eventId);
 	if (!eventDescription) {
 		throw new Error('unknown event type');
 	}
-	const values: GameEventValueMap = {};
+	const values: GameEvent['values'] = {};
 	for (const entry of eventDescription.entries) {
 		const value = getGameEventValue(stream, entry);
 		if (value) {
 			values[entry.name] = value;
 		}
 	}
+	const name = eventDescription.name;
+
 	return {
-		name: eventDescription.name,
+		name,
 		values,
 	};
 }
 
 function getGameEventValue(stream: BitStream, entry: GameEventEntry): GameEventValue | null {
 	switch (entry.type) {
-		case GameEventType.STRING:
+		case GameEventValueType.STRING:
 			return stream.readUTF8String();
-		case GameEventType.FLOAT:
+		case GameEventValueType.FLOAT:
 			return stream.readFloat32();
-		case GameEventType.LONG:
+		case GameEventValueType.LONG:
 			return stream.readUint32();
-		case GameEventType.SHORT:
+		case GameEventValueType.SHORT:
 			return stream.readUint16();
-		case GameEventType.BYTE:
+		case GameEventValueType.BYTE:
 			return stream.readUint8();
-		case GameEventType.BOOLEAN:
+		case GameEventValueType.BOOLEAN:
 			return stream.readBoolean();
-		case GameEventType.LOCAL:
+		case GameEventValueType.LOCAL:
 			return null;
-		default:
-			throw new Error('invalid game event type');
 	}
 }
 
@@ -53,6 +54,6 @@ export function ParseGameEvent(stream: BitStream, match: Match): GameEventPacket
 	stream.index = end;
 	return {
 		packetType: 'gameEvent',
-		event,
+		event: event as GameEvent,
 	};
 }

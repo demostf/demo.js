@@ -3,6 +3,7 @@ import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {readFileSync} from 'fs';
 import {EncodeGameEventList, ParseGameEventList} from '../../../../Parser/Packet/GameEventList';
 import {GameEventListPacket} from '../../../../Data/Packet';
+import {GameEvent} from '../../../../Data/GameEventTypes';
 
 const data = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventListData.json', 'utf8'));
 const expectedSource = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventList.json', 'utf8'));
@@ -17,7 +18,7 @@ const eventList: GameEventListPacket = {
 	'eventList': new Map([
 		[0, {
 			'id': 0,
-			'name': 'server_spawn',
+			'name': 'server_spawn' as GameEvent['name'],
 			'entries': [
 				{
 					'type': 1,
@@ -63,7 +64,7 @@ const eventList: GameEventListPacket = {
 		}],
 		[1, {
 			'id': 1,
-			'name': 'server_changelevel_failed',
+			'name': 'server_changelevel_failed' as GameEvent['name'],
 			'entries': [
 				{
 					'type': 1,
@@ -73,7 +74,7 @@ const eventList: GameEventListPacket = {
 		}],
 		[2, {
 			'id': 2,
-			'name': 'server_shutdown',
+			'name': 'server_shutdown' as GameEvent['name'],
 			'entries': [
 				{
 					'type': 1,

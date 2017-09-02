@@ -1,29 +1,31 @@
-import {DeathEventValues, ObjectDestroyedValues, PlayerSpawnEventValues, RoundWinEventValues} from '../Data/GameEvent';
 import {Match} from '../Data/Match';
 import {GameEventPacket} from '../Data/Packet';
+import {
+	ObjectDestroyedEvent, PlayerDeathEvent, PlayerSpawnEvent, TeamPlayRoundStartEvent, TeamPlayRoundWinEvent
+} from '../Data/GameEventTypes';
 
 export function handleGameEvent(packet: GameEventPacket, match: Match) {
 	switch (packet.event.name) {
 		case 'player_death':
-			handlePlayerDeath(packet, match);
+			handlePlayerDeath(packet.event, match);
 			break;
 		case 'teamplay_round_win':
-			handleRoundWin(packet, match);
+			handleRoundWin(packet.event, match);
 			break;
 		case 'player_spawn':
-			handlePlayerSpawn(packet, match);
+			handlePlayerSpawn(packet.event, match);
 			break;
 		case 'object_destroyed':
-			handleObjectDestroyed(packet, match);
+			handleObjectDestroyed(packet.event, match);
 			break;
 		case 'teamplay_round_start':
-			handleRoundStart(packet, match);
+			handleRoundStart(packet.event, match);
 			break;
 	}
 }
 
-function handlePlayerDeath(packet: GameEventPacket, match: Match) {
-	const values = packet.event.values as DeathEventValues;
+function handlePlayerDeath(event: PlayerDeathEvent, match: Match) {
+	const values = event.values;
 	while (values.assister > 256 && values.assister < (1024 * 16)) {
 		values.assister -= 256;
 	}
@@ -44,8 +46,8 @@ function handlePlayerDeath(packet: GameEventPacket, match: Match) {
 	});
 }
 
-function handleRoundWin(packet: GameEventPacket, match: Match) {
-	const values = packet.event.values as RoundWinEventValues;
+function handleRoundWin(event: TeamPlayRoundWinEvent, match: Match) {
+	const values = event.values;
 	if (values.winreason !== 6) {// 6 = timelimit
 		match.rounds.push({
 			winner: values.team === 2 ? 'red' : 'blue',
@@ -55,8 +57,8 @@ function handleRoundWin(packet: GameEventPacket, match: Match) {
 	}
 }
 
-function handlePlayerSpawn(packet: GameEventPacket, match: Match) {
-	const values = packet.event.values as PlayerSpawnEventValues;
+function handlePlayerSpawn(event: PlayerSpawnEvent, match: Match) {
+	const values = event.values;
 	const userId = values.userid;
 	const userState = match.getUserInfo(userId);
 	const player = match.playerEntityMap.get(userState.entityId);
@@ -72,11 +74,11 @@ function handlePlayerSpawn(packet: GameEventPacket, match: Match) {
 	userState.classes[classId]++;
 }
 
-function handleObjectDestroyed(packet: GameEventPacket, match: Match) {
-	const values = packet.event.values as ObjectDestroyedValues;
+function handleObjectDestroyed(event: ObjectDestroyedEvent, match: Match) {
+	const values = event.values;
 	match.buildings.delete(values.index);
 }
 
-function handleRoundStart(packet: GameEventPacket, match: Match) {
+function handleRoundStart(event: TeamPlayRoundStartEvent, match: Match) {
 	match.buildings.clear();
 }
