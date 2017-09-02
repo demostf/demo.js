@@ -96,7 +96,7 @@ export interface ParseSoundsPacket extends BasePacket {
 
 export interface SetConVarPacket extends BasePacket {
 	packetType: 'setConVar';
-	vars: {[key: string]: string};
+	vars: Map<string, string>;
 }
 
 export interface TempEntitiesPacket extends BasePacket {

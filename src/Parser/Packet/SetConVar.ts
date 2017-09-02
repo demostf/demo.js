@@ -3,9 +3,11 @@ import {SetConVarPacket} from '../../Data/Packet';
 
 export function ParseSetConVar(stream: BitStream): SetConVarPacket { // 5: setconvar
 	const count = stream.readUint8();
-	const vars: { [key: string]: string } = {};
+	const vars: Map<string, string> = new Map();
 	for (let i = 0; i < count; i++) {
-		vars[stream.readUTF8String()] = stream.readUTF8String();
+		const key = stream.readUTF8String();
+		const value = stream.readUTF8String();
+		vars.set(key, value);
 	}
 	return {
 		packetType: 'setConVar',
@@ -14,10 +16,9 @@ export function ParseSetConVar(stream: BitStream): SetConVarPacket { // 5: setco
 }
 
 export function EncodeSetConVar(packet: SetConVarPacket, stream: BitStream) {
-	const keys = Object.keys(packet.vars);
-	stream.writeUint8(keys.length);
-	for (const key of keys) {
+	stream.writeUint8(packet.vars.size);
+	for (const [key, value] of packet.vars.entries()) {
 		stream.writeUTF8String(key);
-		stream.writeUTF8String(packet.vars[key]);
+		stream.writeUTF8String(value);
 	}
 }
