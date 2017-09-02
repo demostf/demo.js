@@ -6,6 +6,7 @@ import {LifeState, Player} from '../Data/Player';
 import {SendProp} from '../Data/SendProp';
 import {Vector} from '../Data/Vector';
 import {CWeaponMedigun, Weapon} from '../Data/Weapon';
+import {TeamNumber} from '../Data/Team';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const removedEntityId of packet.removedEntities) {
@@ -79,11 +80,11 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			 * "DT_TFPlayerShared.m_flCloakMeter": 100,
 			 */
 
-			const player: Player = (match.players.has(entity.entityIndex)) ?
-				match.players.get(entity.entityIndex) as Player :
+			const player: Player = (match.playerEntityMap.has(entity.entityIndex)) ?
+				match.playerEntityMap.get(entity.entityIndex) as Player :
 				new Player(match, match.getUserInfoForEntity(entity));
-			if (!match.players.has(entity.entityIndex)) {
-				match.players.set(entity.entityIndex, player);
+			if (!match.playerEntityMap.has(entity.entityIndex)) {
+				match.playerEntityMap.set(entity.entityIndex, player);
 			}
 
 			for (const prop of entity.props) {
@@ -159,19 +160,23 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			break;
 		case'CTFTeam':
 			try {
-				const teamId = entity.getProperty('DT_Team', 'm_iTeamNum').value as number;
-				if (!match.teams[teamId]) {
-					match.teams[teamId] = {
+				const teamId = entity.getProperty('DT_Team', 'm_iTeamNum').value as TeamNumber;
+				if (!match.teams.has(teamId)) {
+					const team = {
 						name: entity.getProperty('DT_Team', 'm_szTeamname').value as string,
 						score: entity.getProperty('DT_Team', 'm_iScore').value as number,
 						roundsWon: entity.getProperty('DT_Team', 'm_iRoundsWon').value as number,
 						players: entity.getProperty('DT_Team', '"player_array"').value as number[],
-						teamNumber: teamId as number,
+						teamNumber: teamId,
 					};
-					match.teamMap[entity.entityIndex] = match.teams[teamId];
+					match.teams.set(teamId, team);
+					match.teamEntityMap.set(entity.entityIndex, team);
 				}
 			} catch (e) {
-				const team = match.teamMap[entity.entityIndex];
+				const team = match.teamEntityMap.get(entity.entityIndex);
+				if (!team) {
+					throw new Error(`No team with entity id: ${entity.entityIndex}`);
+				}
 				for (const prop of entity.props) {
 					const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 					switch (propName) {

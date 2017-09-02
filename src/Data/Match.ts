@@ -8,13 +8,13 @@ import {handleStringTable, handleStringTables, handleStringTableUpdate} from '..
 import {Building} from './Building';
 import {Death} from './Death';
 import {GameEventDefinition} from './GameEvent';
-import {PacketEntity} from './PacketEntity';
+import {EntityId, PacketEntity} from './PacketEntity';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable} from './StringTable';
-import {Team} from './Team';
+import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
 import {Weapon} from './Weapon';
 import {World} from './World';
@@ -30,14 +30,14 @@ export class Match {
 	public staticBaseLines: BitStream[];
 	public eventDefinitions: Map<number, GameEventDefinition>;
 	public world: World;
-	public players: Map<number, Player>;
+	public playerEntityMap: Map<EntityId, Player>;
 	public entityClasses: {[entityId: string]: ServerClass};
 	public sendTableMap: {[name: string]: SendTable};
 	public baseLineCache: {[serverClass: string]: PacketEntity};
 	public weaponMap: {[entityId: string]: Weapon};
 	public outerMap: {[outer: number]: number};
-	public teams: Team[];
-	public teamMap: {[entityId: string]: Team};
+	public teams: Map<TeamNumber, Team> = new Map();
+	public teamEntityMap: Map<EntityId, Team>;
 	public version: number;
 	public buildings: {[entityId: string]: Building} = {};
 	public playerResources: PlayerResource[] = [];
@@ -58,7 +58,7 @@ export class Match {
 		this.serverClasses = [];
 		this.staticBaseLines = [];
 		this.eventDefinitions = new Map();
-		this.players = new Map();
+		this.playerEntityMap = new Map();
 		this.world = {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0},
@@ -68,8 +68,7 @@ export class Match {
 		this.baseLineCache = {};
 		this.weaponMap = {};
 		this.outerMap = {};
-		this.teams = [];
-		this.teamMap = {};
+		this.teamEntityMap = new Map();
 		this.version = 0;
 	}
 
@@ -190,7 +189,7 @@ export class Match {
 	}
 
 	public getPlayerByUserId(userId: number): Player {
-		for (const player of this.players.values()) {
+		for (const player of this.playerEntityMap.values()) {
 			if (player.user.userId === userId) {
 				return player;
 			}

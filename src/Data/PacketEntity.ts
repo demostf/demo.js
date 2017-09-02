@@ -9,6 +9,8 @@ export enum PVS {
 	DELETE = 4,
 }
 
+export type EntityId = number;
+
 export class PacketEntity {
 	public serverClass: ServerClass;
 	public entityIndex: number;
