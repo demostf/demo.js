@@ -3,6 +3,7 @@ import {PlayerCondition} from './PlayerCondition';
 import {UserInfo} from './UserInfo';
 import {Vector} from './Vector';
 import {Weapon} from './Weapon';
+import {EntityId} from './PacketEntity';
 
 export enum LifeState {
 	ALIVE = 0,
@@ -32,7 +33,8 @@ export class Player {
 
 	get weapons(): Weapon[] {
 		return this.weaponIds
-			.map((id) => this.match.weaponMap.get(this.match.outerMap[id]) as Weapon)
-			.filter((weapon: Weapon | undefined) => (typeof weapon !== 'undefined'));
+			.map(id => this.match.outerMap.get(id) as EntityId)
+			.filter(entityId => entityId > 0)
+			.map(entityId => this.match.weaponMap.get(entityId) as Weapon);
 	}
 }

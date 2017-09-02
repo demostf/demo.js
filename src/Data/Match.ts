@@ -35,7 +35,7 @@ export class Match {
 	public sendTables: Map<string, SendTable> = new Map();
 	public baseLineCache: Map<ServerClass, PacketEntity> = new Map();
 	public weaponMap: Map<EntityId, Weapon> = new Map();
-	public outerMap: {[outer: number]: number};
+	public outerMap: Map<number, EntityId> = new Map();
 	public teams: Map<TeamNumber, Team> = new Map();
 	public teamEntityMap: Map<EntityId, Team>;
 	public version: number;
@@ -61,7 +61,6 @@ export class Match {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0},
 		};
-		this.outerMap = {};
 		this.teamEntityMap = new Map();
 		this.version = 0;
 	}

@@ -30,8 +30,8 @@ function saveEntity(packetEntity: PacketEntity, match: Match) {
 function handleEntity(entity: PacketEntity, match: Match) {
 	for (const prop of entity.props) {
 		if (prop.definition.ownerTableName === 'DT_AttributeContainer' && prop.definition.name === 'm_hOuter') {
-			if (!match.outerMap[prop.value as number]) {
-				match.outerMap[prop.value as number] = entity.entityIndex;
+			if (!match.outerMap.has(prop.value as number)) {
+				match.outerMap.set(prop.value as number, entity.entityIndex);
 			}
 		}
 	}
