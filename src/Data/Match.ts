@@ -31,7 +31,7 @@ export class Match {
 	public eventDefinitions: Map<number, GameEventDefinition>;
 	public world: World;
 	public playerEntityMap: Map<EntityId, Player>;
-	public entityClasses: {[entityId: string]: ServerClass};
+	public entityClasses: Map<EntityId, ServerClass> = new Map();
 	public sendTableMap: {[name: string]: SendTable};
 	public baseLineCache: {[serverClass: string]: PacketEntity};
 	public weaponMap: {[entityId: string]: Weapon};
@@ -63,7 +63,6 @@ export class Match {
 			boundaryMin: {x: 0, y: 0, z: 0},
 			boundaryMax: {x: 0, y: 0, z: 0},
 		};
-		this.entityClasses = {};
 		this.sendTableMap = {};
 		this.baseLineCache = {};
 		this.weaponMap = {};

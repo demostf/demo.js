@@ -10,7 +10,7 @@ import {TeamNumber} from '../Data/Team';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const removedEntityId of packet.removedEntities) {
-		delete match.entityClasses[removedEntityId];
+		match.entityClasses.delete(removedEntityId);
 	}
 
 	for (const entity of packet.entities) {
@@ -21,10 +21,10 @@ export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match)
 
 function saveEntity(packetEntity: PacketEntity, match: Match) {
 	if (packetEntity.pvs === PVS.DELETE) {
-		delete match.entityClasses[packetEntity.entityIndex];
+		match.entityClasses.delete(packetEntity.entityIndex);
 	}
 
-	match.entityClasses[packetEntity.entityIndex] = packetEntity.serverClass;
+	match.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
 }
 
 function handleEntity(entity: PacketEntity, match: Match) {

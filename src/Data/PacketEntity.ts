@@ -13,7 +13,7 @@ export type EntityId = number;
 
 export class PacketEntity {
 	public serverClass: ServerClass;
-	public entityIndex: number;
+	public entityIndex: EntityId;
 	public props: SendProp[];
 	public inPVS: boolean;
 	public pvs: PVS;
