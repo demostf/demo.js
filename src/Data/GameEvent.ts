@@ -1,6 +1,6 @@
-import {GameEvent} from './GameEventTypes';
+import {GameEventType} from './GameEventTypes';
 
-export interface GameEventDefinition<T extends GameEvent['name']> {
+export interface GameEventDefinition<T extends GameEventType> {
 	id: number;
 	name: T;
 	entries: GameEventEntry[];

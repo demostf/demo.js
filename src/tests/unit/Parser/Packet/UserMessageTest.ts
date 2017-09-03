@@ -43,12 +43,12 @@ const expected = {
 	substitute4: '',
 };
 
-suite('SayText2', () => {
-	test('Parse sayText2', () => {
+suite('UserMessage', () => {
+	test('Parse userMessage', () => {
 		assertParser(ParseUserMessage, getStream(data), expected, 219);
 	});
 
-	test('Encode sayText2', () => {
+	test('Encode userMessage', () => {
 		assertEncoder(ParseUserMessage, EncodeUserMessage, expected, 219);
 	});
 });

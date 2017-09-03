@@ -3,28 +3,33 @@ import {
 	GameEventDefinition, GameEventEntry,
 	GameEventValue, GameEventValueType,
 } from '../../Data/GameEvent';
-import {GameEvent, GameEventType} from '../../Data/GameEventTypes';
+import {GameEvent, GameEventType, GameEventTypeIdMap, GameEventTypeMap} from '../../Data/GameEventTypes';
 import {Match} from '../../Data/Match';
 import {GameEventPacket} from '../../Data/Packet';
 
-function parseGameEvent(eventId: number, stream: BitStream, events: Map<number, GameEventDefinition<GameEventType>>) {
-	const eventDescription = events.get(eventId);
-	if (!eventDescription) {
-		throw new Error('unknown event type');
-	}
-	const values: GameEvent['values'] = {};
-	for (const entry of eventDescription.entries) {
+function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition<T>, stream: BitStream) {
+	const values: GameEventTypeMap[T]['values'] = {};
+	for (const entry of definition.entries) {
 		const value = getGameEventValue(stream, entry);
 		if (value) {
 			values[entry.name] = value;
 		}
 	}
-	const name = eventDescription.name;
+	const name = definition.name as T;
 
 	return {
 		name,
 		values,
 	};
+}
+
+function encodeGameEvent<T extends GameEventType>(event: GameEventTypeMap[T], definition: GameEventDefinition<T>, stream: BitStream) {
+	for (const entry of definition.entries) {
+		const value = event.values[entry.name];
+		if (value !== null) {
+			encodeGameEventValue(value, stream, entry);
+		}
+	}
 }
 
 function getGameEventValue(stream: BitStream, entry: GameEventEntry): GameEventValue | null {
@@ -46,14 +51,77 @@ function getGameEventValue(stream: BitStream, entry: GameEventEntry): GameEventV
 	}
 }
 
+function encodeGameEventValue(value: GameEventValue | null, stream: BitStream, entry: GameEventEntry) {
+	switch (entry.type) {
+		case GameEventValueType.STRING:
+			if (typeof value !== 'string') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeASCIIString(value);
+		case GameEventValueType.FLOAT:
+			if (typeof value !== 'number') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeFloat32(value);
+		case GameEventValueType.LONG:
+			if (typeof value !== 'number') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeUint32(value);
+		case GameEventValueType.SHORT:
+			if (typeof value !== 'number') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeUint16(value);
+		case GameEventValueType.BYTE:
+			if (typeof value !== 'number') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeUint8(value);
+		case GameEventValueType.BOOLEAN:
+			if (typeof value !== 'boolean') {
+				throw new Error('Invalid value for game event');
+			}
+			return stream.writeBoolean(value);
+	}
+}
+
 export function ParseGameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
 	const length = stream.readBits(11);
-	const end = stream.index + length;
-	const eventId = stream.readBits(9);
-	const event = parseGameEvent(eventId, stream, match.eventDefinitions);
-	stream.index = end;
+	const eventData = stream.readBitStream(length);
+	const eventType = eventData.readBits(9);
+	const definition = match.eventDefinitions.get(eventType);
+	if (!definition) {
+		throw new Error(`Unknown game event type ${eventType}`);
+	}
+	const event = parseGameEvent(definition, eventData);
+
 	return {
 		packetType: 'gameEvent',
 		event: event as GameEvent,
 	};
+}
+
+export function EncodeGameEvent(packet: GameEventPacket, stream: BitStream, match: Match) {
+	const lengthStart = stream.index;
+	stream.index += 11;
+	const eventId = GameEventTypeIdMap.get(packet.event.name);
+	if (typeof eventId === 'undefined') {
+		throw new Error(`Unknown game event type ${packet.event.name}`);
+	}
+
+	const eventDataStart = stream.index;
+	stream.writeBits(eventId, 9);
+
+	const definition = match.eventDefinitions.get(eventId);
+	if (typeof definition === 'undefined') {
+		throw new Error(`Unknown game event type ${packet.event.name}`);
+	}
+
+	encodeGameEvent(packet.event, definition, stream);
+	const eventDataEnd = stream.index;
+
+	stream.index = lengthStart;
+	stream.writeBits(eventDataEnd - eventDataStart, 11);
+	stream.index = eventDataEnd;
 }

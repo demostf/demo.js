@@ -162,7 +162,9 @@ export interface ClientFullConnectEvent {
 
 export interface HostQuitEvent {
 	name: 'host_quit';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamInfoEvent {
@@ -330,7 +332,9 @@ export interface BasePlayerTeleportedEvent {
 
 export interface GameInitEvent {
 	name: 'game_init';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface GameNewMapEvent {
@@ -454,12 +458,16 @@ export interface FlareIgniteNpcEvent {
 
 export interface HelicopterGrenadePuntMissEvent {
 	name: 'helicopter_grenade_punt_miss';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface UserDataDownloadedEvent {
 	name: 'user_data_downloaded';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface RagdollDissolvedEvent {
@@ -489,7 +497,9 @@ export interface HLTVChangedTargetEvent {
 
 export interface VoteEndedEvent {
 	name: 'vote_ended';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface VoteStartedEvent {
@@ -553,17 +563,23 @@ export interface VoteOptionsEvent {
 
 export interface ReplaySavedEvent {
 	name: 'replay_saved';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface EnteredPerformanceModeEvent {
 	name: 'entered_performance_mode';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface BrowseReplaysEvent {
 	name: 'browse_replays';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ReplayYoutubeStatsEvent {
@@ -577,27 +593,37 @@ export interface ReplayYoutubeStatsEvent {
 
 export interface InventoryUpdatedEvent {
 	name: 'inventory_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface CartUpdatedEvent {
 	name: 'cart_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface StorePricesheetUpdatedEvent {
 	name: 'store_pricesheet_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface GcConnectedEvent {
 	name: 'gc_connected';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ItemSchemaInitializedEvent {
 	name: 'item_schema_initialized';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface IntroFinishEvent {
@@ -670,7 +696,9 @@ export interface CtfFlagCapturedEvent {
 
 export interface ControlPointInitializedEvent {
 	name: 'controlpoint_initialized';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ControlPointUpdateImagesEvent {
@@ -756,32 +784,44 @@ export interface TeamPlayRoundStartEvent {
 
 export interface TeamPlayRoundActiveEvent {
 	name: 'teamplay_round_active';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayWaitingBeginsEvent {
 	name: 'teamplay_waiting_begins';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayWaitingEndsEvent {
 	name: 'teamplay_waiting_ends';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayWaitingAboutToEndEvent {
 	name: 'teamplay_waiting_abouttoend';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayRestartRoundEvent {
 	name: 'teamplay_restart_round';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayReadyRestartEvent {
 	name: 'teamplay_ready_restart';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayRoundRestartSecondsEvent {
@@ -813,7 +853,9 @@ export interface TeamPlayRoundWinEvent {
 
 export interface TeamPlayUpdateTimerEvent {
 	name: 'teamplay_update_timer';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayRoundStalemateEvent {
@@ -825,22 +867,30 @@ export interface TeamPlayRoundStalemateEvent {
 
 export interface TeamPlayOvertimeBeginEvent {
 	name: 'teamplay_overtime_begin';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayOvertimeEndEvent {
 	name: 'teamplay_overtime_end';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlaySuddenDeathBeginEvent {
 	name: 'teamplay_suddendeath_begin';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlaySuddenDeathEndEvent {
 	name: 'teamplay_suddendeath_end';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayGameOverEvent {
@@ -978,7 +1028,9 @@ export interface TeamPlayTeambalancedPlayerEvent {
 
 export interface TeamPlaySetupFinishedEvent {
 	name: 'teamplay_setup_finished';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamPlayAlertEvent {
@@ -1006,17 +1058,23 @@ export interface ShowFreezePanelEvent {
 
 export interface HideFreezePanelEvent {
 	name: 'hide_freezepanel';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface FreezeCamStartedEvent {
 	name: 'freezecam_started';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LocalPlayerChangeTeamEvent {
 	name: 'localplayer_changeteam';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LocalPlayerScoreChangedEvent {
@@ -1028,12 +1086,16 @@ export interface LocalPlayerScoreChangedEvent {
 
 export interface LocalPlayerChangeClassEvent {
 	name: 'localplayer_changeclass';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LocalPlayerRespawnEvent {
 	name: 'localplayer_respawn';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface BuildingInfoChangedEvent {
@@ -1062,7 +1124,9 @@ export interface PlayerAccountChangedEvent {
 
 export interface SpyPdaResetEvent {
 	name: 'spy_pda_reset';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface FlagStatusUpdateEvent {
@@ -1082,7 +1146,9 @@ export interface PlayerStatsUpdatedEvent {
 
 export interface PlayingCommentaryEvent {
 	name: 'playing_commentary';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerChargedeployedEvent {
@@ -1172,7 +1238,9 @@ export interface AchievementEarnedEvent {
 
 export interface SpecTargetUpdatedEvent {
 	name: 'spec_target_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TournamentStateUpdateEvent {
@@ -1187,7 +1255,9 @@ export interface TournamentStateUpdateEvent {
 
 export interface TournamentEnableCountdownEvent {
 	name: 'tournament_enablecountdown';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerCalledForMedicEvent {
@@ -1206,7 +1276,9 @@ export interface PlayerAskedForBallEvent {
 
 export interface LocalPlayerBecameObserverEvent {
 	name: 'localplayer_becameobserver';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerIgnitedInvEvent {
@@ -1253,12 +1325,16 @@ export interface PlayerHealedMedicCallEvent {
 
 export interface LocalPlayerChargeReadyEvent {
 	name: 'localplayer_chargeready';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LocalPlayerWinddownEvent {
 	name: 'localplayer_winddown';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerInvulnedEvent {
@@ -1297,12 +1373,16 @@ export interface EscortRecedeEvent {
 
 export interface GameUIActivatedEvent {
 	name: 'gameui_activated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface GameUIHiddenEvent {
 	name: 'gameui_hidden';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerEscortScoreEvent {
@@ -1370,7 +1450,9 @@ export interface ArenaMatchMaxStreakEvent {
 
 export interface ArenaRoundStartEvent {
 	name: 'arena_round_start';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ArenaWinPanelEvent {
@@ -1626,12 +1708,16 @@ export interface MedicDeathEvent {
 
 export interface OvertimeNagEvent {
 	name: 'overtime_nag';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TeamsChangedEvent {
 	name: 'teams_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface HalloweenPumpkinGrabEvent {
@@ -1712,12 +1798,16 @@ export interface PlayerMvpEvent {
 
 export interface RaidSpawnMobEvent {
 	name: 'raid_spawn_mob';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface RaidSpawnSquadEvent {
 	name: 'raid_spawn_squad';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface NavBlockedEvent {
@@ -1745,7 +1835,9 @@ export interface NumCappersChangedEvent {
 
 export interface PlayerRegenerateEvent {
 	name: 'player_regenerate';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface UpdateStatusItemEvent {
@@ -1758,17 +1850,23 @@ export interface UpdateStatusItemEvent {
 
 export interface StatsResetRoundEvent {
 	name: 'stats_resetround';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ScoreStatsAccumulatedUpdateEvent {
 	name: 'scorestats_accumulated_update';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ScoreStatsAccumulatedResetEvent {
 	name: 'scorestats_accumulated_reset';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface AchievementEarnedLocalEvent {
@@ -1879,12 +1977,16 @@ export interface ThrowableHitEvent {
 
 export interface PumpkinLordSummonedEvent {
 	name: 'pumpkin_lord_summoned';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PumpkinLordKilledEvent {
 	name: 'pumpkin_lord_killed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MerasmusSummonedEvent {
@@ -2015,7 +2117,9 @@ export interface PlayerBonusPointsEvent {
 
 export interface PlayerUpgradedEvent {
 	name: 'player_upgraded';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerBuybackEvent {
@@ -2053,12 +2157,16 @@ export interface PlayerKilledAchievementZoneEvent {
 
 export interface PartyUpdatedEvent {
 	name: 'party_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LobbyUpdatedEvent {
 	name: 'lobby_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmMissionUpdateEvent {
@@ -2071,7 +2179,9 @@ export interface MvmMissionUpdateEvent {
 
 export interface RecalculateHolidaysEvent {
 	name: 'recalculate_holidays';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerCurrencyChangedEvent {
@@ -2097,17 +2207,23 @@ export interface RemoveNemesisRelationshipsEvent {
 
 export interface MvmCreditBonusWaveEvent {
 	name: 'mvm_creditbonus_wave';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmCreditBonusAllEvent {
 	name: 'mvm_creditbonus_all';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmCreditBonusAllAdvancedEvent {
 	name: 'mvm_creditbonus_all_advanced';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmQuickSentryUpgradeEvent {
@@ -2119,7 +2235,9 @@ export interface MvmQuickSentryUpgradeEvent {
 
 export interface MvmTankDestroyedByPlayersEvent {
 	name: 'mvm_tank_destroyed_by_players';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmKillRobotDeliveringBombEvent {
@@ -2200,7 +2318,9 @@ export interface MvmBombResetByPlayerEvent {
 
 export interface MvmBombAlarmTriggeredEvent {
 	name: 'mvm_bomb_alarm_triggered';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmBombDeployResetByPlayerEvent {
@@ -2212,12 +2332,16 @@ export interface MvmBombDeployResetByPlayerEvent {
 
 export interface MvmWaveFailedEvent {
 	name: 'mvm_wave_failed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmResetStatsEvent {
 	name: 'mvm_reset_stats';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface DamageResistedEvent {
@@ -2281,17 +2405,23 @@ export interface MvmSniperHeadshotCurrencyEvent {
 
 export interface MvmMannhattanPitEvent {
 	name: 'mvm_mannhattan_pit';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface FlagCarriedInDetectionZoneEvent {
 	name: 'flag_carried_in_detection_zone';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MvmAdvWaveKilledStunRadioEvent {
 	name: 'mvm_adv_wave_killed_stun_radio';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerDirecthitStunEvent {
@@ -2327,7 +2457,9 @@ export interface RdTeamPointsChangedEvent {
 
 export interface RdRulesStateChangedEvent {
 	name: 'rd_rules_state_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface RdRobotKilledEvent {
@@ -2409,7 +2541,9 @@ export interface PlayerInitialSpawnEvent {
 
 export interface CompetitiveVictoryEvent {
 	name: 'competitive_victory';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface CompetitiveStatsUpdateEvent {
@@ -2450,17 +2584,23 @@ export interface DuckXpLevelUpEvent {
 
 export interface QuestLogOpenedEvent {
 	name: 'questlog_opened';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface SchemaUpdatedEvent {
 	name: 'schema_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface LocalPlayerPickupWeaponEvent {
 	name: 'localplayer_pickup_weapon';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface RdPlayerScorePointsEvent {
@@ -2696,7 +2836,9 @@ export interface HalloweenSoulCollectedEvent {
 
 export interface RecalculateTruceEvent {
 	name: 'recalculate_truce';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface DeadringerCheatDeathEvent {
@@ -2761,37 +2903,51 @@ export interface RestartTimerTimeEvent {
 
 export interface WinLimitChangedEvent {
 	name: 'winlimit_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface WinPanelShowScoresEvent {
 	name: 'winpanel_show_scores';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface TopStreamsRequestFinishedEvent {
 	name: 'top_streams_request_finished';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface CompetitiveStateChangedEvent {
 	name: 'competitive_state_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface GlobalWarDataUpdatedEvent {
 	name: 'global_war_data_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface StopWatchChangedEvent {
 	name: 'stop_watch_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface DsStopEvent {
 	name: 'ds_stop';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface DsScreenshotEvent {
@@ -2803,22 +2959,30 @@ export interface DsScreenshotEvent {
 
 export interface ShowMatchSummaryEvent {
 	name: 'show_match_summary';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ExperienceChangedEvent {
 	name: 'experience_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface BeginXpLerpEvent {
 	name: 'begin_xp_lerp';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface MatchmakerStatsUpdatedEvent {
 	name: 'matchmaker_stats_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface RematchVotePeriodOverEvent {
@@ -2830,17 +2994,23 @@ export interface RematchVotePeriodOverEvent {
 
 export interface RematchFailedToCreateEvent {
 	name: 'rematch_failed_to_create';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerRematchChangeEvent {
 	name: 'player_rematch_change';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PingUpdatedEvent {
 	name: 'ping_updated';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface PlayerNextMapVoteChangeEvent {
@@ -2853,7 +3023,9 @@ export interface PlayerNextMapVoteChangeEvent {
 
 export interface VoteMapsChangedEvent {
 	name: 'vote_maps_changed';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface HLTVStatusEvent {
@@ -2941,7 +3113,9 @@ export interface HLTVChatEvent {
 
 export interface ReplayStartRecordEvent {
 	name: 'replay_startrecord';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ReplaySessionInfoEvent {
@@ -2956,12 +3130,16 @@ export interface ReplaySessionInfoEvent {
 
 export interface ReplayEndRecordEvent {
 	name: 'replay_endrecord';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ReplayReplaysAvailableEvent {
 	name: 'replay_replaysavailable';
-	values: {};
+	values: {
+
+	};
 }
 
 export interface ReplayServerErrorEvent {
@@ -3728,3 +3906,385 @@ export type GameEventTypeMap = {
 	replay_replaysavailable: ReplayReplaysAvailableEvent;
 	replay_servererror: ReplayServerErrorEvent;
 };
+
+export type GameEventTypeId = number;
+
+export const GameEventTypeIdMap: Map<GameEventType, GameEventTypeId> = new Map<GameEventType, GameEventTypeId>([
+	['server_spawn', 0],
+	['server_changelevel_failed', 1],
+	['server_shutdown', 2],
+	['server_cvar', 3],
+	['server_message', 4],
+	['server_addban', 5],
+	['server_removeban', 6],
+	['player_connect', 7],
+	['player_connect_client', 8],
+	['player_info', 9],
+	['player_disconnect', 10],
+	['player_activate', 11],
+	['player_say', 12],
+	['client_disconnect', 13],
+	['client_beginconnect', 14],
+	['client_connected', 15],
+	['client_fullconnect', 16],
+	['host_quit', 17],
+	['team_info', 18],
+	['team_score', 19],
+	['teamplay_broadcast_audio', 20],
+	['player_team', 21],
+	['player_class', 22],
+	['player_death', 23],
+	['player_hurt', 24],
+	['player_chat', 25],
+	['player_score', 26],
+	['player_spawn', 27],
+	['player_shoot', 28],
+	['player_use', 29],
+	['player_changename', 30],
+	['player_hintmessage', 31],
+	['base_player_teleported', 32],
+	['game_init', 33],
+	['game_newmap', 34],
+	['game_start', 35],
+	['game_end', 36],
+	['round_start', 37],
+	['round_end', 38],
+	['game_message', 39],
+	['break_breakable', 40],
+	['break_prop', 41],
+	['entity_killed', 42],
+	['bonus_updated', 43],
+	['achievement_event', 44],
+	['achievement_increment', 45],
+	['physgun_pickup', 46],
+	['flare_ignite_npc', 47],
+	['helicopter_grenade_punt_miss', 48],
+	['user_data_downloaded', 49],
+	['ragdoll_dissolved', 50],
+	['hltv_changed_mode', 51],
+	['hltv_changed_target', 52],
+	['vote_ended', 53],
+	['vote_started', 54],
+	['vote_changed', 55],
+	['vote_passed', 56],
+	['vote_failed', 57],
+	['vote_cast', 58],
+	['vote_options', 59],
+	['replay_saved', 60],
+	['entered_performance_mode', 61],
+	['browse_replays', 62],
+	['replay_youtube_stats', 63],
+	['inventory_updated', 64],
+	['cart_updated', 65],
+	['store_pricesheet_updated', 66],
+	['gc_connected', 67],
+	['item_schema_initialized', 68],
+	['intro_finish', 69],
+	['intro_nextcamera', 70],
+	['mm_lobby_chat', 71],
+	['mm_lobby_member_join', 72],
+	['mm_lobby_member_leave', 73],
+	['player_changeclass', 74],
+	['tf_map_time_remaining', 75],
+	['tf_game_over', 76],
+	['ctf_flag_captured', 77],
+	['controlpoint_initialized', 78],
+	['controlpoint_updateimages', 79],
+	['controlpoint_updatelayout', 80],
+	['controlpoint_updatecapping', 81],
+	['controlpoint_updateowner', 82],
+	['controlpoint_starttouch', 83],
+	['controlpoint_endtouch', 84],
+	['controlpoint_pulse_element', 85],
+	['controlpoint_fake_capture', 86],
+	['controlpoint_fake_capture_mult', 87],
+	['teamplay_round_selected', 88],
+	['teamplay_round_start', 89],
+	['teamplay_round_active', 90],
+	['teamplay_waiting_begins', 91],
+	['teamplay_waiting_ends', 92],
+	['teamplay_waiting_abouttoend', 93],
+	['teamplay_restart_round', 94],
+	['teamplay_ready_restart', 95],
+	['teamplay_round_restart_seconds', 96],
+	['teamplay_team_ready', 97],
+	['teamplay_round_win', 98],
+	['teamplay_update_timer', 99],
+	['teamplay_round_stalemate', 100],
+	['teamplay_overtime_begin', 101],
+	['teamplay_overtime_end', 102],
+	['teamplay_suddendeath_begin', 103],
+	['teamplay_suddendeath_end', 104],
+	['teamplay_game_over', 105],
+	['teamplay_map_time_remaining', 106],
+	['teamplay_timer_flash', 107],
+	['teamplay_timer_time_added', 108],
+	['teamplay_point_startcapture', 109],
+	['teamplay_point_captured', 110],
+	['teamplay_point_locked', 111],
+	['teamplay_point_unlocked', 112],
+	['teamplay_capture_broken', 113],
+	['teamplay_capture_blocked', 114],
+	['teamplay_flag_event', 115],
+	['teamplay_win_panel', 116],
+	['teamplay_teambalanced_player', 117],
+	['teamplay_setup_finished', 118],
+	['teamplay_alert', 119],
+	['training_complete', 120],
+	['show_freezepanel', 121],
+	['hide_freezepanel', 122],
+	['freezecam_started', 123],
+	['localplayer_changeteam', 124],
+	['localplayer_score_changed', 125],
+	['localplayer_changeclass', 126],
+	['localplayer_respawn', 127],
+	['building_info_changed', 128],
+	['localplayer_changedisguise', 129],
+	['player_account_changed', 130],
+	['spy_pda_reset', 131],
+	['flagstatus_update', 132],
+	['player_stats_updated', 133],
+	['playing_commentary', 134],
+	['player_chargedeployed', 135],
+	['player_builtobject', 136],
+	['player_upgradedobject', 137],
+	['player_carryobject', 138],
+	['player_dropobject', 139],
+	['object_removed', 140],
+	['object_destroyed', 141],
+	['object_detonated', 142],
+	['achievement_earned', 143],
+	['spec_target_updated', 144],
+	['tournament_stateupdate', 145],
+	['tournament_enablecountdown', 146],
+	['player_calledformedic', 147],
+	['player_askedforball', 148],
+	['localplayer_becameobserver', 149],
+	['player_ignited_inv', 150],
+	['player_ignited', 151],
+	['player_extinguished', 152],
+	['player_teleported', 153],
+	['player_healedmediccall', 154],
+	['localplayer_chargeready', 155],
+	['localplayer_winddown', 156],
+	['player_invulned', 157],
+	['escort_speed', 158],
+	['escort_progress', 159],
+	['escort_recede', 160],
+	['gameui_activated', 161],
+	['gameui_hidden', 162],
+	['player_escort_score', 163],
+	['player_healonhit', 164],
+	['player_stealsandvich', 165],
+	['show_class_layout', 166],
+	['show_vs_panel', 167],
+	['player_damaged', 168],
+	['arena_player_notification', 169],
+	['arena_match_maxstreak', 170],
+	['arena_round_start', 171],
+	['arena_win_panel', 172],
+	['pve_win_panel', 173],
+	['air_dash', 174],
+	['landed', 175],
+	['player_damage_dodged', 176],
+	['player_stunned', 177],
+	['scout_grand_slam', 178],
+	['scout_slamdoll_landed', 179],
+	['arrow_impact', 180],
+	['player_jarated', 181],
+	['player_jarated_fade', 182],
+	['player_shield_blocked', 183],
+	['player_pinned', 184],
+	['player_healedbymedic', 185],
+	['player_sapped_object', 186],
+	['item_found', 187],
+	['show_annotation', 188],
+	['hide_annotation', 189],
+	['post_inventory_application', 190],
+	['controlpoint_unlock_updated', 191],
+	['deploy_buff_banner', 192],
+	['player_buff', 193],
+	['medic_death', 194],
+	['overtime_nag', 195],
+	['teams_changed', 196],
+	['halloween_pumpkin_grab', 197],
+	['rocket_jump', 198],
+	['rocket_jump_landed', 199],
+	['sticky_jump', 200],
+	['sticky_jump_landed', 201],
+	['medic_defended', 202],
+	['localplayer_healed', 203],
+	['player_destroyed_pipebomb', 204],
+	['object_deflected', 205],
+	['player_mvp', 206],
+	['raid_spawn_mob', 207],
+	['raid_spawn_squad', 208],
+	['nav_blocked', 209],
+	['path_track_passed', 210],
+	['num_cappers_changed', 211],
+	['player_regenerate', 212],
+	['update_status_item', 213],
+	['stats_resetround', 214],
+	['scorestats_accumulated_update', 215],
+	['scorestats_accumulated_reset', 216],
+	['achievement_earned_local', 217],
+	['player_healed', 218],
+	['building_healed', 219],
+	['item_pickup', 220],
+	['duel_status', 221],
+	['fish_notice', 222],
+	['fish_notice__arm', 223],
+	['throwable_hit', 224],
+	['pumpkin_lord_summoned', 225],
+	['pumpkin_lord_killed', 226],
+	['merasmus_summoned', 227],
+	['merasmus_killed', 228],
+	['merasmus_escape_warning', 229],
+	['merasmus_escaped', 230],
+	['eyeball_boss_summoned', 231],
+	['eyeball_boss_stunned', 232],
+	['eyeball_boss_killed', 233],
+	['eyeball_boss_killer', 234],
+	['eyeball_boss_escape_imminent', 235],
+	['eyeball_boss_escaped', 236],
+	['npc_hurt', 237],
+	['controlpoint_timer_updated', 238],
+	['player_highfive_start', 239],
+	['player_highfive_cancel', 240],
+	['player_highfive_success', 241],
+	['player_bonuspoints', 242],
+	['player_upgraded', 243],
+	['player_buyback', 244],
+	['player_used_powerup_bottle', 245],
+	['christmas_gift_grab', 246],
+	['player_killed_achievement_zone', 247],
+	['party_updated', 248],
+	['lobby_updated', 249],
+	['mvm_mission_update', 250],
+	['recalculate_holidays', 251],
+	['player_currency_changed', 252],
+	['doomsday_rocket_open', 253],
+	['remove_nemesis_relationships', 254],
+	['mvm_creditbonus_wave', 255],
+	['mvm_creditbonus_all', 256],
+	['mvm_creditbonus_all_advanced', 257],
+	['mvm_quick_sentry_upgrade', 258],
+	['mvm_tank_destroyed_by_players', 259],
+	['mvm_kill_robot_delivering_bomb', 260],
+	['mvm_pickup_currency', 261],
+	['mvm_bomb_carrier_killed', 262],
+	['mvm_sentrybuster_detonate', 263],
+	['mvm_scout_marked_for_death', 264],
+	['mvm_medic_powerup_shared', 265],
+	['mvm_begin_wave', 266],
+	['mvm_wave_complete', 267],
+	['mvm_mission_complete', 268],
+	['mvm_bomb_reset_by_player', 269],
+	['mvm_bomb_alarm_triggered', 270],
+	['mvm_bomb_deploy_reset_by_player', 271],
+	['mvm_wave_failed', 272],
+	['mvm_reset_stats', 273],
+	['damage_resisted', 274],
+	['revive_player_notify', 275],
+	['revive_player_stopped', 276],
+	['revive_player_complete', 277],
+	['player_turned_to_ghost', 278],
+	['medigun_shield_blocked_damage', 279],
+	['mvm_adv_wave_complete_no_gates', 280],
+	['mvm_sniper_headshot_currency', 281],
+	['mvm_mannhattan_pit', 282],
+	['flag_carried_in_detection_zone', 283],
+	['mvm_adv_wave_killed_stun_radio', 284],
+	['player_directhit_stun', 285],
+	['mvm_sentrybuster_killed', 286],
+	['upgrades_file_changed', 287],
+	['rd_team_points_changed', 288],
+	['rd_rules_state_changed', 289],
+	['rd_robot_killed', 290],
+	['rd_robot_impact', 291],
+	['teamplay_pre_round_time_left', 292],
+	['parachute_deploy', 293],
+	['parachute_holster', 294],
+	['kill_refills_meter', 295],
+	['rps_taunt_event', 296],
+	['conga_kill', 297],
+	['player_initial_spawn', 298],
+	['competitive_victory', 299],
+	['competitive_stats_update', 300],
+	['minigame_win', 301],
+	['sentry_on_go_active', 302],
+	['duck_xp_level_up', 303],
+	['questlog_opened', 304],
+	['schema_updated', 305],
+	['localplayer_pickup_weapon', 306],
+	['rd_player_score_points', 307],
+	['demoman_det_stickies', 308],
+	['quest_objective_completed', 309],
+	['player_score_changed', 310],
+	['killed_capping_player', 311],
+	['environmental_death', 312],
+	['projectile_direct_hit', 313],
+	['pass_get', 314],
+	['pass_score', 315],
+	['pass_free', 316],
+	['pass_pass_caught', 317],
+	['pass_ball_stolen', 318],
+	['pass_ball_blocked', 319],
+	['damage_prevented', 320],
+	['halloween_boss_killed', 321],
+	['escaped_loot_island', 322],
+	['tagged_player_as_it', 323],
+	['merasmus_stunned', 324],
+	['merasmus_prop_found', 325],
+	['halloween_skeleton_killed', 326],
+	['escape_hell', 327],
+	['cross_spectral_bridge', 328],
+	['minigame_won', 329],
+	['respawn_ghost', 330],
+	['kill_in_hell', 331],
+	['halloween_duck_collected', 332],
+	['special_score', 333],
+	['team_leader_killed', 334],
+	['halloween_soul_collected', 335],
+	['recalculate_truce', 336],
+	['deadringer_cheat_death', 337],
+	['crossbow_heal', 338],
+	['damage_mitigated', 339],
+	['payload_pushed', 340],
+	['player_abandoned_match', 341],
+	['cl_drawline', 342],
+	['restart_timer_time', 343],
+	['winlimit_changed', 344],
+	['winpanel_show_scores', 345],
+	['top_streams_request_finished', 346],
+	['competitive_state_changed', 347],
+	['global_war_data_updated', 348],
+	['stop_watch_changed', 349],
+	['ds_stop', 350],
+	['ds_screenshot', 351],
+	['show_match_summary', 352],
+	['experience_changed', 353],
+	['begin_xp_lerp', 354],
+	['matchmaker_stats_updated', 355],
+	['rematch_vote_period_over', 356],
+	['rematch_failed_to_create', 357],
+	['player_rematch_change', 358],
+	['ping_updated', 359],
+	['player_next_map_vote_change', 360],
+	['vote_maps_changed', 361],
+	['hltv_status', 362],
+	['hltv_cameraman', 363],
+	['hltv_rank_camera', 364],
+	['hltv_rank_entity', 365],
+	['hltv_fixed', 366],
+	['hltv_chase', 367],
+	['hltv_message', 368],
+	['hltv_title', 369],
+	['hltv_chat', 370],
+	['replay_startrecord', 371],
+	['replay_sessioninfo', 372],
+	['replay_endrecord', 373],
+	['replay_replaysavailable', 374],
+	['replay_servererror', 375],
+]);
+

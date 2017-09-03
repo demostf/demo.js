@@ -2,7 +2,7 @@ import {make} from '../Packet/ParserGenerator';
 import {EncodeBSPDecal, ParseBSPDecal} from '../Packet/BSPDecal';
 import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
-import {ParseGameEvent} from '../Packet/GameEvent';
+import {EncodeGameEvent, ParseGameEvent} from '../Packet/GameEvent';
 import {EncodeGameEventList, ParseGameEventList} from '../Packet/GameEventList';
 import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketHandler, voidEncoder} from '../Packet/Parser';
@@ -63,7 +63,7 @@ export class Packet extends Parser {
 		[PacketTypeId.entityMessage,
 			make('entityMessage', 'index{11}classId{9}length{11}data{$length}')],
 		[PacketTypeId.gameEvent,
-			{parser: ParseGameEvent, encoder: voidEncoder}],
+			{parser: ParseGameEvent, encoder: EncodeGameEvent}],
 		[PacketTypeId.packetEntities,
 			{parser: ParsePacketEntities, encoder: voidEncoder}],
 		[PacketTypeId.tempEntities,

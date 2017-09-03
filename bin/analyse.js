@@ -30,7 +30,9 @@ fs.readFile(argv._[0], function (err, data) {
 				.map(createEventDefinition)
 				.join('\n\n')
 			+ '\n\n' + createEventDefinitionUnion(definitions) + '\n\n'
-			+ createEventTpeMap(definitions) + '\n';
+			+ 'export type GameEventType = GameEvent[\'name\'];\n\n'
+			+ createEventTypeMap(definitions) + '\n\n'
+			+ createEventTypeIdMap(parser.match.eventDefinitions) + '\n';
 		console.log(definition);
 	} else if (argv['event-list']) {
 		echo(Array.from(parser.match.eventDefinitions.values()));
@@ -108,10 +110,19 @@ function createEventDefinitionUnion(definitions) {
 		+ ';';
 }
 
-function createEventTpeMap(definitions) {
+function createEventTypeMap(definitions) {
 	return `export type GameEventTypeMap = {
-	${definitions.map(definition => `	${definition.name}: ${getEventTypeName(definition.name)}Event;`).join('\n')}
+${definitions.map(definition => `	${definition.name}: ${getEventTypeName(definition.name)}Event;`).join('\n')}
 };`;
+}
+
+function createEventTypeIdMap(definitionMap) {
+	const definitionEntries = Array.from(definitionMap.entries());
+	return `export type GameEventTypeId = number;
+
+export const GameEventTypeIdMap: Map<GameEventType, GameEventTypeId> = new Map<GameEventType, GameEventTypeId>([
+${definitionEntries.map(([typeId, definition]) => `	['${definition.name}', ${typeId}],`).join('\n')}
+]);`;
 }
 
 const EventNameReplace = new Map([
