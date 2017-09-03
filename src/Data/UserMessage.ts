@@ -62,7 +62,7 @@ export enum UserMessageType {
 	HapMeleeContact = 57,
 }
 
-export interface BaseDataUserPacket {
+export interface BaseDataUserPacket extends BasePacket {
 	data: number;
 }
 
@@ -75,9 +75,16 @@ export interface SayText2Packet extends BasePacket {
 	text: string;
 }
 
+export enum HudTextLocation {
+	HUD_PRINTNOTIFY = 1,
+	HUD_PRINTCONSOLE = 2,
+	HUD_PRINTTALK = 3,
+	HUD_PRINTCENTER = 4
+}
+
 export interface TextMessagePacket extends BasePacket {
 	packetType: 'textMsg';
-	destType: number;
+	destType: HudTextLocation;
 	text: string;
 }
 
@@ -137,14 +144,15 @@ export type UserMessageTypeMap = {
 	voiceSubtitle: VoiceSubtitlePacket;
 	breakModelPumpkin: BreakModelPumpkinPacket;
 	resetHUD: ResetHUDPacket;
+	shake: ShakePacket;
 }
 
 export const UserMessagePacketTypeMap: Map<UserMessagePacket['packetType'], UserMessageType> = new Map<UserMessagePacket['packetType'], UserMessageType>([
-	['unknownUserMessage', 0],
 	['sayText2', UserMessageType.SayText2],
 	['textMsg', UserMessageType.TextMsg],
 	['train', UserMessageType.Train],
 	['voiceSubtitle', UserMessageType.VoiceSubtitle],
 	['breakModelPumpkin', UserMessageType.BreakModel_Pumpkin],
-	['resetHUD', UserMessageType.ResetHUD]
+	['resetHUD', UserMessageType.ResetHUD],
+	['shake', UserMessageType.Shake]
 ]);

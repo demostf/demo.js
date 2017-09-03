@@ -22,8 +22,6 @@ function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(
 		},
 		encoder: (packet: UnknownUserMessageBasePacket, data: BitStream) => {
 			packet.data.index = 0;
-			data.writeUint8(packet.type);
-			data.writeBits(packet.data.length, 11);
 			data.writeBitStream(packet.data);
 			packet.data.index = 0;
 		}
@@ -32,7 +30,7 @@ function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(
 
 const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>> = new Map<UserMessageType, PacketHandler<UserMessagePacket>>([
 	[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2}],
-	[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}')],
+	[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}substitute1{s}substitute2{s}substitute3{s}substitute4{s}')],
 	[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
 	[UserMessageType.Train, make('train', 'data{8}')],
 	[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
@@ -41,6 +39,7 @@ const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>>
 ]);
 
 export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: user message
+	const s = stream.index;
 	const type = stream.readUint8();
 	const length = stream.readBits(11);
 	const messageData = stream.readBitStream(length);
@@ -56,4 +55,38 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 	} else {
 		return handler.parser(messageData);
 	}
+}
+
+export function EncodeUserMessage(packet: UserMessagePacket, stream: BitStream) {
+	if (packet.packetType === 'unknownUserMessage') {
+		stream.writeUint8(packet.type);
+		stream.writeBits(packet.data.length, 11);
+		packet.data.index = 0;
+		stream.writeBitStream(packet.data);
+		packet.data.index = 0;
+	} else {
+		const messageType = UserMessagePacketTypeMap.get(packet.packetType);
+		if (!messageType) {
+			throw new Error(`Unknown userMessage type ${messageType}`);
+		}
+		stream.writeUint8(messageType);
+
+		const lengthStart = stream.index;
+		stream.index += 11;
+		const messageDataStart = stream.index;
+
+		const handler = userMessageParsers.get(messageType);
+		if (!handler) {
+			throw new Error(`No encoder for userMessage ${packet.packetType}(${messageType})`);
+		}
+
+		handler.encoder(packet, stream);
+
+		const messageDataEnd = stream.index;
+		stream.index = lengthStart;
+		stream.writeBits(messageDataEnd - messageDataStart, 11);
+
+		stream.index = messageDataEnd;
+	}
+
 }

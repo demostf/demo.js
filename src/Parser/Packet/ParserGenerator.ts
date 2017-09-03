@@ -1,4 +1,4 @@
-import {Packet, PacketMapType, PacketType} from '../../Data/Packet';
+import {PacketMapType, PacketType} from '../../Data/Packet';
 import {Encoder, PacketHandler, Parser} from './Parser';
 import {BitStream} from 'bit-buffer';
 

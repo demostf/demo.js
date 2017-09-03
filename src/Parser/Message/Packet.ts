@@ -10,15 +10,17 @@ import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {ParseTempEntities} from '../Packet/TempEntities';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
-import {ParseUserMessage} from '../Packet/UserMessage';
+import {EncodeUserMessage, ParseUserMessage} from '../Packet/UserMessage';
 import {EncodeVoiceData, ParseVoiceData} from '../Packet/VoiceData';
 import {EncodeVoiceInit, ParseVoiceInit} from '../Packet/VoiceInit';
 import {Parser} from './Parser';
 
 import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
 
+type PacketHandlerMap = Map<PacketTypeId, PacketHandler<IPacket>>;
+
 export class Packet extends Parser {
-	private static parsers: Map<PacketTypeId, PacketHandler<IPacket>> = new Map<PacketTypeId, PacketHandler<IPacket>>([
+	private static handlers: PacketHandlerMap = new Map<PacketTypeId, PacketHandler<IPacket>>([
 		[PacketTypeId.file,
 			make('file', 'transferId{32}fileName{s}requested{b}')],
 		[PacketTypeId.netTick,
@@ -57,7 +59,7 @@ export class Packet extends Parser {
 		[PacketTypeId.bspDecal,
 			{parser: ParseBSPDecal, encoder: EncodeBSPDecal}],
 		[PacketTypeId.userMessage,
-			{parser: ParseUserMessage, encoder: voidEncoder}],
+			{parser: ParseUserMessage, encoder: EncodeUserMessage}],
 		[PacketTypeId.entityMessage,
 			make('entityMessage', 'index{11}classId{9}length{11}data{$length}')],
 		[PacketTypeId.gameEvent,
@@ -84,7 +86,7 @@ export class Packet extends Parser {
 		while (this.bitsLeft > 6) { // last 6 bits for NOOP
 			const type = this.stream.readBits(6) as PacketTypeId;
 			if (type !== 0) {
-				const parser = Packet.parsers.get(type);
+				const parser = Packet.handlers.get(type);
 				if (parser) {
 					const skip = this.skippedPackets.indexOf(type) !== -1;
 					const packet = parser.parser(this.stream, this.match, skip);
