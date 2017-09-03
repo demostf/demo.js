@@ -6,22 +6,23 @@ import {applyEntityUpdate} from '../EntityDecoder';
 
 export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
-	const length      = readVarInt(stream);
-	const end         = stream.index + length;
+	const length = readVarInt(stream);
+	const end = stream.index + length;
 
-	let entity: PacketEntity|null = null;
-	const entities: PacketEntity[]  = [];
+	let entity: PacketEntity | null = null;
+	const entities: PacketEntity[] = [];
 	if (!skip) {
 		for (let i = 0; i < entityCount; i++) {
 			const delay = (stream.readBoolean()) ? stream.readUint8() / 100 : 0; // unused it seems
 			if (stream.readBoolean()) {
-				const classId     = stream.readBits(match.classBits);
+				const classId = stream.readBits(match.classBits);
 				const serverClass = match.serverClasses[classId - 1];
 				// no clue why the -1 but it works
 				// maybe because world (id=0) can never be temp
 				// but it's not like the -1 saves any space
 				const sendTable = match.getSendTable(serverClass.dataTable);
-				entity          = new PacketEntity(serverClass, 0, PVS.ENTER);
+				entity = new PacketEntity(serverClass, 0, PVS.ENTER);
+				entity.delay = delay;
 				applyEntityUpdate(entity, sendTable, stream);
 				entities.push(entity);
 			} else {

@@ -18,6 +18,7 @@ export class PacketEntity {
 	public inPVS: boolean;
 	public pvs: PVS;
 	public serialNumber?: number;
+	public delay?: number;
 
 	constructor(serverClass: ServerClass, entityIndex: number, pvs: PVS) {
 		this.serverClass = serverClass;
