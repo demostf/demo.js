@@ -36,7 +36,8 @@ const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>>
 	[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
 	[UserMessageType.Train, make('train', 'data{8}')],
 	[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
-	[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')]
+	[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')],
+	[UserMessageType.Shake, make('shake', 'command{8}amplitude{f32}frequency{f32}duration{f32}')]
 ]);
 
 export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: user message
@@ -47,7 +48,6 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 	const handler = userMessageParsers.get(type);
 
 	if (!handler) {
-		// throw new Error(`packet ${UserMessageType[type]} length:${length} data: ${messageData.readASCIIString()}`);
 		return {
 			packetType: 'unknownUserMessage',
 			type,

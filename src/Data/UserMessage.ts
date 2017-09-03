@@ -96,6 +96,14 @@ export interface VoiceSubtitlePacket extends BasePacket {
 	item: number;
 }
 
+export interface ShakePacket extends BasePacket {
+	packetType: 'shake';
+	command: number;
+	amplitude: number;
+	frequency: number;
+	duration: number;
+}
+
 export interface UnknownUserMessageBasePacket extends BasePacket {
 	data: BitStream;
 	type: number;
@@ -118,7 +126,8 @@ export type UserMessagePacket = SayText2Packet
 	| UnknownUserMessagePacket
 	| TrainPacket
 	| VoiceSubtitlePacket
-	| BreakModelPumpkinPacket;
+	| BreakModelPumpkinPacket
+	| ShakePacket;
 
 export type UserMessageTypeMap = {
 	sayText2: SayText2Packet;
