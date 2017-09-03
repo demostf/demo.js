@@ -1,5 +1,5 @@
 import {BitStream} from 'bit-buffer';
-import {SayText2Packet} from '../../Data/Packet';
+import {SayText2Packet} from '../../Data/UserMessage';
 
 export function ParseSayText2(stream: BitStream): SayText2Packet { // 4: ParseSayText2
 	const client = stream.readUint8();

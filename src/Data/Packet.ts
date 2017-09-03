@@ -6,6 +6,11 @@ import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
 import {Vector} from './Vector';
 import {GameEvent, GameEventType} from './GameEventTypes';
+import {
+	BreakModelPumpkinPacket, ResetHUDPacket, TextMessagePacket, TrainPacket, UnknownUserMessagePacket,
+	UserMessagePacket, UserMessageType,
+	UserMessageTypeMap, VoiceSubtitlePacket, SayText2Packet
+} from './UserMessage';
 
 export interface BasePacket {
 }
@@ -103,27 +108,6 @@ export interface SetConVarPacket extends BasePacket {
 export interface TempEntitiesPacket extends BasePacket {
 	packetType: 'tempEntities';
 	entities: PacketEntity[];
-}
-
-export interface SayText2Packet extends BasePacket {
-	packetType: 'sayText2';
-	client: number;
-	raw: number;
-	kind: 'TF_Chat_All' | 'TF_Chat_Team' | 'TF_Chat_AllDead';
-	from: string;
-	text: string;
-}
-
-export interface TextMessagePacket extends BasePacket {
-	packetType: 'textMsg';
-	destType: number;
-	text: string;
-}
-
-export interface UnknownUserMessagePacket extends BasePacket {
-	packetType: 'unknownUserMessage';
-	type: number;
-	data: BitStream;
 }
 
 export interface VoiceInitPacket extends BasePacket {
@@ -225,18 +209,16 @@ export interface FixAnglePacket extends BasePacket {
 	z: number;
 }
 
-export interface PreFetchPacket {
+export interface PreFetchPacket extends BasePacket {
 	packetType: 'preFetch';
 	index: number;
 }
 
-export interface GetCvarValuePacket {
+export interface GetCvarValuePacket extends BasePacket {
 	packetType: 'getCvarValue';
 	cookie: number;
 	value: string;
 }
-
-export type UserMessagePacket = SayText2Packet | TextMessagePacket | UnknownUserMessagePacket;
 
 export type Packet = BSPDecalPacket |
 	StringTablePacket |
@@ -273,7 +255,7 @@ export type Packet = BSPDecalPacket |
 export type PacketType = Packet['packetType'];
 
 export type PacketMapType = {
-	bSPDecal: BSPDecalPacket;
+	bspDecal: BSPDecalPacket;
 	stringTable: StringTablePacket;
 	createStringTable: CreateStringTablePacket;
 	updateStringTable: UpdateStringTablePacket;
@@ -304,7 +286,7 @@ export type PacketMapType = {
 	fixAngle: FixAnglePacket;
 	preFetch: PreFetchPacket;
 	getCvarValue: GetCvarValuePacket;
-}
+} & UserMessageTypeMap;
 
 export enum PacketTypeId {
 	file = 2,

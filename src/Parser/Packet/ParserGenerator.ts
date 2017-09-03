@@ -1,13 +1,13 @@
-import {Packet, PacketType} from '../../Data/Packet';
+import {Packet, PacketMapType, PacketType} from '../../Data/Packet';
 import {Encoder, PacketHandler, Parser} from './Parser';
 import {BitStream} from 'bit-buffer';
 
-export function make<P extends Packet>(name: PacketType, definition: string): PacketHandler<P> {
+export function make<T extends PacketType>(name: T, definition: string): PacketHandler<PacketMapType[T]> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');
 	}).filter(part => part[0]);
-	const parser: Parser<P> = (stream: BitStream) => {
+	const parser: Parser<PacketMapType[T]> = (stream: BitStream) => {
 		const result = {
 			packetType: name,
 		};
@@ -21,9 +21,9 @@ export function make<P extends Packet>(name: PacketType, definition: string): Pa
 		} catch (e) {
 			throw new Error('Failed reading pattern ' + definition + '. ' + e);
 		}
-		return result as P;
+		return result as PacketMapType[T];
 	};
-	const encoder: Encoder<P> = (packet: P, stream: BitStream) => {
+	const encoder: Encoder<PacketMapType[T]> = (packet: PacketMapType[T], stream: BitStream) => {
 		for (const group of items) {
 			writeItem(stream, group[1], packet, packet[group[0]]);
 		}

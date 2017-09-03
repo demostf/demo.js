@@ -18,7 +18,7 @@ import {Parser} from './Parser';
 import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
 
 export class Packet extends Parser {
-	private static parsers: Map<PacketTypeId, PacketHandler<IPacket>> = new Map([
+	private static parsers: Map<PacketTypeId, PacketHandler<IPacket>> = new Map<PacketTypeId, PacketHandler<IPacket>>([
 		[PacketTypeId.file,
 			make('file', 'transferId{32}fileName{s}requested{b}')],
 		[PacketTypeId.netTick,

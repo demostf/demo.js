@@ -1,83 +1,59 @@
 import {BitStream} from 'bit-buffer';
-import {UserMessagePacket} from '../../Data/Packet';
-import {ParseSayText2} from '../UserMessage/SayText2';
+import {EncodeSayText2, ParseSayText2} from '../UserMessage/SayText2';
 import {make} from './ParserGenerator';
-import {voidEncoder} from './Parser';
+import {PacketHandler} from './Parser';
+import {
+	UserMessageType,
+	UserMessagePacket,
+	UnknownUserMessagePacket,
+	UnknownUserMessageBasePacket,
+	UserMessageTypeMap,
+	UserMessagePacketTypeMap
+} from '../../Data/UserMessage';
 
-enum UserMessageType {
-	Geiger = 0,
-	Train = 1,
-	HudText = 2,
-	SayText = 3,
-	SayText2 = 4,
-	TextMsg = 5,
-	ResetHUD = 6,
-	GameTitle = 7,
-	ItemPickup = 8,
-	ShowMenu = 9,
-	Shake = 10,
-	Fade = 11,
-	VGUIMenu = 12,
-	Rumble = 13,
-	CloseCaption = 14,
-	SendAudio = 15,
-	VoiceMask = 16,
-	RequestState = 17,
-	Damage = 18,
-	HintText = 19,
-	KeyHintText = 20,
-	HudMsg = 21,
-	AmmoDenied = 22,
-	AchievementEvent = 23,
-	UpdateRadar = 24,
-	VoiceSubtitle = 25,
-	HudNotify = 26,
-	HudNotifyCustom = 27,
-	PlayerStatsUpdate = 28,
-	PlayerIgnited = 29,
-	PlayerIgnitedInv = 30,
-	HudArenaNotify = 31,
-	UpdateAchievement = 32,
-	TrainingMsg = 33,
-	TrainingObjective = 34,
-	DamageDodged = 35,
-	PlayerJarated = 36,
-	PlayerExtinguished = 37,
-	PlayerJaratedFade = 38,
-	PlayerShieldBlocked = 39,
-	BreakModel = 40,
-	CheapBreakModel = 41,
-	BreakModel_Pumpkin = 42,
-	BreakModelRocketDud = 43,
-	CallVoteFailed = 44,
-	VoteStart = 45,
-	VotePass = 46,
-	VoteFailed = 47,
-	VoteSetup = 48,
-	PlayerBonusPoints = 49,
-	SpawnFlyingBird = 50,
-	PlayerGodRayEffect = 51,
-	SPHapWeapEvent = 52,
-	HapDmg = 53,
-	HapPunch = 54,
-	HapSetDrag = 55,
-	HapSet = 56,
-	HapMeleeContact = 57,
+function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(packetType: T): PacketHandler<UserMessageTypeMap[T]> {
+	return {
+		parser: (data: BitStream) => {
+			return {
+				packetType,
+				type: UserMessagePacketTypeMap.get(packetType),
+				data
+			} as UserMessageTypeMap[T];
+		},
+		encoder: (packet: UnknownUserMessageBasePacket, data: BitStream) => {
+			packet.data.index = 0;
+			data.writeUint8(packet.type);
+			data.writeBits(packet.data.length, 11);
+			data.writeBitStream(packet.data);
+			packet.data.index = 0;
+		}
+	};
 }
 
-const userMessageParsers = {
-	4: {parser: ParseSayText2, voidEncoder},
-	5: make('textMsg', 'destType{8}text{s}'),
-};
+const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>> = new Map<UserMessageType, PacketHandler<UserMessagePacket>>([
+	[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2}],
+	[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}')],
+	[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
+	[UserMessageType.Train, make('train', 'data{8}')],
+	[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
+	[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')]
+]);
 
 export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: user message
-	const type = stream.readBits(8);
+	const type = stream.readUint8();
 	const length = stream.readBits(11);
 	const messageData = stream.readBitStream(length);
 
-	return userMessageParsers[type] ? userMessageParsers[type].parser(messageData) : {
-		packetType: 'unknownUserMessage',
-		type,
-		data: messageData,
-	};
+	const handler = userMessageParsers.get(type);
+
+	if (!handler) {
+		// throw new Error(`packet ${UserMessageType[type]} length:${length} data: ${messageData.readASCIIString()}`);
+		return {
+			packetType: 'unknownUserMessage',
+			type,
+			data: messageData,
+		};
+	} else {
+		return handler.parser(messageData);
+	}
 }
