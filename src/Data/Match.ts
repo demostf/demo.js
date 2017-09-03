@@ -11,7 +11,7 @@ import {GameEventDefinition} from './GameEvent';
 import {EntityId, PacketEntity} from './PacketEntity';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
-import {SendTable} from './SendTable';
+import {SendTable, SendTableName} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable} from './StringTable';
 import {Team, TeamNumber} from './Team';
@@ -21,6 +21,7 @@ import {World} from './World';
 import {Round} from './Round';
 import {Chat} from './Chat';
 import {GameEvent} from './GameEventTypes';
+import {Packet} from './Packet';
 
 export class Match {
 	public tick: number = 0;
@@ -38,7 +39,7 @@ export class Match {
 	};
 	public playerEntityMap: Map<EntityId, Player> = new Map();
 	public entityClasses: Map<EntityId, ServerClass> = new Map();
-	public sendTables: Map<string, SendTable> = new Map();
+	public sendTables: Map<SendTableName, SendTable> = new Map();
 	public baseLineCache: Map<ServerClass, PacketEntity> = new Map();
 	public weaponMap: Map<EntityId, Weapon> = new Map();
 	public outerMap: Map<number, EntityId> = new Map();
@@ -91,7 +92,7 @@ export class Match {
 		};
 	}
 
-	public handlePacket(packet) {
+	public handlePacket(packet: Packet) {
 		switch (packet.packetType) {
 			case 'packetEntities':
 				handlePacketEntities(packet, this);

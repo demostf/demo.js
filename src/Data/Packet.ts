@@ -270,7 +270,43 @@ export type Packet = BSPDecalPacket |
 	PreFetchPacket |
 	GetCvarValuePacket;
 
-export enum PacketType {
+export type PacketType = Packet['packetType'];
+
+export type PacketMapType = {
+	bSPDecal: BSPDecalPacket;
+	stringTable: StringTablePacket;
+	createStringTable: CreateStringTablePacket;
+	updateStringTable: UpdateStringTablePacket;
+	dataTable: DataTablePacket;
+	classInfo: ClassInfoPacket;
+	entityMessage: EntityMessagePacket;
+	gameEvent: GameEventPacket;
+	gameEventList: GameEventListPacket;
+	packetEntities: PacketEntitiesPacket;
+	parseSounds: ParseSoundsPacket;
+	setConVar: SetConVarPacket;
+	tempEntities: TempEntitiesPacket;
+	userMessage: UserMessagePacket;
+	voiceInit: VoiceInitPacket;
+	voiceData: VoiceDataPacket;
+	menu: MenuPacket;
+	consoleCmd: ConsoleCmdPacket;
+	cmdKeyValues: CmdKeyValuesPacket;
+	'void': VoidPacket;
+	file: FilePacket;
+	netTick: NetTickPacket;
+	stringCmd: StringCmdPacket;
+	sigOnState: SigOnStatePacket;
+	print: PrintPacket;
+	serverInfo: ServerInfoPacket;
+	setPause: SetPausePacket;
+	setView: SetViewPacket;
+	fixAngle: FixAnglePacket;
+	preFetch: PreFetchPacket;
+	getCvarValue: GetCvarValuePacket;
+}
+
+export enum PacketTypeId {
 	file = 2,
 	netTick = 3,
 	stringCmd = 4,

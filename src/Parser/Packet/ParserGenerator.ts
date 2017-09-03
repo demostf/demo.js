@@ -1,8 +1,8 @@
-import {Packet} from '../../Data/Packet';
+import {Packet, PacketType} from '../../Data/Packet';
 import {Encoder, PacketHandler, Parser} from './Parser';
 import {BitStream} from 'bit-buffer';
 
-export function make<P extends Packet>(name: P['packetType'], definition: string): PacketHandler<P> {
+export function make<P extends Packet>(name: PacketType, definition: string): PacketHandler<P> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');

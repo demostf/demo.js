@@ -15,66 +15,66 @@ import {EncodeVoiceData, ParseVoiceData} from '../Packet/VoiceData';
 import {EncodeVoiceInit, ParseVoiceInit} from '../Packet/VoiceInit';
 import {Parser} from './Parser';
 
-import {Packet as IPacket, PacketType} from '../../Data/Packet';
+import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
 
 export class Packet extends Parser {
-	private static parsers: Map<PacketType, PacketHandler<IPacket>> = new Map([
-		[PacketType.file,
+	private static parsers: Map<PacketTypeId, PacketHandler<IPacket>> = new Map([
+		[PacketTypeId.file,
 			make('file', 'transferId{32}fileName{s}requested{b}')],
-		[PacketType.netTick,
+		[PacketTypeId.netTick,
 			make('netTick', 'tick{32}frameTime{16}stdDev{16}')],
-		[PacketType.stringCmd,
+		[PacketTypeId.stringCmd,
 			make('stringCmd', 'command{s}')],
-		[PacketType.setConVar,
+		[PacketTypeId.setConVar,
 			{parser: ParseSetConVar, encoder: EncodeSetConVar}],
-		[PacketType.sigOnState,
+		[PacketTypeId.sigOnState,
 			make('sigOnState', 'state{8}count{32}')],
-		[PacketType.print,
+		[PacketTypeId.print,
 			make('print', 'value{s}')],
-		[PacketType.serverInfo,
+		[PacketTypeId.serverInfo,
 			make('serverInfo',
 				'version{16}serverCount{32}stv{b}dedicated{b}maxCrc{32}maxClasses{16}' +
 				'mapHash{128}playerCount{8}maxPlayerCount{8}intervalPerTick{f32}platform{s1}' +
 				'game{s}map{s}skybox{s}serverName{s}replay{b}')],
-		[PacketType.classInfo,
+		[PacketTypeId.classInfo,
 			{parser: ParseClassInfo, encoder: EncodeClassInfo}],
-		[PacketType.setPause,
+		[PacketTypeId.setPause,
 			make('setPause', 'paused{b}')],
-		[PacketType.createStringTable,
+		[PacketTypeId.createStringTable,
 			{parser: ParseCreateStringTable, encoder: EncodeCreateStringTable}],
-		[PacketType.updateStringTable,
+		[PacketTypeId.updateStringTable,
 			{parser: ParseUpdateStringTable, encoder: EncodeUpdateStringTable}],
-		[PacketType.voiceInit,
+		[PacketTypeId.voiceInit,
 			{parser: ParseVoiceInit, encoder: EncodeVoiceInit}],
-		[PacketType.voiceData,
+		[PacketTypeId.voiceData,
 			{parser: ParseVoiceData, encoder: EncodeVoiceData}],
-		[PacketType.parseSounds,
+		[PacketTypeId.parseSounds,
 			{parser: ParseParseSounds, encoder: EncodeParseSounds}],
-		[PacketType.setView,
+		[PacketTypeId.setView,
 			make('setView', 'index{11}')],
-		[PacketType.fixAngle,
+		[PacketTypeId.fixAngle,
 			make('fixAngle', 'relative{b}x{16}y{16}z{16}')],
-		[PacketType.bspDecal,
+		[PacketTypeId.bspDecal,
 			{parser: ParseBSPDecal, encoder: EncodeBSPDecal}],
-		[PacketType.userMessage,
+		[PacketTypeId.userMessage,
 			{parser: ParseUserMessage, encoder: voidEncoder}],
-		[PacketType.entityMessage,
+		[PacketTypeId.entityMessage,
 			make('entityMessage', 'index{11}classId{9}length{11}data{$length}')],
-		[PacketType.gameEvent,
+		[PacketTypeId.gameEvent,
 			{parser: ParseGameEvent, encoder: voidEncoder}],
-		[PacketType.packetEntities,
+		[PacketTypeId.packetEntities,
 			{parser: ParsePacketEntities, encoder: voidEncoder}],
-		[PacketType.tempEntities,
+		[PacketTypeId.tempEntities,
 			{parser: ParseTempEntities, encoder: voidEncoder}],
-		[PacketType.preFetch,
+		[PacketTypeId.preFetch,
 			make('preFetch', 'index{14}')],
-		[PacketType.menu,
+		[PacketTypeId.menu,
 			make('menu', 'type{u16}length{u16}data{$length*8}')],
-		[PacketType.gameEventList,
+		[PacketTypeId.gameEventList,
 			{parser: ParseGameEventList, encoder: EncodeGameEventList}],
-		[PacketType.getCvarValue,
+		[PacketTypeId.getCvarValue,
 			make('getCvarValue', 'cookie{32}value{s}')],
-		[PacketType.cmdKeyValues,
+		[PacketTypeId.cmdKeyValues,
 			make('cmdKeyValues', 'length{32}data{$length}')],
 	]);
 
@@ -82,7 +82,7 @@ export class Packet extends Parser {
 		const packets: IPacket[] = [];
 		let lastPacketType = 0;
 		while (this.bitsLeft > 6) { // last 6 bits for NOOP
-			const type = this.stream.readBits(6) as PacketType;
+			const type = this.stream.readBits(6) as PacketTypeId;
 			if (type !== 0) {
 				const parser = Packet.parsers.get(type);
 				if (parser) {
@@ -90,7 +90,7 @@ export class Packet extends Parser {
 					const packet = parser.parser(this.stream, this.match, skip);
 					packets.push(packet);
 				} else {
-					throw new Error(`Unknown packet type ${type} just parsed a ${PacketType[lastPacketType]}`);
+					throw new Error(`Unknown packet type ${type} just parsed a ${PacketTypeId[lastPacketType]}`);
 				}
 				lastPacketType = type;
 			}

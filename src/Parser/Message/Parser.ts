@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {Match} from '../../Data/Match';
-import {Packet, PacketType} from '../../Data/Packet';
+import {Packet, PacketTypeId} from '../../Data/Packet';
 import {MessageType} from '../../Parser';
 
 export abstract class Parser {
@@ -9,9 +9,9 @@ export abstract class Parser {
 	protected stream: BitStream;
 	protected length: number;
 	protected match: Match;
-	protected skippedPackets: PacketType[];
+	protected skippedPackets: PacketTypeId[];
 
-	constructor(type: MessageType, tick: number, stream: BitStream, length: number, match: Match, skippedPacket: PacketType[] = []) {
+	constructor(type: MessageType, tick: number, stream: BitStream, length: number, match: Match, skippedPacket: PacketTypeId[] = []) {
 		this.type = type;
 		this.tick = tick;
 		this.stream = stream;

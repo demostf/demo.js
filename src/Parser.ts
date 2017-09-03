@@ -8,14 +8,14 @@ import {Packet} from './Parser/Message/Packet';
 import {Parser as MessageParser} from './Parser/Message/Parser';
 import {StringTable} from './Parser/Message/StringTable';
 import {UserCmd} from './Parser/Message/UserCmd';
-import {PacketType} from './Data/Packet';
+import {PacketTypeId} from './Data/Packet';
 
 export class Parser extends EventEmitter {
 	public stream: BitStream;
 	public match: Match;
-	protected skipPackets: PacketType[];
+	protected skipPackets: PacketTypeId[];
 
-	constructor(stream: BitStream, skipPackets: PacketType[] = []) {
+	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		super();
 		this.stream = stream;
 		this.match = new Match();

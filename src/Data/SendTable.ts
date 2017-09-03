@@ -1,13 +1,15 @@
 import {SendPropDefinition, SendPropFlag, SendPropType} from './SendPropDefinition';
 
+export type SendTableName = string;
+
 export class SendTable {
-	public name: string;
+	public name: SendTableName;
 	public props: SendPropDefinition[];
 	private cachedFlattenedProps: SendPropDefinition[];
 
 	constructor(name) {
-		this.name            = name;
-		this.props           = [];
+		this.name = name;
+		this.props = [];
 		this.cachedFlattenedProps = [];
 	}
 
@@ -67,7 +69,7 @@ export class SendTable {
 
 	private flatten() {
 		const excludes: SendPropDefinition[] = this.excludes;
-		const props: SendPropDefinition[]    = [];
+		const props: SendPropDefinition[] = [];
 		this.getAllProps(excludes, props);
 
 		// sort often changed props before the others
@@ -75,8 +77,8 @@ export class SendTable {
 		for (let i = 0; i < props.length; i++) {
 			if (props[i].hasFlag(SendPropFlag.SPROP_CHANGES_OFTEN)) {
 				if (i !== start) {
-					const temp   = props[i];
-					props[i]     = props[start];
+					const temp = props[i];
+					props[i] = props[start];
 					props[start] = temp;
 				}
 				start++;
