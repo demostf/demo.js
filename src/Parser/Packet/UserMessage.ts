@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {UserMessagePacket} from '../../Data/Packet';
-import {SayText2} from '../UserMessage/SayText2';
+import {ParseSayText2} from '../UserMessage/SayText2';
 import {make} from './ParserGenerator';
 import {voidEncoder} from './Parser';
 
@@ -66,7 +66,7 @@ enum UserMessageType {
 }
 
 const userMessageParsers = {
-	4: {parser: SayText2, voidEncoder},
+	4: {parser: ParseSayText2, voidEncoder},
 	5: make('textMsg', 'destType{8}text{s}'),
 };
 

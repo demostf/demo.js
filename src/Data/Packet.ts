@@ -109,7 +109,7 @@ export interface SayText2Packet extends BasePacket {
 	packetType: 'sayText2';
 	client: number;
 	raw: number;
-	kind: string;
+	kind: 'TF_Chat_All' | 'TF_Chat_Team' | 'TF_Chat_AllDead';
 	from: string;
 	text: string;
 }

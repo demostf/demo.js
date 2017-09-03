@@ -1,15 +1,15 @@
 import {BitStream} from 'bit-buffer';
 import {SayText2Packet} from '../../Data/Packet';
 
-export function SayText2(stream: BitStream): SayText2Packet { // 4: SayText2
-	const client = stream.readBits(8);
-	const raw = stream.readBits(8);
+export function ParseSayText2(stream: BitStream): SayText2Packet { // 4: ParseSayText2
+	const client = stream.readUint8();
+	const raw = stream.readUint8();
 	const pos = stream.index;
 	let from;
 	let text;
 	let kind;
-	if (stream.readBits(8) === 1) {
-		const first = stream.readBits(8);
+	if (stream.readUint8() === 1) {
+		const first = stream.readUint8();
 		if (first === 7) {
 			const color = stream.readUTF8String(6);
 		} else {
@@ -29,8 +29,10 @@ export function SayText2(stream: BitStream): SayText2Packet { // 4: SayText2
 		kind = stream.readUTF8String();
 		from = stream.readUTF8String();
 		text = stream.readUTF8String();
-		stream.readASCIIString();
-		stream.readASCIIString();
+		// maybe always 2 null bytes?
+		// stream.readASCIIString();
+		// stream.readASCIIString();
+		stream.readUint16();
 	}
 	// cleanup color codes
 	text = text.replace(/\u0001/g, '');
@@ -40,6 +42,7 @@ export function SayText2(stream: BitStream): SayText2Packet { // 4: SayText2
 		text = text.slice(0, stringPos) + text.slice(stringPos + 7);
 		stringPos = text.indexOf('\u0007');
 	}
+
 	return {
 		packetType: 'sayText2',
 		client,
@@ -48,4 +51,19 @@ export function SayText2(stream: BitStream): SayText2Packet { // 4: SayText2
 		from,
 		text,
 	};
+}
+
+export function EncodeSayText2(packet: SayText2Packet, stream: BitStream) {
+	stream.writeUint8(packet.client);
+	stream.writeUint8(packet.raw);
+
+	if (packet.kind === 'TF_Chat_AllDead') {
+		const rawText = `*DEAD* \u0003${packet.from}\u0001:    ${packet.text}`;
+		stream.writeUTF8String(rawText);
+	} else {
+		stream.writeUTF8String(packet.kind);
+		stream.writeUTF8String(packet.from);
+		stream.writeUTF8String(packet.text);
+		stream.writeUint16(0);
+	}
 }
