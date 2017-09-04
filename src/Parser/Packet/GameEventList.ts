@@ -38,36 +38,25 @@ export function EncodeGameEventList(packet: GameEventListPacket, stream: BitStre
 	const definitions = Array.from(packet.eventList.values());
 	stream.writeBits(definitions.length, 9);
 
-	const eventListBitLength = getEventListLength(definitions);
-	const eventListStream = new BitStream(new ArrayBuffer(Math.ceil(eventListBitLength / 8)));
+	const lengthStart = stream.index;
+	stream.index += 20;
+
+	const eventListStart = stream.index;
 
 	for (const definition of definitions) {
-		eventListStream.writeBits(definition.id, 9);
-		eventListStream.writeASCIIString(definition.name);
+		stream.writeBits(definition.id, 9);
+		stream.writeASCIIString(definition.name);
 		for (const entry of definition.entries) {
-			eventListStream.writeBits(entry.type, 3);
-			eventListStream.writeASCIIString(entry.name);
+			stream.writeBits(entry.type, 3);
+			stream.writeASCIIString(entry.name);
 		}
-		eventListStream.writeBits(0, 3);
+		stream.writeBits(0, 3);
 	}
 
-	const finalLength = eventListStream.index;
-	stream.writeBits(finalLength, 20);
+	const eventListEnd = stream.index;
 
-	eventListStream.index = 0;
-	stream.writeBitStream(eventListStream);
-}
+	stream.index = lengthStart;
+	stream.writeBits(eventListEnd - eventListStart, 20);
 
-function getEventListLength(eventList: GameEventDefinition<GameEventType>[]) {
-	return eventList.reduce((length: number, entry: GameEventDefinition<GameEventType>) => {
-		return length +
-			9 +
-			(entry.name.length + 1) * 8 +
-			3 +
-			entry.entries.reduce((length: number, event: GameEventEntry) => {
-				return length +
-					3
-					+ (event.name.length + 1) * 8;
-			}, 0);
-	}, 0);
+	stream.index = eventListEnd;
 }
