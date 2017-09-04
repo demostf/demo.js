@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {Packet} from '../../../../Data/Packet';
 import {deepEqual} from '../../deepEqual';
+import {isObject} from 'util';
 
 export function getStream(data: string | number[]) {
 	if (typeof data === 'string') {
@@ -15,7 +16,7 @@ export function getStream(data: string | number[]) {
 
 export type Encoder = (data: any, stream: BitStream) => void;
 
-export function assertEncoder(parser: Parser, encoder: Encoder, data: any, length: number = 0) {
+export function assertEncoder(parser: Parser, encoder: Encoder, data: any, length: number = 0, message: string = '') {
 	const stream = new BitStream(new ArrayBuffer(Math.max(64, length * 8)));
 
 	encoder(data as Packet, stream);
@@ -23,7 +24,7 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	const pos = stream.index;
 
 	if (length) {
-		assert.equal(stream.index, length, 'Unexpected number of bits used for encoding');
+		assert.equal(stream.index, length, 'Unexpected number of bits used for encoding' + message);
 	}
 
 	stream.index = 0;
@@ -31,9 +32,9 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	const result = parser(stream);
 	deepEqual(result, data);
 	if (!deepEqual(result, data)) {
-		assert.deepEqual(result, data, 'Re-decoded value not equal to original value');
+		assert.deepEqual(result, data, 'Re-decoded value not equal to original value' + message);
 	}
-	assert.equal(stream.index, pos, 'Number of bits used for encoding and parsing not equal');
+	assert.equal(stream.index, pos, 'Number of bits used for encoding and parsing not equal' + message);
 }
 
 export type Parser = (stream: BitStream, match?) => any;

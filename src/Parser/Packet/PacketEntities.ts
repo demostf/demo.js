@@ -3,7 +3,7 @@ import {Match} from '../../Data/Match';
 import {PacketEntitiesPacket} from '../../Data/Packet';
 import {EntityId, PacketEntity, PVS} from '../../Data/PacketEntity';
 import {SendProp} from '../../Data/SendProp';
-import {applyEntityUpdate} from '../EntityDecoder';
+import {getEntityUpdate} from '../EntityDecoder';
 import {readUBitVar} from '../readBitVar';
 
 const pvsMap = {
@@ -39,7 +39,7 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
-			applyEntityUpdate(entity, sendTable, staticBaseLine);
+			entity.props = getEntityUpdate(sendTable, staticBaseLine);
 			match.baseLineCache.set(serverClass, entity.clone());
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
@@ -85,7 +85,8 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 			const pvs = readPVSType(stream);
 			if (pvs === PVS.ENTER) {
 				const packetEntity = readEnterPVS(stream, entityId, match);
-				applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				const updatedProps = getEntityUpdate(match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				packetEntity.applyPropUpdate(updatedProps);
 
 				if (updatedBaseLine) {
 					const newBaseLine: SendProp[] = [];
@@ -96,7 +97,8 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 				receivedEntities.push(packetEntity);
 			} else if (pvs === PVS.PRESERVE) {
 				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
-				applyEntityUpdate(packetEntity, match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				const updatedProps = getEntityUpdate(match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				packetEntity.applyPropUpdate(updatedProps);
 				receivedEntities.push(packetEntity);
 			} else if (match.entityClasses.has(entityId)) {
 				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);

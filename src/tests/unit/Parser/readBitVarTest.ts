@@ -61,14 +61,14 @@ suite('readBitVar', () => {
 		assertParser(readBitVarSigned, getStream([131, 225, 212, 14, 123]), -1011533728, 34);
 	});
 
-	test('writeVarInt', () => {
+	test('writeBitVar', () => {
 		assertEncoder(readBitVar, writeBitVar, 2, 6);
 		assertEncoder(readBitVar, writeBitVar, 94, 10);
 		assertEncoder(readBitVar, writeBitVar, 1632, 14);
 		assertEncoder(readBitVar, writeBitVar, 3283433568, 34);
 	});
 
-	test('writeVarInt signed', () => {
+	test('writeBitVar signed', () => {
 		assertEncoder(readBitVarSigned, writeBitVarSigned, 2, 6);
 		assertEncoder(readBitVarSigned, writeBitVarSigned, -94, 10);
 		assertEncoder(readBitVarSigned, writeBitVarSigned, 1632, 14);

@@ -48,7 +48,7 @@ export class SendTable {
 		}
 	}
 
-	get flattenedProps() {
+	get flattenedProps(): SendPropDefinition[] {
 		if (this.cachedFlattenedProps.length === 0) {
 			this.flatten();
 		}

@@ -53,6 +53,27 @@ export class SendPropDefinition {
 
 		return data;
 	}
+
+	get fullName() {
+		return `${this.ownerTableName}.${this.name}`;
+	}
+
+	get allFlags() {
+		return SendPropDefinition.formatFlags(this.flags);
+	}
+
+	static formatFlags(flags: number) {
+		let names: string[] = [];
+		for (const name in SendPropFlag) {
+			const flagValue = <SendPropFlag | string>SendPropFlag[name];
+			if (typeof flagValue === 'number') {
+				if (flags & flagValue) {
+					names.push(name);
+				}
+			}
+		}
+		return names;
+	}
 }
 
 export enum SendPropType {

@@ -2,7 +2,8 @@ import {BitStream} from 'bit-buffer';
 import {Match} from '../../Data/Match';
 import {TempEntitiesPacket} from '../../Data/Packet';
 import {PacketEntity, PVS} from '../../Data/PacketEntity';
-import {applyEntityUpdate} from '../EntityDecoder';
+import {getEntityUpdate} from '../EntityDecoder';
+import {readVarInt} from '../readBitVar';
 
 export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readBits(8);
@@ -23,11 +24,12 @@ export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean
 				const sendTable = match.getSendTable(serverClass.dataTable);
 				entity = new PacketEntity(serverClass, 0, PVS.ENTER);
 				entity.delay = delay;
-				applyEntityUpdate(entity, sendTable, stream);
+				entity.props = getEntityUpdate(sendTable, stream);
 				entities.push(entity);
 			} else {
 				if (entity) {
-					applyEntityUpdate(entity, match.getSendTable(entity.serverClass.dataTable), stream);
+					const updatedProps = getEntityUpdate(match.getSendTable(entity.serverClass.dataTable), stream);
+					entity.applyPropUpdate(updatedProps);
 				} else {
 					throw new Error('no entity set to update');
 				}
@@ -43,17 +45,4 @@ export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean
 		packetType: 'tempEntities',
 		entities,
 	};
-}
-
-function readVarInt(stream: BitStream) {
-	let result = 0;
-	for (let run = 0; run < 35; run += 7) {
-		const byte = stream.readUint8();
-		result |= ((byte & 0x7F) << run);
-
-		if ((byte >> 7) === 0) {
-			return result;
-		}
-	}
-	return result;
 }

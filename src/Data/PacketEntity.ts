@@ -53,4 +53,15 @@ export class PacketEntity {
 		}
 		return result;
 	}
+
+	public applyPropUpdate(props: SendProp[]) {
+		for (const prop of props) {
+			const existingProp = this.getPropByDefinition(prop.definition);
+			if (existingProp) {
+				existingProp.value = prop.value;
+			} else {
+				this.props.push(prop);
+			}
+		}
+	}
 }
