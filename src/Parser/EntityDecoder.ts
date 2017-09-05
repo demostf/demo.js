@@ -31,7 +31,7 @@ export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stre
 		stream.writeBoolean(true);
 		const index = allProps.findIndex(propDef => propDef.fullName === prop.definition.fullName);
 		if (index === -1) {
-			throw new Error('Unknown definition for property');
+			throw new Error(`Unknown definition for property ${prop.definition.fullName} in ${sendTable.name}`);
 		}
 		writeFieldIndex(index, stream, lastIndex);
 		lastIndex = index;

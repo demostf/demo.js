@@ -8,7 +8,7 @@ import {ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketHandler, voidEncoder} from '../Packet/Parser';
 import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
-import {ParseTempEntities} from '../Packet/TempEntities';
+import {EncodeTempEntities, ParseTempEntities} from '../Packet/TempEntities';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../Packet/UpdateStringTable';
 import {EncodeUserMessage, ParseUserMessage} from '../Packet/UserMessage';
 import {EncodeVoiceData, ParseVoiceData} from '../Packet/VoiceData';
@@ -67,7 +67,7 @@ export class Packet extends Parser {
 		[PacketTypeId.packetEntities,
 			{parser: ParsePacketEntities, encoder: voidEncoder}],
 		[PacketTypeId.tempEntities,
-			{parser: ParseTempEntities, encoder: voidEncoder}],
+			{parser: ParseTempEntities, encoder: EncodeTempEntities}],
 		[PacketTypeId.preFetch,
 			make('preFetch', 'index{14}')],
 		[PacketTypeId.menu,
