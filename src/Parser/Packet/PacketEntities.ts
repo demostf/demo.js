@@ -39,7 +39,8 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 		const staticBaseLine = match.staticBaseLines[serverClass.id];
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
-			entity.props = getEntityUpdate(sendTable, staticBaseLine);
+			const props = getEntityUpdate(sendTable, staticBaseLine);
+			entity.applyPropUpdate(props);
 			match.baseLineCache.set(serverClass, entity.clone());
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
