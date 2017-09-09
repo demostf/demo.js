@@ -4,8 +4,8 @@ import {
 	GameEventValue, GameEventValueType,
 } from '../../Data/GameEvent';
 import {GameEvent, GameEventType, GameEventTypeIdMap, GameEventTypeMap} from '../../Data/GameEventTypes';
-import {Match} from '../../Data/Match';
 import {GameEventPacket} from '../../Data/Packet';
+import {ParserState} from '../../Data/ParserState';
 
 function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition<T>, stream: BitStream) {
 	const values: GameEventTypeMap[T]['values'] = {};
@@ -86,11 +86,11 @@ function encodeGameEventValue(value: GameEventValue | null, stream: BitStream, e
 	}
 }
 
-export function ParseGameEvent(stream: BitStream, match: Match): GameEventPacket { // 25: game event
+export function ParseGameEvent(stream: BitStream, state: ParserState): GameEventPacket { // 25: game event
 	const length = stream.readBits(11);
 	const eventData = stream.readBitStream(length);
 	const eventType = eventData.readBits(9);
-	const definition = match.eventDefinitions.get(eventType);
+	const definition = state.eventDefinitions.get(eventType);
 	if (!definition) {
 		throw new Error(`Unknown game event type ${eventType}`);
 	}
@@ -102,7 +102,7 @@ export function ParseGameEvent(stream: BitStream, match: Match): GameEventPacket
 	};
 }
 
-export function EncodeGameEvent(packet: GameEventPacket, stream: BitStream, match: Match) {
+export function EncodeGameEvent(packet: GameEventPacket, stream: BitStream, state: ParserState) {
 	const lengthStart = stream.index;
 	stream.index += 11;
 	const eventId = GameEventTypeIdMap.get(packet.event.name);
@@ -113,7 +113,7 @@ export function EncodeGameEvent(packet: GameEventPacket, stream: BitStream, matc
 	const eventDataStart = stream.index;
 	stream.writeBits(eventId, 9);
 
-	const definition = match.eventDefinitions.get(eventId);
+	const definition = state.eventDefinitions.get(eventId);
 	if (typeof definition === 'undefined') {
 		throw new Error(`Unknown game event type ${packet.event.name}`);
 	}

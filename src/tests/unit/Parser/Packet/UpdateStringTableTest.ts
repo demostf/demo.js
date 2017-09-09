@@ -1,13 +1,13 @@
 import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../../../../Parser/Packet/UpdateStringTable';
-import {Match} from '../../../../Data/Match';
 import {StringTable} from '../../../../Data/StringTable';
 import {UpdateStringTablePacket} from '../../../../Data/Packet';
+import {createParserState} from '../../../../Data/ParserState';
 
 const exampleData = [200, 3, 0, 48, 130, 53];
 
-function getExistingMatch() {
+function getExistingParserState() {
 	const existingTable: StringTable = {
 		name: 'downloadables',
 		entries: [],
@@ -16,10 +16,10 @@ function getExistingMatch() {
 		fixedUserDataSizeBits: 1
 	};
 	existingTable.entries[70] = {text: 'maps\\pl_badwater_pro_v9.bsp'};
-	const match = new Match();
-	match.stringTables[8] = existingTable;
+	const state = createParserState();
+	state.stringTables[8] = existingTable;
 
-	return match;
+	return state;
 }
 
 const examplePacket: UpdateStringTablePacket = {
@@ -49,11 +49,11 @@ const examplePacket2: UpdateStringTablePacket = {
 };
 
 function ParseUpdate(stream: BitStream) {
-	return ParseUpdateStringTable(stream, getExistingMatch());
+	return ParseUpdateStringTable(stream, getExistingParserState());
 }
 
 function EncodeUpdate(packet: UpdateStringTablePacket, stream: BitStream) {
-	return EncodeUpdateStringTable(packet, stream, getExistingMatch());
+	return EncodeUpdateStringTable(packet, stream, getExistingParserState());
 }
 
 suite('UpdateStringTable', () => {

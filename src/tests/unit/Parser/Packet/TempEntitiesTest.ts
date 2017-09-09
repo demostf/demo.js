@@ -1,11 +1,11 @@
 import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeTempEntities, ParseTempEntities} from '../../../../Parser/Packet/TempEntities';
-import {Match} from '../../../../Data/Match';
 import {hydrateEntity, hydrateTable} from './hydrate';
 import {ServerClass} from '../../../../Data/ServerClass';
 import {TempEntitiesPacket} from '../../../../Data/Packet';
 import {readFileSync} from 'fs';
+import {createParserState} from '../../../../Data/ParserState';
 
 const data = [
 	2,
@@ -366,19 +366,19 @@ const expected = {
 	entities: entityData.map(hydrateEntity)
 };
 
-const match = new Match();
-match.serverClasses.length = 348;
-match.serverClasses[164] = new ServerClass(164, 'CTEPlayerAnimEvent', 'DT_TEPlayerAnimEvent');
-match.serverClasses[178] = new ServerClass(178, 'CTETFParticleEffect', 'DT_TETFParticleEffect');
-match.sendTables.set(sendTable.name, sendTable);
-match.sendTables.set(sendTable2.name, sendTable2);
+const state = createParserState();
+state.serverClasses.length = 348;
+state.serverClasses[164] = new ServerClass(164, 'CTEPlayerAnimEvent', 'DT_TEPlayerAnimEvent');
+state.serverClasses[178] = new ServerClass(178, 'CTETFParticleEffect', 'DT_TETFParticleEffect');
+state.sendTables.set(sendTable.name, sendTable);
+state.sendTables.set(sendTable2.name, sendTable2);
 
 function parse(stream: BitStream) {
-	return ParseTempEntities(stream, match);
+	return ParseTempEntities(stream, state);
 }
 
 function encode(value: TempEntitiesPacket, stream: BitStream) {
-	EncodeTempEntities(value, stream, match);
+	EncodeTempEntities(value, stream, state);
 }
 
 suite('TempEntities', () => {

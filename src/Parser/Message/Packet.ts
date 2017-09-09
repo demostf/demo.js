@@ -89,7 +89,7 @@ export class Packet extends Parser {
 				const parser = Packet.handlers.get(type);
 				if (parser) {
 					const skip = this.skippedPackets.indexOf(type) !== -1;
-					const packet = parser.parser(this.stream, this.match, skip);
+					const packet = parser.parser(this.stream, this.state, skip);
 					packets.push(packet);
 				} else {
 					throw new Error(`Unknown packet type ${type} just parsed a ${PacketTypeId[lastPacketType]}`);

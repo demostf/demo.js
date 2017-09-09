@@ -1,12 +1,12 @@
 import {BitStream} from 'bit-buffer';
-import {Match} from '../../Data/Match';
 import {TempEntitiesPacket} from '../../Data/Packet';
 import {PacketEntity, PVS} from '../../Data/PacketEntity';
 import {encodeEntityUpdate, getEntityUpdate} from '../EntityDecoder';
 import {readVarInt, writeVarInt} from '../readBitVar';
 import {DynamicBitStream} from '../../DynamicBitStream';
+import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
 
-export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
+export function ParseTempEntities(stream: BitStream, state: ParserState, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readUint8();
 	const length = readVarInt(stream);
 	const entityData = stream.readBitStream(length);
@@ -17,20 +17,21 @@ export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean
 		for (let i = 0; i < entityCount; i++) {
 			const delay = (entityData.readBoolean()) ? entityData.readUint8() / 100 : 0; // unused it seems
 			if (entityData.readBoolean()) {
-				const classId = entityData.readBits(match.classBits);
-				const serverClass = match.serverClasses[classId - 1];
+				const classId = entityData.readBits(getClassBits(state));
+				// no clue why the -1 but it works
+				const serverClass = state.serverClasses[classId - 1];
 				if (!serverClass) {
 					throw new Error(`Unknown serverClass ${classId}`);
 				}
-				// no clue why the -1 but it works
-				const sendTable = match.getSendTable(serverClass.dataTable);
+				const sendTable = getSendTable(state, serverClass.dataTable);
 				entity = new PacketEntity(serverClass, 0, PVS.ENTER);
 				entity.delay = delay;
 				entity.props = getEntityUpdate(sendTable, entityData);
 				entities.push(entity);
 			} else {
 				if (entity) {
-					const updatedProps = getEntityUpdate(match.getSendTable(entity.serverClass.dataTable), entityData);
+					const sendTable = getSendTable(state, entity.serverClass.dataTable);
+					const updatedProps = getEntityUpdate(sendTable, entityData);
 					entity.applyPropUpdate(updatedProps);
 				} else {
 					throw new Error('no entity set to update');
@@ -48,7 +49,7 @@ export function ParseTempEntities(stream: BitStream, match: Match, skip: boolean
 	};
 }
 
-export function EncodeTempEntities(packet: TempEntitiesPacket, stream: BitStream, match: Match) {
+export function EncodeTempEntities(packet: TempEntitiesPacket, stream: BitStream, state: ParserState) {
 	stream.writeUint8(packet.entities.length);
 
 	const entityStream = new DynamicBitStream();
@@ -62,10 +63,10 @@ export function EncodeTempEntities(packet: TempEntitiesPacket, stream: BitStream
 
 		entityStream.writeBoolean(true);
 
-		const classId = match.serverClasses.findIndex(serverClass => serverClass && serverClass.name === entity.serverClass.name) + 1;
-		entityStream.writeBits(classId, match.classBits);
+		const classId = state.serverClasses.findIndex(serverClass => serverClass && serverClass.name === entity.serverClass.name) + 1;
+		entityStream.writeBits(classId, getClassBits(state));
 
-		const sendTable = match.getSendTable(entity.serverClass.dataTable);
+		const sendTable = getSendTable(state, entity.serverClass.dataTable);
 
 		encodeEntityUpdate(entity.props, sendTable, entityStream);
 	}

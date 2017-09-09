@@ -1,6 +1,7 @@
 import {Match} from '../Data/Match';
 import {CreateStringTablePacket, StringTablePacket, UpdateStringTablePacket} from '../Data/Packet';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
+import {getStringTable} from '../Data/ParserState';
 
 export function handleStringTable(packet: CreateStringTablePacket, match: Match) {
 	handleTable(packet.table, match);
@@ -19,7 +20,7 @@ export function handleStringTableUpdate(packet: UpdateStringTablePacket, match: 
 
 
 function handleTable(table: StringTable, match: Match) {
-	if (!match.getStringTable(table.name)) {
+	if (!getStringTable(match, table.name)) {
 		match.stringTables.push(table);
 	}
 

@@ -1,13 +1,10 @@
 import {BitStream} from 'bit-buffer';
-import {Match} from '../../Data/Match';
 import {PacketEntitiesPacket} from '../../Data/Packet';
 import {EntityId, PacketEntity, PVS} from '../../Data/PacketEntity';
 import {SendProp} from '../../Data/SendProp';
 import {encodeEntityUpdate, getEntityUpdate} from '../EntityDecoder';
 import {readUBitVar, writeBitVar} from '../readBitVar';
-import {isDate} from 'util';
-import {ServerClass} from '../../Data/ServerClass';
-import {SendTable} from '../../Data/SendTable';
+import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
 
 const pvsMap = new Map([
 	[0, PVS.PRESERVE],
@@ -37,12 +34,15 @@ function writePVSType(pvs: PVS, stream: BitStream) {
 	stream.writeBits(raw, 2);
 }
 
-function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): PacketEntity {
+function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState): PacketEntity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
-	const serverClass = match.serverClasses[stream.readBits(match.classBits)];
+	const classBits = getClassBits(state);
+	const serverClass = state.serverClasses[stream.readBits(classBits)];
 	const serial = stream.readBits(10); // unused serial number
 
-	const cachedBaseLine = match.baseLineCache.get(serverClass);
+	const sendTable = getSendTable(state, serverClass.dataTable);
+
+	const cachedBaseLine = state.baseLineCache.get(serverClass);
 	if (cachedBaseLine) {
 		const result = cachedBaseLine.clone();
 		result.entityIndex = entityId;
@@ -50,16 +50,12 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 		return result;
 	} else {
 		const entity = new PacketEntity(serverClass, entityId, PVS.ENTER);
-		const sendTable = match.getSendTable(serverClass.dataTable);
-		if (!sendTable) {
-			throw new Error('Unknown SendTable for serverclass');
-		}
-		const staticBaseLine = match.staticBaseLines.get(serverClass.id);
+		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
 			const props = getEntityUpdate(sendTable, staticBaseLine);
 			entity.applyPropUpdate(props);
-			match.baseLineCache.set(serverClass, entity.clone());
+			state.baseLineCache.set(serverClass, entity.clone());
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
@@ -70,32 +66,27 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 	}
 }
 
-/**
- * @param {PacketEntity} entity
- * @param {BitStream} stream
- * @param {Match} match
- * @returns {SendProp[]} the entities to be encoded
- */
-function writeEnterPVS(entity: PacketEntity, stream: BitStream, match: Match) {
-	const serverClassId = match.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
+function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState) {
+	const serverClassId = state.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
 	if (serverClassId === -1) {
 		throw new Error(`Unknown server class ${entity.serverClass.name}(${entity.serverClass.id})`);
 	}
 	// get the instance from the match, not the entity
-	const serverClass = match.serverClasses[serverClassId];
+	const serverClass = state.serverClasses[serverClassId];
 
-	stream.writeBits(serverClassId, match.classBits);
+	stream.writeBits(serverClassId, getClassBits(state));
 	stream.writeBits(entity.serialNumber || 0, 10);
 
-	const cachedBaseLine = match.baseLineCache.get(serverClass);
+	const cachedBaseLine = state.baseLineCache.get(serverClass);
 	const propsToEncode = cachedBaseLine ? entity.diffFromBaseLine(cachedBaseLine) : entity.props;
 
+	const sendTable = getSendTable(state, serverClass.dataTable);
 
-	encodeEntityUpdate(propsToEncode, match.getSendTable(serverClass.dataTable), stream);
+	encodeEntityUpdate(propsToEncode, sendTable, stream);
 }
 
-function getPacketEntityForExisting(entityId: EntityId, match: Match, pvs: PVS) {
-	const serverClass = match.entityClasses.get(entityId);
+function getPacketEntityForExisting(entityId: EntityId, state: ParserState, pvs: PVS) {
+	const serverClass = state.entityClasses.get(entityId);
 	if (!serverClass) {
 		throw new Error(`"unknown entity ${entityId} for ${PVS[pvs]}(${pvs})`);
 	}
@@ -103,7 +94,7 @@ function getPacketEntityForExisting(entityId: EntityId, match: Match, pvs: PVS) 
 	return new PacketEntity(serverClass, entityId, pvs);
 }
 
-export function ParsePacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
+export function ParsePacketEntities(stream: BitStream, state: ParserState, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -127,25 +118,30 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 			entityId += 1 + diff;
 			const pvs = readPVSType(stream);
 			if (pvs === PVS.ENTER) {
-				const packetEntity = readEnterPVS(stream, entityId, match);
-				const updatedProps = getEntityUpdate(match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				const packetEntity = readEnterPVS(stream, entityId, state);
+				const sendTable = getSendTable(state, packetEntity.serverClass.dataTable);
+				const updatedProps = getEntityUpdate(sendTable, stream);
 				packetEntity.applyPropUpdate(updatedProps);
 
 				if (updatedBaseLine) {
 					// console.log('updated baseline', packetEntity.serverClass.name);
 					const newBaseLine: SendProp[] = [];
 					newBaseLine.concat(packetEntity.props);
-					match.baseLineCache.set(packetEntity.serverClass, packetEntity.clone());
+					state.baseLineCache.set(packetEntity.serverClass, packetEntity.clone());
 				}
 				packetEntity.inPVS = true;
 				receivedEntities.push(packetEntity);
 			} else if (pvs === PVS.PRESERVE) {
-				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
-				const updatedProps = getEntityUpdate(match.getSendTable(packetEntity.serverClass.dataTable), stream);
+				const packetEntity = getPacketEntityForExisting(entityId, state, pvs);
+				const sendTable = state.sendTables.get(packetEntity.serverClass.dataTable);
+				if (!sendTable) {
+					throw new Error(`Unknown sendTable ${packetEntity.serverClass.dataTable}`);
+				}
+				const updatedProps = getEntityUpdate(sendTable, stream);
 				packetEntity.applyPropUpdate(updatedProps);
 				receivedEntities.push(packetEntity);
-			} else if (match.entityClasses.has(entityId)) {
-				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
+			} else if (state.entityClasses.has(entityId)) {
+				const packetEntity = getPacketEntityForExisting(entityId, state, pvs);
 				receivedEntities.push(packetEntity);
 			} else {
 				// throw new Error(`No existing entity to update with id ${entityId}`);
@@ -171,7 +167,7 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 	};
 }
 
-export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitStream, match: Match) {
+export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitStream, state: ParserState) {
 	stream.writeBits(packet.maxEntries, 11);
 	const isDelta = packet.removedEntities.length > 0;
 	stream.writeBoolean(isDelta);
@@ -196,9 +192,10 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 		writePVSType(entity.pvs, stream);
 
 		if (entity.pvs === PVS.ENTER) {
-			writeEnterPVS(entity, stream, match);
+			writeEnterPVS(entity, stream, state);
 		} else if (entity.pvs === PVS.PRESERVE) {
-			encodeEntityUpdate(entity.props, match.getSendTable(entity.serverClass.dataTable), stream);
+			const sendTable = getSendTable(state, entity.serverClass.dataTable);
+			encodeEntityUpdate(entity.props, sendTable, stream);
 		}
 	}
 

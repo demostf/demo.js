@@ -1,11 +1,9 @@
 import {BitStream} from 'bit-buffer';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
-import {EncodeClassInfo, ParseClassInfo} from '../../../../Parser/Packet/ClassInfo';
 import {EncodeGameEvent, ParseGameEvent} from '../../../../Parser/Packet/GameEvent';
 import {GameEventPacket} from '../../../../Data/Packet';
-import {Match} from '../../../../Data/Match';
-import {GameEventTypeIdMap} from '../../../../Data/GameEventTypes';
 import {GameEventValueType} from '../../../../Data/GameEvent';
+import {createParserState} from '../../../../Data/ParserState';
 
 const data = [25, 240, 149, 0, 0];
 const expected = {
@@ -16,8 +14,8 @@ const expected = {
 	}
 };
 
-const match = new Match();
-match.eventDefinitions.set(190, {
+const state = createParserState();
+state.eventDefinitions.set(190, {
 	id: 190,
 	name: 'post_inventory_application',
 	entries: [{
@@ -27,11 +25,11 @@ match.eventDefinitions.set(190, {
 });
 
 const parseEvent = (stream: BitStream) => {
-	return ParseGameEvent(stream, match);
+	return ParseGameEvent(stream, state);
 };
 
 const encodeEvent = (packet: GameEventPacket, stream: BitStream) => {
-	EncodeGameEvent(packet, stream, match);
+	EncodeGameEvent(packet, stream, state);
 };
 
 suite('GameEvent', () => {

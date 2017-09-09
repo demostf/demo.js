@@ -22,8 +22,9 @@ import {Round} from './Round';
 import {Chat} from './Chat';
 import {Packet} from './Packet';
 import {GameEventType} from './GameEventTypes';
+import {ParserState} from './ParserState';
 
-export class Match {
+export class Match implements ParserState {
 	public tick: number = 0;
 	public chat: Chat[] = [];
 	public users: Map<number, UserInfo> = new Map();
@@ -50,23 +51,6 @@ export class Match {
 	public playerResources: PlayerResource[] = [];
 	public stringTables: StringTable[] = [];
 	public serverClasses: ServerClass[] = [];
-
-	public getSendTable(name) {
-		const table = this.sendTables.get(name);
-		if (table) {
-			return table;
-		}
-		throw new Error('unknown SendTable ' + name);
-	}
-
-	public getStringTable(name) {
-		for (const table of this.stringTables) {
-			if (table.name === name) {
-				return table;
-			}
-		}
-		return null;
-	}
 
 	public getState() {
 		const users = {};
@@ -160,18 +144,5 @@ export class Match {
 			}
 		}
 		throw new Error('User not found for entity ' + entity.entityIndex);
-	}
-
-	public getPlayerByUserId(userId: number): Player {
-		for (const player of this.playerEntityMap.values()) {
-			if (player.user.userId === userId) {
-				return player;
-			}
-		}
-		throw new Error('player not found for user id');
-	}
-
-	get classBits() {
-		return Math.ceil(Math.log(this.serverClasses.length) * Math.LOG2E);
 	}
 }
