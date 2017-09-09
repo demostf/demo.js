@@ -27,6 +27,9 @@ export class SendPropParser {
 	}
 
 	public static readInt(propDefinition: SendPropDefinition, stream: BitStream) {
+		if (!propDefinition.hasFlag) {
+			console.log(propDefinition, propDefinition.hasFlag);
+		}
 		if (propDefinition.hasFlag(SendPropFlag.SPROP_VARINT)) {
 			return readVarInt(stream, !propDefinition.hasFlag(SendPropFlag.SPROP_UNSIGNED));
 		} else {

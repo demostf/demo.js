@@ -12,7 +12,7 @@ import {EntityId, PacketEntity} from './PacketEntity';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
 import {SendTable, SendTableName} from './SendTable';
-import {ServerClass} from './ServerClass';
+import {ServerClass, ServerClassId} from './ServerClass';
 import {StringTable} from './StringTable';
 import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
@@ -31,7 +31,7 @@ export class Match {
 	public rounds: Round[] = [];
 	public startTick: number = 0;
 	public intervalPerTick: number = 0;
-	public staticBaseLines: BitStream[] = [];
+	public staticBaseLines: Map<ServerClassId, BitStream> = new Map();
 	public eventDefinitions: Map<number, GameEventDefinition<GameEventType>> = new Map();
 	public world: World = {
 		boundaryMin: {x: 0, y: 0, z: 0},

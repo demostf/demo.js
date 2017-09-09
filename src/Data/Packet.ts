@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from './GameEvent';
-import {PacketEntity} from './PacketEntity';
+import {EntityId, PacketEntity} from './PacketEntity';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
@@ -82,13 +82,10 @@ export interface GameEventListPacket extends BasePacket {
 export interface PacketEntitiesPacket extends BasePacket {
 	packetType: 'packetEntities';
 	entities: PacketEntity[];
-	removedEntities: number[];
+	removedEntities: EntityId[];
 	maxEntries: number;
-	isDelta: boolean;
 	delta: number;
 	baseLine: number;
-	updatedEntries: number;
-	length: number;
 	updatedBaseLine: boolean;
 }
 

@@ -1,4 +1,5 @@
 import {BitStream} from 'bit-buffer';
+import * as assert from 'assert';
 
 export interface EqualOpts {
 	strict?: boolean;

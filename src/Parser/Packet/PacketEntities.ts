@@ -3,20 +3,38 @@ import {Match} from '../../Data/Match';
 import {PacketEntitiesPacket} from '../../Data/Packet';
 import {EntityId, PacketEntity, PVS} from '../../Data/PacketEntity';
 import {SendProp} from '../../Data/SendProp';
-import {getEntityUpdate} from '../EntityDecoder';
-import {readUBitVar} from '../readBitVar';
+import {encodeEntityUpdate, getEntityUpdate} from '../EntityDecoder';
+import {readUBitVar, writeBitVar} from '../readBitVar';
+import {isDate} from 'util';
+import {ServerClass} from '../../Data/ServerClass';
+import {SendTable} from '../../Data/SendTable';
 
-const pvsMap = {
-	0: PVS.PRESERVE,
-	2: PVS.ENTER,
-	1: PVS.LEAVE,
-	3: PVS.LEAVE + PVS.DELETE,
-};
+const pvsMap = new Map([
+	[0, PVS.PRESERVE],
+	[2, PVS.ENTER],
+	[1, PVS.LEAVE],
+	[3, PVS.LEAVE + PVS.DELETE],
+]);
+
+const pvsReverseMap = new Map([
+	[PVS.PRESERVE, 0],
+	[PVS.ENTER, 2],
+	[PVS.LEAVE, 1],
+	[PVS.LEAVE + PVS.DELETE, 3],
+]);
 
 function readPVSType(stream: BitStream): PVS {
 	const pvs = stream.readBits(2);
 	// console.log(pvs);
-	return pvsMap[pvs];
+	return pvsMap.get(pvs) as number;
+}
+
+function writePVSType(pvs: PVS, stream: BitStream) {
+	const raw = pvsReverseMap.get(pvs);
+	if (!raw) {
+		throw new Error(`Unknown pvs ${pvs}`);
+	}
+	stream.writeBits(raw, 2);
 }
 
 function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): PacketEntity {
@@ -36,7 +54,7 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 		if (!sendTable) {
 			throw new Error('Unknown SendTable for serverclass');
 		}
-		const staticBaseLine = match.staticBaseLines[serverClass.id];
+		const staticBaseLine = match.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
 			staticBaseLine.index = 0;
 			const props = getEntityUpdate(sendTable, staticBaseLine);
@@ -52,6 +70,30 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, match: Match): Pack
 	}
 }
 
+/**
+ * @param {PacketEntity} entity
+ * @param {BitStream} stream
+ * @param {Match} match
+ * @returns {SendProp[]} the entities to be encoded
+ */
+function writeEnterPVS(entity: PacketEntity, stream: BitStream, match: Match) {
+	const serverClassId = match.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
+	if (serverClassId === -1) {
+		throw new Error(`Unknown server class ${entity.serverClass.name}(${entity.serverClass.id})`);
+	}
+	// get the instance from the match, not the entity
+	const serverClass = match.serverClasses[serverClassId];
+
+	stream.writeBits(serverClassId, match.classBits);
+	stream.writeBits(entity.serialNumber || 0, 10);
+
+	const cachedBaseLine = match.baseLineCache.get(serverClass);
+	const propsToEncode = cachedBaseLine ? entity.diffFromBaseLine(cachedBaseLine) : entity.props;
+
+
+	encodeEntityUpdate(propsToEncode, match.getSendTable(serverClass.dataTable), stream);
+}
+
 function getPacketEntityForExisting(entityId: EntityId, match: Match, pvs: PVS) {
 	const serverClass = match.entityClasses.get(entityId);
 	if (!serverClass) {
@@ -62,6 +104,7 @@ function getPacketEntityForExisting(entityId: EntityId, match: Match, pvs: PVS) 
 }
 
 export function ParsePacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
+	const s = stream.index;
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -104,6 +147,8 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 			} else if (match.entityClasses.has(entityId)) {
 				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
 				receivedEntities.push(packetEntity);
+			} else {
+				throw new Error(`No existing entity to update with id ${entityId}`);
 			}
 		}
 
@@ -120,11 +165,52 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 		entities: receivedEntities,
 		removedEntities: removedEntityIds,
 		maxEntries,
-		isDelta,
 		delta,
 		baseLine,
-		updatedEntries,
-		length,
 		updatedBaseLine,
 	};
+}
+
+export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitStream, match: Match) {
+	stream.writeBits(packet.maxEntries, 11);
+	const isDelta = packet.removedEntities.length > 0;
+	stream.writeBoolean(isDelta);
+	if (isDelta) {
+		stream.writeInt32(packet.delta);
+	}
+	stream.writeBits(packet.baseLine, 1);
+	stream.writeBits(packet.entities.length, 11);
+
+	const lengthStart = stream.index;
+
+	stream.index += 20;
+	const packetDataStart = stream.index;
+	stream.writeBoolean(packet.updatedBaseLine);
+
+	let lastEntityId = -1;
+
+	for (const entity of packet.entities) {
+		const diff = entity.entityIndex - lastEntityId;
+		lastEntityId = entity.entityIndex;
+		writeBitVar(diff - 1, stream);
+		writePVSType(entity.pvs, stream);
+
+		if (entity.pvs === PVS.ENTER) {
+			writeEnterPVS(entity, stream, match);
+		} else if (entity.pvs === PVS.PRESERVE) {
+			encodeEntityUpdate(entity.props, match.getSendTable(entity.serverClass.dataTable), stream);
+		}
+
+		for (const removedEntity of packet.removedEntities) {
+			stream.writeBoolean(true);
+			stream.writeBits(removedEntity, 11);
+		}
+		stream.writeBoolean(false);
+	}
+
+	const packetDataEnd = stream.index;
+
+	stream.index = lengthStart;
+	stream.writeBits(packetDataEnd - packetDataStart, 20);
+	stream.index = packetDataEnd;
 }

@@ -5,6 +5,7 @@ import {Match} from '../../../../Data/Match';
 import {hydrateEntity, hydrateTable} from './hydrate';
 import {ServerClass} from '../../../../Data/ServerClass';
 import {TempEntitiesPacket} from '../../../../Data/Packet';
+import {readFileSync} from 'fs';
 
 const data = [
 	2,
@@ -29,130 +30,7 @@ const data = [
 	252,
 	95];
 
-const entityData = [
-	{
-		'serverClass': {
-			'id': 164,
-			'name': 'CTEPlayerAnimEvent',
-			'dataTable': 'DT_TEPlayerAnimEvent'
-		},
-		'entityIndex': 0,
-		'props': [
-			{
-				'definition': {
-					'type': 0,
-					'name': 'm_iPlayerIndex',
-					'flags': 1,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 7,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TEPlayerAnimEvent'
-				},
-				'value': 17
-			}
-		],
-		'inPVS': false,
-		'pvs': 1,
-		'delay': 0
-	},
-	{
-		'serverClass': {
-			'id': 178,
-			'name': 'CTETFParticleEffect',
-			'dataTable': 'DT_TETFParticleEffect'
-		},
-		'entityIndex': 0,
-		'props': [
-			{
-				'definition': {
-					'type': 1,
-					'name': 'm_vecOrigin[0]',
-					'flags': 32772,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 32,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TETFParticleEffect'
-				},
-				'value': 1004
-			},
-			{
-				'definition': {
-					'type': 1,
-					'name': 'm_vecOrigin[1]',
-					'flags': 32772,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 32,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TETFParticleEffect'
-				},
-				'value': -2016
-			},
-			{
-				'definition': {
-					'type': 1,
-					'name': 'm_vecOrigin[2]',
-					'flags': 32772,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 32,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TETFParticleEffect'
-				},
-				'value': 561
-			},
-			{
-				'definition': {
-					'type': 0,
-					'name': 'm_iParticleSystemIndex',
-					'flags': 1,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 16,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TETFParticleEffect'
-				},
-				'value': 472
-			},
-			{
-				'definition': {
-					'type': 0,
-					'name': 'entindex',
-					'flags': 1,
-					'excludeDTName': null,
-					'lowValue': 0,
-					'highValue': 0,
-					'bitCount': 11,
-					'table': null,
-					'numElements': 0,
-					'arrayProperty': null,
-					'ownerTableName': 'DT_TETFParticleEffect'
-				},
-				'value': 2047
-			}
-		],
-		'inPVS': false,
-		'pvs': 1,
-		'delay': 0
-	}
-];
+const entityData = JSON.parse(readFileSync(__dirname + '/../../../data/tempEntitiesResult.json', 'utf8'));
 const sendTableData = {
 	'name': 'DT_TEPlayerAnimEvent',
 	'props': [

@@ -15,32 +15,6 @@ function testDemo(name: string, fastMode: boolean = false) {
 	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), target);
 }
 
-function testPackets() {
-	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}_packets.json`, 'utf8'));
-	const source = readFileSync(`${__dirname}/../data/${name}.dem`);
-	const demo = Demo.fromNodeBuffer(source);
-	const parser = demo.getParser(false);
-	parser.readHeader();
-	const match = parser.match;
-
-	const packets: {[tick: string]: Partial<Packet>[]} = {};
-
-	parser.on('packet', (packet: Packet) => {
-		if (!packets[match.tick]) {
-			packets[match.tick] = [];
-		}
-		const packetData = {};
-		for (const key in packet) {
-			if (packet.hasOwnProperty(key) && !(packet[key] instanceof BitStream)) {
-				packetData[key] = packet[key];
-			}
-		}
-		packets[match.tick].push(packetData);
-	});
-
-	assert.deepEqual(JSON.parse(JSON.stringify(packets)), target);
-}
-
 suite('Parse basic demo info', () => {
 	test('Fast mode', () => {
 		testDemo('snakewater', true);

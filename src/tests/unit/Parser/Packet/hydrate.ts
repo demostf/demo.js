@@ -15,15 +15,19 @@ export function hydrateEntity(entityData): PacketEntity {
 		}
 		return prop;
 	});
+	entity.inPVS = entityData.inPVS;
 	if (typeof entityData.delay !== 'undefined') {
 		entity.delay = entityData.delay;
+	}
+	if (typeof entityData.serialNumber !== 'undefined') {
+		entity.serialNumber = entityData.serialNumber;
 	}
 	return entity;
 }
 
 export function propDataDefinition(propData): SendPropDefinition {
 	const prop = new SendPropDefinition(propData.type, propData.name, propData.flags, propData.ownerTableName);
-	prop.arrayProperty = propData.arrayProperty;
+	prop.arrayProperty = propData.arrayProperty ? propDataDefinition(propData.arrayProperty) : null;
 	prop.numElements = propData.numElements;
 	prop.bitCount = propData.bitCount;
 	prop.excludeDTName = propData.excludeDTName;

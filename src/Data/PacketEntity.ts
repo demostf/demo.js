@@ -64,4 +64,11 @@ export class PacketEntity {
 			}
 		}
 	}
+
+	public diffFromBaseLine(baseline: PacketEntity): SendProp[] {
+		return this.props.filter(prop => {
+			const baseProp = baseline.getPropByDefinition(prop.definition);
+			return (!baseProp || prop.value !== baseProp.value);
+		});
+	}
 }

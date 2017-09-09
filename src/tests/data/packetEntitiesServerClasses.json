@@ -1,0 +1,337 @@
+[
+  {
+    "id": 338,
+    "name": "CWorld",
+    "dataTable": "DT_WORLD"
+  },
+  {
+    "id": 241,
+    "name": "CTFPlayer",
+    "dataTable": "DT_TFPlayer"
+  },
+  {
+    "id": 306,
+    "name": "CTFTeam",
+    "dataTable": "DT_TFTeam"
+  },
+  {
+    "id": 243,
+    "name": "CTFPlayerResource",
+    "dataTable": "DT_TFPlayerResource"
+  },
+  {
+    "id": 229,
+    "name": "CTFObjectiveResource",
+    "dataTable": "DT_TFObjectiveResource"
+  },
+  {
+    "id": 84,
+    "name": "CMonsterResource",
+    "dataTable": "DT_MonsterResource"
+  },
+  {
+    "id": 80,
+    "name": "CMannVsMachineStats",
+    "dataTable": "DT_MannVsMachineStats"
+  },
+  {
+    "id": 331,
+    "name": "CVoteController",
+    "dataTable": "DT_VoteController"
+  },
+  {
+    "id": 33,
+    "name": "CDynamicProp",
+    "dataTable": "DT_DynamicProp"
+  },
+  {
+    "id": 79,
+    "name": "CLightGlow",
+    "dataTable": "DT_LightGlow"
+  },
+  {
+    "id": 119,
+    "name": "CSprite",
+    "dataTable": "DT_Sprite"
+  },
+  {
+    "id": 7,
+    "name": "CBaseEntity",
+    "dataTable": "DT_BaseEntity"
+  },
+  {
+    "id": 126,
+    "name": "CTeamRoundTimer",
+    "dataTable": "DT_TeamRoundTimer"
+  },
+  {
+    "id": 127,
+    "name": "CTeamTrainWatcher",
+    "dataTable": "DT_TeamTrainWatcher"
+  },
+  {
+    "id": 1,
+    "name": "CBaseAnimating",
+    "dataTable": "DT_BaseAnimating"
+  },
+  {
+    "id": 92,
+    "name": "CParticleSystem",
+    "dataTable": "DT_ParticleSystem"
+  },
+  {
+    "id": 85,
+    "name": "CObjectCartDispenser",
+    "dataTable": "DT_ObjectCartDispenser"
+  },
+  {
+    "id": 67,
+    "name": "CFuncTrackTrain",
+    "dataTable": "DT_FuncTrackTrain"
+  },
+  {
+    "id": 97,
+    "name": "CPhysicsProp",
+    "dataTable": "DT_PhysicsProp"
+  },
+  {
+    "id": 207,
+    "name": "CTFGameRulesProxy",
+    "dataTable": "DT_TFGameRulesProxy"
+  },
+  {
+    "id": 123,
+    "name": "CSun",
+    "dataTable": "DT_Sun"
+  },
+  {
+    "id": 52,
+    "name": "CFogController",
+    "dataTable": "DT_FogController"
+  },
+  {
+    "id": 114,
+    "name": "CShadowControl",
+    "dataTable": "DT_ShadowControl"
+  },
+  {
+    "id": 46,
+    "name": "CEnvTonemapController",
+    "dataTable": "DT_EnvTonemapController"
+  },
+  {
+    "id": 6,
+    "name": "CBaseDoor",
+    "dataTable": "DT_BaseDoor"
+  },
+  {
+    "id": 113,
+    "name": "CSceneEntity",
+    "dataTable": "DT_SceneEntity"
+  },
+  {
+    "id": 217,
+    "name": "CTFJar",
+    "dataTable": "DT_TFWeaponJar"
+  },
+  {
+    "id": 64,
+    "name": "CFuncRespawnRoomVisualizer",
+    "dataTable": "DT_FuncRespawnRoomVisualizer"
+  },
+  {
+    "id": 289,
+    "name": "CTFShotgun_Pyro",
+    "dataTable": "DT_TFShotgun_Pyro"
+  },
+  {
+    "id": 292,
+    "name": "CTFShotgunBuildingRescue",
+    "dataTable": "DT_TFShotgunBuildingRescue"
+  },
+  {
+    "id": 308,
+    "name": "CTFViewModel",
+    "dataTable": "DT_TFViewModel"
+  },
+  {
+    "id": 212,
+    "name": "CTFGrenadePipebombProjectile",
+    "dataTable": "DT_TFProjectile_Pipebomb"
+  },
+  {
+    "id": 228,
+    "name": "CTFMinigun",
+    "dataTable": "DT_WeaponMinigun"
+  },
+  {
+    "id": 112,
+    "name": "CRopeKeyframe",
+    "dataTable": "DT_RopeKeyframe"
+  },
+  {
+    "id": 60,
+    "name": "CFuncOccluder",
+    "dataTable": "DT_FuncOccluder"
+  },
+  {
+    "id": 54,
+    "name": "CFunc_LOD",
+    "dataTable": "DT_Func_LOD"
+  },
+  {
+    "id": 198,
+    "name": "CTFCrossbow",
+    "dataTable": "DT_Crossbow"
+  },
+  {
+    "id": 323,
+    "name": "CTFWearable",
+    "dataTable": "DT_TFWearable"
+  },
+  {
+    "id": 295,
+    "name": "CTFSniperRifle",
+    "dataTable": "DT_TFSniperRifle"
+  },
+  {
+    "id": 189,
+    "name": "CTFBonesaw",
+    "dataTable": "DT_TFWeaponBonesaw"
+  },
+  {
+    "id": 196,
+    "name": "CTFClub",
+    "dataTable": "DT_TFWeaponClub"
+  },
+  {
+    "id": 293,
+    "name": "CTFShovel",
+    "dataTable": "DT_TFWeaponShovel"
+  },
+  {
+    "id": 337,
+    "name": "CWeaponMedigun",
+    "dataTable": "DT_WeaponMedigun"
+  },
+  {
+    "id": 282,
+    "name": "CTFRocketLauncher",
+    "dataTable": "DT_WeaponRocketLauncher"
+  },
+  {
+    "id": 244,
+    "name": "CTFPowerupBottle",
+    "dataTable": "DT_TFPowerupBottle"
+  },
+  {
+    "id": 118,
+    "name": "CSpotlightEnd",
+    "dataTable": "DT_SpotlightEnd"
+  },
+  {
+    "id": 19,
+    "name": "CBeam",
+    "dataTable": "DT_Beam"
+  },
+  {
+    "id": 221,
+    "name": "CTFLaserPointer",
+    "dataTable": "DT_TFLaserPointer"
+  },
+  {
+    "id": 222,
+    "name": "CTFLunchBox",
+    "dataTable": "DT_WeaponLunchBox"
+  },
+  {
+    "id": 202,
+    "name": "CTFFists",
+    "dataTable": "DT_TFWeaponFists"
+  },
+  {
+    "id": 180,
+    "name": "CTFAmmoPack",
+    "dataTable": "DT_AmmoPack"
+  },
+  {
+    "id": 273,
+    "name": "CTFRagdoll",
+    "dataTable": "DT_TFRagdoll"
+  },
+  {
+    "id": 86,
+    "name": "CObjectDispenser",
+    "dataTable": "DT_ObjectDispenser"
+  },
+  {
+    "id": 204,
+    "name": "CTFFlameThrower",
+    "dataTable": "DT_WeaponFlameThrower"
+  },
+  {
+    "id": 201,
+    "name": "CTFFireAxe",
+    "dataTable": "DT_TFWeaponFireAxe"
+  },
+  {
+    "id": 276,
+    "name": "CTFRevolver",
+    "dataTable": "DT_WeaponRevolver"
+  },
+  {
+    "id": 314,
+    "name": "CTFWeaponBuilder",
+    "dataTable": "DT_TFWeaponBuilder"
+  },
+  {
+    "id": 89,
+    "name": "CObjectTeleporter",
+    "dataTable": "DT_ObjectTeleporter"
+  },
+  {
+    "id": 317,
+    "name": "CTFWeaponPDA_Engineer_Build",
+    "dataTable": "DT_TFWeaponPDA_Engineer_Build"
+  },
+  {
+    "id": 318,
+    "name": "CTFWeaponPDA_Engineer_Destroy",
+    "dataTable": "DT_TFWeaponPDA_Engineer_Destroy"
+  },
+  {
+    "id": 319,
+    "name": "CTFWeaponPDA_Spy",
+    "dataTable": "DT_TFWeaponPDA_Spy"
+  },
+  {
+    "id": 330,
+    "name": "CVGuiScreen",
+    "dataTable": "DT_VGuiScreen"
+  },
+  {
+    "id": 192,
+    "name": "CTFBuffItem",
+    "dataTable": "DT_TFWeaponBuffItem"
+  },
+  {
+    "id": 88,
+    "name": "CObjectSentrygun",
+    "dataTable": "DT_ObjectSentrygun"
+  },
+  {
+    "id": 329,
+    "name": "CTFWrench",
+    "dataTable": "DT_TFWeaponWrench"
+  },
+  {
+    "id": 315,
+    "name": "CTFWeaponInvis",
+    "dataTable": "DT_TFWeaponInvis"
+  },
+  {
+    "id": 220,
+    "name": "CTFKnife",
+    "dataTable": "DT_TFWeaponKnife"
+  }
+]
