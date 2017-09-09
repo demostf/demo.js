@@ -104,7 +104,6 @@ function getPacketEntityForExisting(entityId: EntityId, match: Match, pvs: PVS) 
 }
 
 export function ParsePacketEntities(stream: BitStream, match: Match, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
-	const s = stream.index;
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -133,6 +132,7 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 				packetEntity.applyPropUpdate(updatedProps);
 
 				if (updatedBaseLine) {
+					// console.log('updated baseline', packetEntity.serverClass.name);
 					const newBaseLine: SendProp[] = [];
 					newBaseLine.concat(packetEntity.props);
 					match.baseLineCache.set(packetEntity.serverClass, packetEntity.clone());
@@ -148,7 +148,7 @@ export function ParsePacketEntities(stream: BitStream, match: Match, skip: boole
 				const packetEntity = getPacketEntityForExisting(entityId, match, pvs);
 				receivedEntities.push(packetEntity);
 			} else {
-				throw new Error(`No existing entity to update with id ${entityId}`);
+				// throw new Error(`No existing entity to update with id ${entityId}`);
 			}
 		}
 
@@ -184,8 +184,8 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 	const lengthStart = stream.index;
 
 	stream.index += 20;
-	const packetDataStart = stream.index;
 	stream.writeBoolean(packet.updatedBaseLine);
+	const packetDataStart = stream.index;
 
 	let lastEntityId = -1;
 
@@ -200,7 +200,9 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 		} else if (entity.pvs === PVS.PRESERVE) {
 			encodeEntityUpdate(entity.props, match.getSendTable(entity.serverClass.dataTable), stream);
 		}
+	}
 
+	if (isDelta) {
 		for (const removedEntity of packet.removedEntities) {
 			stream.writeBoolean(true);
 			stream.writeBits(removedEntity, 11);
