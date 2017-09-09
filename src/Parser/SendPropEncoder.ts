@@ -11,32 +11,32 @@ export class SendPropEncoder {
 		switch (propDefinition.type) {
 			case SendPropType.DPT_Int:
 				if (typeof value !== 'number') {
-					throw new Error('Invalid value for DPT_Int');
+					throw new Error(`Invalid value for DPT_Int ${JSON.stringify(value)}`);
 				}
 				return SendPropEncoder.writeInt(value, propDefinition, stream);
 			case SendPropType.DPT_Vector:
 				if (!(value instanceof Vector)) {
-					throw new Error('Invalid value for DPT_Vector');
+					throw new Error(`Invalid value for DPT_Vector ${JSON.stringify(value)}`);
 				}
-				return SendPropEncoder.writeVector(value, propDefinition, stream);
+				return SendPropEncoder.writeVector(value as Vector, propDefinition, stream);
 			case SendPropType.DPT_VectorXY:
 				if (!(value instanceof Vector)) {
-					throw new Error('Invalid value for DPT_Vector');
+					throw new Error(`Invalid value for DPT_VectorXY ${JSON.stringify(value)}`);
 				}
 				return SendPropEncoder.writeVectorXY(value, propDefinition, stream);
 			case SendPropType.DPT_Float:
 				if (typeof value !== 'number') {
-					throw new Error('Invalid value for DPT_Int');
+					throw new Error(`Invalid value for DPT_Float ${JSON.stringify(value)}`);
 				}
 				return SendPropEncoder.writeFloat(value, propDefinition, stream);
 			case SendPropType.DPT_String:
 				if (typeof value !== 'string') {
-					throw new Error('Invalid value for DPT_Int');
+					throw new Error(`Invalid value for DPT_String ${JSON.stringify(value)}`);
 				}
 				return SendPropEncoder.writeString(value, stream);
 			case SendPropType.DPT_Array:
 				if (!Array.isArray(value)) {
-					throw new Error('Invalid value for DPT_Int');
+					throw new Error(`Invalid value for DPT_Array ${JSON.stringify(value)}`);
 				}
 				return SendPropEncoder.writeArray(value, propDefinition, stream);
 		}

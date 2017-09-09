@@ -119,30 +119,30 @@ const sunEntityData = {
 };
 
 suite('PacketEntities', () => {
-	// test('Parse packetEntities', () => {
-	// 	const length = 130435;
-	// 	const stream = getStream(data);
-	// 	const start = stream.index;
-	// 	const resultPacket = parse(stream);
-	// 	assert.equal(stream.index - start, length, 'Unexpected number of bits consumed from stream');
-	//
-	// 	for (let i = 0; i < resultPacket.entities.length; i++) {
-	// 		const resultEntity = resultPacket.entities[i];
-	// 		const expectedEntity = expected.entities[i];
-	// 		if (!deepEqual(resultEntity, expectedEntity)) {
-	// 			for (let i = 0; i < expectedEntity.props.length; i++) {
-	// 				assert.deepEqual(resultEntity.props[i], expectedEntity.props[i], `invalid property #${i} for ${resultEntity.serverClass.name}`);
-	// 			}
-	// 			assert.equal(resultEntity.props.length, expectedEntity.props.length, `Unexpected number of props for ${resultEntity.serverClass.name}`);
-	// 			assert(false, 'Invalid entity ' + resultEntity.serverClass.name);
-	// 		}
-	// 	}
-	// });
+	test('Parse packetEntities', () => {
+		const length = 130435;
+		const stream = getStream(data);
+		const start = stream.index;
+		const resultPacket = parse(stream);
+		assert.equal(stream.index - start, length, 'Unexpected number of bits consumed from stream');
+
+		for (let i = 0; i < resultPacket.entities.length; i++) {
+			const resultEntity = resultPacket.entities[i];
+			const expectedEntity = expected.entities[i];
+			if (!deepEqual(resultEntity, expectedEntity)) {
+				for (let i = 0; i < expectedEntity.props.length; i++) {
+					assert.deepEqual(resultEntity.props[i], expectedEntity.props[i], `invalid property #${i} for ${resultEntity.serverClass.name}`);
+				}
+				assert.equal(resultEntity.props.length, expectedEntity.props.length, `Unexpected number of props for ${resultEntity.serverClass.name}`);
+				assert(false, 'Invalid entity ' + resultEntity.serverClass.name);
+			}
+		}
+	});
 
 	// test('Encode packetEntities', () => {
 	// 	assertEncoder(parse, encode, expected, Math.ceil(data.length / 8));
 	// });
-	//
+
 
 	test('Encode small packetEntities', () => {
 		assertEncoder(parse, encode, {
@@ -166,5 +166,17 @@ suite('PacketEntities', () => {
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData)]
 		}, 259);
+	});
+
+	test('Encode packetEntities only removed', () => {
+		assertEncoder(parse, encode, {
+			packetType: 'packetEntities',
+			removedEntities: [10, 11],
+			updatedBaseLine: false,
+			baseLine: 0,
+			delta: 0,
+			maxEntries: 16,
+			entities: []
+		}, 102);
 	});
 });
