@@ -30,7 +30,7 @@ export class PacketEntity {
 
 	public getPropByDefinition(definition: SendPropDefinition) {
 		for (const prop of this.props) {
-			if (prop.definition === definition) {
+			if (prop.definition.fullName === definition.fullName) {
 				return prop;
 			}
 		}

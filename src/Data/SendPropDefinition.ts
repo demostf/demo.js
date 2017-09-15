@@ -13,7 +13,7 @@ export class SendPropDefinition {
 	public arrayProperty: SendPropDefinition | null;
 	public ownerTableName: string;
 
-	constructor(type, name, flags, ownerTableName) {
+	constructor(type: SendPropType, name: string, flags: number, ownerTableName: string) {
 		this.type = type;
 		this.name = name;
 		this.flags = flags;
