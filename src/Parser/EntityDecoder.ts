@@ -33,6 +33,10 @@ export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stre
 		if (index === -1) {
 			throw new Error(`Unknown definition for property ${prop.definition.fullName} in ${sendTable.name}`);
 		}
+
+		if (index < lastIndex) {
+			throw new Error(`Property index not incremental while encoding ${prop.definition.fullName} in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
+		}
 		writeFieldIndex(index, stream, lastIndex);
 		lastIndex = index;
 
