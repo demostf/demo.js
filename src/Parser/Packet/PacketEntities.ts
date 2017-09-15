@@ -77,10 +77,21 @@ function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserSta
 	stream.writeBits(serverClassId, getClassBits(state));
 	stream.writeBits(entity.serialNumber || 0, 10);
 
-	const cachedBaseLine = state.baseLineCache.get(serverClass);
-	const propsToEncode = cachedBaseLine ? entity.diffFromBaseLine(cachedBaseLine) : entity.props;
-
 	const sendTable = getSendTable(state, serverClass.dataTable);
+
+	let cachedBaseLine = state.baseLineCache.get(serverClass);
+	if (!cachedBaseLine) {
+		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
+		if (staticBaseLine) {
+			cachedBaseLine = new PacketEntity(serverClass, entity.entityIndex, PVS.ENTER);
+			staticBaseLine.index = 0;
+			const props = getEntityUpdate(sendTable, staticBaseLine);
+			cachedBaseLine.applyPropUpdate(props);
+			state.baseLineCache.set(serverClass, cachedBaseLine.clone());
+		}
+	}
+
+	const propsToEncode = cachedBaseLine ? entity.diffFromBaseLine(cachedBaseLine) : entity.props;
 
 	encodeEntityUpdate(propsToEncode, sendTable, stream);
 }
@@ -95,6 +106,9 @@ function getPacketEntityForExisting(entityId: EntityId, state: ParserState, pvs:
 }
 
 export function ParsePacketEntities(stream: BitStream, state: ParserState, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
+	// require('fs').writeFileSync('src/tests/data/packetEntitiesParserState.json', JSON.stringify(state), 'utf8');
+	// process.exit();
+
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -112,7 +126,7 @@ export function ParsePacketEntities(stream: BitStream, state: ParserState, skip:
 	const receivedEntities: PacketEntity[] = [];
 	const removedEntityIds: EntityId[] = [];
 
-	if (!skip) {
+	if (true) {
 		for (let i = 0; i < updatedEntries; i++) {
 			const diff = readUBitVar(stream);
 			entityId += 1 + diff;

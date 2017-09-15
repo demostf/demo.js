@@ -15,6 +15,7 @@ const packetData = JSON.parse(gunzipSync(readFileSync(__dirname + '/../../../dat
 const sendTableData = JSON.parse(gunzipSync(readFileSync(__dirname + '/../../../data/packetEntitiesSendTables.json.gz')).toString('utf8'));
 const serverClassesData = JSON.parse(readFileSync(__dirname + '/../../../data/packetEntitiesServerClasses.json', 'utf8'));
 const baselineData: [number, number[]][] = JSON.parse(readFileSync(__dirname + '/../../../data/packetEntityBaseLines.json', 'utf8'));
+const playerEntityData = JSON.parse(readFileSync(__dirname + '/../../../data/packetEntitiesPlayerEntity.json', 'utf8'));
 
 const expected: PacketEntitiesPacket = {
 	packetType: 'packetEntities',
@@ -26,30 +27,34 @@ const expected: PacketEntitiesPacket = {
 	entities: packetData.entities.map(hydrateEntity)
 };
 
-const state = createParserState();
-state.serverClasses.length = 348;
-for (const serverClass of serverClassesData) {
-	state.serverClasses[serverClass.id] = new ServerClass(serverClass.id, serverClass.name, serverClass.dataTable);
-}
-for (const sendTable of sendTableData) {
-	const table = hydrateTable(sendTable);
-	state.sendTables.set(table.name, table);
-}
+function createTestParserState() {
+	const state = createParserState();
+	state.serverClasses.length = 348;
+	for (const serverClass of serverClassesData) {
+		state.serverClasses[serverClass.id] = new ServerClass(serverClass.id, serverClass.name, serverClass.dataTable);
+	}
+	for (const sendTable of sendTableData) {
+		const table = hydrateTable(sendTable);
+		state.sendTables.set(table.name, table);
+	}
 
-for (const entity of expected.entities) {
-	state.entityClasses.set(entity.entityIndex, entity.serverClass);
-}
+	for (const entity of expected.entities) {
+		state.entityClasses.set(entity.entityIndex, entity.serverClass);
+	}
 
-for (const [serverClassId, baseLine] of baselineData) {
-	state.staticBaseLines.set(serverClassId, getStream(baseLine));
+	for (const [serverClassId, baseLine] of baselineData) {
+		state.staticBaseLines.set(serverClassId, getStream(baseLine));
+	}
+
+	return state;
 }
 
 function parse(stream: BitStream) {
-	return ParsePacketEntities(stream, state);
+	return ParsePacketEntities(stream, createTestParserState());
 }
 
 function encode(value: PacketEntitiesPacket, stream: BitStream) {
-	EncodePacketEntities(value, stream, state);
+	EncodePacketEntities(value, stream, createTestParserState());
 }
 
 const sunEntityData = {
@@ -144,7 +149,11 @@ suite('PacketEntities', () => {
 	// });
 
 	// test('Encode packetEntities', () => {
-	// 	assertEncoder(parse, encode, expected, Math.ceil(data.length / 8));
+	// 	const toEncode = {...expected};
+	// 	const entity = toEncode.entities[1];
+	// 	// entity.props = [entity.props[0]];
+	// 	toEncode.entities = [entity];
+	// 	assertEncoder(parse, encode, toEncode, 11266);
 	// });
 
 
@@ -182,5 +191,31 @@ suite('PacketEntities', () => {
 			maxEntries: 16,
 			entities: []
 		}, 102);
+	});
+
+	test('Encode multiple packetEntities', () => {
+		const secondEntity = {...sunEntityData};
+		secondEntity.entityIndex++;
+		assertEncoder(parse, encode, {
+			packetType: 'packetEntities',
+			removedEntities: [],
+			updatedBaseLine: false,
+			baseLine: 0,
+			delta: 0,
+			maxEntries: 16,
+			entities: [hydrateEntity(sunEntityData), hydrateEntity(secondEntity)]
+		}, 351);
+	});
+
+	test('Encode player packetEntities', () => {
+		assertEncoder(parse, encode, {
+			packetType: 'packetEntities',
+			removedEntities: [],
+			updatedBaseLine: false,
+			baseLine: 0,
+			delta: 0,
+			maxEntries: 16,
+			entities: [hydrateEntity(playerEntityData)]
+		}, 3576);
 	});
 });
