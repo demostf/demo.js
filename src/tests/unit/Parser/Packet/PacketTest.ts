@@ -17,7 +17,7 @@ export function getStream(data: string | number[]) {
 export type Encoder = (data: any, stream: BitStream) => void;
 
 export function assertEncoder(parser: Parser, encoder: Encoder, data: any, length: number = 0, message: string = '') {
-	const stream = new BitStream(new ArrayBuffer(Math.max(64, (length + 1) * 8)));
+	const stream = new BitStream(new ArrayBuffer(Math.max(64000, (length + 1) * 8)));
 
 	encoder(data as Packet, stream);
 
