@@ -17,11 +17,6 @@ function writeEntities(name: string) {
 
 	const writeStream = createWriteStream(targetFile, 'utf8');
 
-	let index = 0;
-
-	const raw = new PassThrough();
-	raw.pipe(createGunzip()).pipe(writeStream);
-
 	parser.on('packet', (packet: Packet) => {
 		if (packet.packetType === 'packetEntities') {
 			for (const entity of packet.entities) {
@@ -29,20 +24,19 @@ function writeEntities(name: string) {
 				for (const prop of entity.props) {
 					entityProps[`${prop.definition.name}`] = prop.value;
 				}
-				raw.write(JSON.stringify({
+				writeStream.write(JSON.stringify({
 					tick: match.tick,
 					serverClass: entity.serverClass.name,
 					id: entity.entityIndex,
 					props: entityProps,
 					pvs: entity.pvs
 				}) + '\n');
-				index++;
 			}
 		}
 	});
 	parser.parseBody();
 
-	raw.end();
+	writeStream.end();
 }
 
 function testEntities(name: string, entityCount: number) {
@@ -91,7 +85,7 @@ function testEntities(name: string, entityCount: number) {
 				parseEntities();
 			}
 			const result = resultData.shift();
-			assert.deepEqual(data, result);
+			assert.deepEqual(data, result, `Failed asserting that packet ${parsed} is the same`);
 			parsed++;
 		}).on('end', () => {
 			assert.equal(resultData.length, 0, 'Entities left to be checked');

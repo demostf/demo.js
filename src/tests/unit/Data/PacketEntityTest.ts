@@ -54,6 +54,6 @@ suite('PacketEntity', () => {
 		const baseLine = hydrateEntity(playerBaseLineData);
 		const entity = hydrateEntity(playerEntityData);
 
-		assert.deepEqual(entity.diffFromBaseLine(baseLine.props).length, 75);
+		assert.deepEqual(entity.diffFromBaseLine(baseLine.props).length, 96);
 	});
 });

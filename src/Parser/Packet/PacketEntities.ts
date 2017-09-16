@@ -97,6 +97,8 @@ function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserSta
 
 	const propsToEncode = instanceBaseLine ? entity.diffFromBaseLine(instanceBaseLine) : entity.props;
 
+	// console.log(propsToEncode.map(prop => `${prop.definition.name}: ${prop.value}`));
+
 	const allProps = sendTable.flattenedProps;
 	propsToEncode.sort((a, b) => allProps.findIndex(propDef => propDef.fullName === a.definition.fullName) -
 		allProps.findIndex(propDef => propDef.fullName === b.definition.fullName));
