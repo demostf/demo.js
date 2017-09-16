@@ -67,7 +67,7 @@ export class PacketEntity {
 			if (existingProp) {
 				existingProp.value = prop.value;
 			} else {
-				this.props.push(prop);
+				this.props.push(prop.clone());
 			}
 		}
 	}

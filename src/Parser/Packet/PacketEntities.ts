@@ -52,16 +52,13 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 	} else {
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
-			const cachedBaseline = state.staticBaselineCache.get(serverClass.id);
-			if (cachedBaseline) {
-				entity.applyPropUpdate(cachedBaseline);
-			} else {
+			let baseline = state.staticBaselineCache.get(serverClass.id);
+			if (!baseline) {
 				staticBaseLine.index = 0;
-				const props = getEntityUpdate(sendTable, staticBaseLine);
-				entity.applyPropUpdate(props);
-				// TODO: cache
-				// state.staticBaselineCache.set(serverClass.id, props.map(prop => prop.clone()));
+				baseline = getEntityUpdate(sendTable, staticBaseLine);
+				state.staticBaselineCache.set(serverClass.id, baseline);
 			}
+			entity.applyPropUpdate(baseline);
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
