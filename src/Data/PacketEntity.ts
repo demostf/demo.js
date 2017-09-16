@@ -28,7 +28,7 @@ export class PacketEntity {
 		this.pvs = pvs;
 	}
 
-	private static getPropByFullName(props: SendProp[], fullName: string): SendProp | null {
+	public static getPropByFullName(props: SendProp[], fullName: string): SendProp | null {
 		for (const prop of props) {
 			if (prop.definition.fullName === fullName) {
 				return prop;
@@ -56,7 +56,9 @@ export class PacketEntity {
 			result.props.push(prop.clone());
 		}
 		result.serialNumber = this.serialNumber;
-		result.delay = this.delay;
+		if (this.delay) {
+			result.delay = this.delay;
+		}
 		result.inPVS = this.inPVS;
 		return result;
 	}

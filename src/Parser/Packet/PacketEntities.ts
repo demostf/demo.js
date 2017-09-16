@@ -34,7 +34,7 @@ function writePVSType(pvs: PVS, stream: BitStream) {
 	stream.writeBits(raw, 2);
 }
 
-function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState, baseLine: number): PacketEntity {
+function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState, baseLineIndex: number): PacketEntity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	const classBits = getClassBits(state);
 	const serverClass = state.serverClasses[stream.readBits(classBits)];
@@ -42,7 +42,7 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 
 	const sendTable = getSendTable(state, serverClass.dataTable);
 
-	const instanceBaseline = state.instanceBaselines[baseLine].get(entityId);
+	const instanceBaseline = state.instanceBaselines[baseLineIndex].get(entityId);
 	const entity = new PacketEntity(serverClass, entityId, PVS.ENTER);
 	entity.serialNumber = serial;
 	if (instanceBaseline) {
@@ -52,23 +52,24 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 	} else {
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
-			let baseline = state.staticBaselineCache.get(serverClass.id);
-			if (!baseline) {
+			let parsedBaseLine = state.staticBaselineCache.get(serverClass.id);
+			if (!parsedBaseLine) {
 				staticBaseLine.index = 0;
-				baseline = getEntityUpdate(sendTable, staticBaseLine);
-				state.staticBaselineCache.set(serverClass.id, baseline);
+				parsedBaseLine = getEntityUpdate(sendTable, staticBaseLine);
+				state.staticBaselineCache.set(serverClass.id, parsedBaseLine);
 			}
-			entity.applyPropUpdate(baseline);
+			entity.applyPropUpdate(parsedBaseLine);
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
 			// }
 		}
+
 		return entity;
 	}
 }
 
-function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState, baseLine: number) {
+function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState, baseLineIndex: number) {
 	const serverClassId = state.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
 	if (serverClassId === -1) {
 		throw new Error(`Unknown server class ${entity.serverClass.name}(${entity.serverClass.id})`);
@@ -81,19 +82,20 @@ function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserSta
 
 	const sendTable = getSendTable(state, serverClass.dataTable);
 
-	let instanceBaseLine = state.instanceBaselines[baseLine].get(entity.entityIndex);
+	let instanceBaseLine = state.instanceBaselines[baseLineIndex].get(entity.entityIndex);
 	if (!instanceBaseLine) {
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
-			staticBaseLine.index = 0;
-			instanceBaseLine = getEntityUpdate(sendTable, staticBaseLine);
-			// state.instanceBaselines.set(serverClass, instanceBaseLine.clone());
+			instanceBaseLine = state.staticBaselineCache.get(serverClass.id);
+			if (!instanceBaseLine) {
+				staticBaseLine.index = 0;
+				instanceBaseLine = getEntityUpdate(sendTable, staticBaseLine);
+				state.staticBaselineCache.set(serverClass.id, instanceBaseLine);
+			}
 		}
 	}
 
 	const propsToEncode = instanceBaseLine ? entity.diffFromBaseLine(instanceBaseLine) : entity.props;
-
-	// console.log(propsToEncode.map(prop => `${prop.definition.name}: ${prop.value}`));
 
 	const allProps = sendTable.flattenedProps;
 	propsToEncode.sort((a, b) => allProps.findIndex(propDef => propDef.fullName === a.definition.fullName) -
@@ -112,9 +114,6 @@ function getPacketEntityForExisting(entityId: EntityId, state: ParserState, pvs:
 }
 
 export function ParsePacketEntities(stream: BitStream, state: ParserState, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
-	// require('fs').writeFileSync('src/tests/data/packetEntitiesParserState.json', JSON.stringify(state), 'utf8');
-	// process.exit();
-
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs

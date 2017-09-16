@@ -124,35 +124,32 @@ const sunEntityData = {
 };
 
 suite('PacketEntities', () => {
-	// test('Parse packetEntities', () => {
-	// 	const length = 130435;
-	// 	const stream = getStream(data);
-	// 	const start = stream.index;
-	// 	const resultPacket = parse(stream);
-	// 	assert.equal(stream.index - start, length, 'Unexpected number of bits consumed from stream');
-	//
-	// 	for (let i = 0; i < resultPacket.entities.length; i++) {
-	// 		const resultEntity = resultPacket.entities[i];
-	// 		const expectedEntity = expected.entities[i];
-	// 		assert.deepEqual(expectedEntity.serverClass, resultEntity.serverClass);
-	// 		assert.equal(expectedEntity.serialNumber, resultEntity.serialNumber);
-	// 		assert.equal(expectedEntity.entityIndex, resultEntity.entityIndex);
-	// 		if (!deepEqual(resultEntity, expectedEntity)) {
-	// 			for (let i = 0; i < expectedEntity.props.length; i++) {
-	// 				console.log(resultEntity.getPropByDefinition(expectedEntity.props[i].definition),expectedEntity.props[i].definition);
-	// 				assert.deepEqual(resultEntity.getPropByDefinition(expectedEntity.props[i].definition), expectedEntity.props[i], `invalid property #${i} for ${resultEntity.serverClass.name}`);
-	// 			}
-	// 			assert.equal(resultEntity.props.length, expectedEntity.props.length, `Unexpected number of props for ${resultEntity.serverClass.name}`);
-	// 			assert(false, 'Invalid entity ' + resultEntity.serverClass.name);
-	// 		}
-	// 	}
-	// });
+	test('Parse packetEntities', () => {
+		const length = 130435;
+		const stream = getStream(data);
+		const start = stream.index;
+		const resultPacket = parse(stream);
+		assert.equal(stream.index - start, length, 'Unexpected number of bits consumed from stream');
+
+		for (let i = 0; i < resultPacket.entities.length; i++) {
+			const resultEntity = resultPacket.entities[i];
+			const expectedEntity = expected.entities[i];
+			assert.deepEqual(expectedEntity.serverClass, resultEntity.serverClass);
+			assert.equal(expectedEntity.serialNumber, resultEntity.serialNumber);
+			assert.equal(expectedEntity.entityIndex, resultEntity.entityIndex);
+			if (!deepEqual(resultEntity, expectedEntity)) {
+				for (let i = 0; i < expectedEntity.props.length; i++) {
+					console.log(resultEntity.getPropByDefinition(expectedEntity.props[i].definition),expectedEntity.props[i].definition);
+					assert.deepEqual(resultEntity.getPropByDefinition(expectedEntity.props[i].definition), expectedEntity.props[i], `invalid property #${i} for ${resultEntity.serverClass.name}`);
+				}
+				assert.equal(resultEntity.props.length, expectedEntity.props.length, `Unexpected number of props for ${resultEntity.serverClass.name}`);
+				assert(false, 'Invalid entity ' + resultEntity.serverClass.name);
+			}
+		}
+	});
 
 	test('Encode packetEntities', () => {
 		const toEncode = {...expected};
-		// entity.props.map(prop => console.log(`${prop.definition.fullName}: ${prop.value}`));
-		// entity.props = [entity.props[0]];
-		toEncode.entities = toEncode.entities.slice(281, 282);
 		assertEncoder(parse, encode, toEncode, 0);
 	});
 

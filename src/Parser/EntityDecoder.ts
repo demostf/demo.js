@@ -8,7 +8,7 @@ import {SendPropEncoder} from './SendPropEncoder';
 export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendProp[] {
 	let index = -1;
 	const allProps = sendTable.flattenedProps;
-	const props: SendProp[] = [];
+	const props: Map<string, SendProp> = new Map();
 	while (stream.readBoolean()) {
 		index = readFieldIndex(stream, index);
 		if (index >= 4096 || index > allProps.length) {
@@ -19,9 +19,9 @@ export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendPr
 		const propDefinition = allProps[index];
 		const prop = new SendProp(propDefinition);
 		prop.value = SendPropParser.decode(propDefinition, stream);
-		props.push(prop);
+		props.set(propDefinition.fullName, prop);
 	}
-	return props;
+	return Array.from(props.values());
 }
 
 export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stream: BitStream) {
