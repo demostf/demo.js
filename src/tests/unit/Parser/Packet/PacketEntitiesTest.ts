@@ -148,13 +148,13 @@ suite('PacketEntities', () => {
 	// 	}
 	// });
 
-	// test('Encode packetEntities', () => {
-	// 	const toEncode = {...expected};
-	// 	const entity = toEncode.entities[1];
-	// 	// entity.props = [entity.props[0]];
-	// 	toEncode.entities = [entity];
-	// 	assertEncoder(parse, encode, toEncode, 11266);
-	// });
+	test('Encode packetEntities', () => {
+		const toEncode = {...expected};
+		// entity.props.map(prop => console.log(`${prop.definition.fullName}: ${prop.value}`));
+		// entity.props = [entity.props[0]];
+		toEncode.entities = toEncode.entities.slice(281, 282);
+		assertEncoder(parse, encode, toEncode, 0);
+	});
 
 
 	test('Encode small packetEntities', () => {
@@ -166,7 +166,7 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData)]
-		}, 202);
+		}, 124);
 	});
 
 	test('Encode small packetEntities with removed', () => {
@@ -178,7 +178,7 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData)]
-		}, 259);
+		}, 181);
 	});
 
 	test('Encode packetEntities only removed', () => {
@@ -204,7 +204,7 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData), hydrateEntity(secondEntity)]
-		}, 351);
+		}, 195);
 	});
 
 	test('Encode player packetEntities', () => {

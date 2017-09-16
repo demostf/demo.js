@@ -34,7 +34,7 @@ function writePVSType(pvs: PVS, stream: BitStream) {
 	stream.writeBits(raw, 2);
 }
 
-function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState): PacketEntity {
+function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState, baseLine: number): PacketEntity {
 	// https://github.com/PazerOP/DemoLib/blob/5f9467650f942a4a70f9ec689eadcd3e0a051956/TF2Net/NetMessages/NetPacketEntitiesMessage.cs#L198
 	const classBits = getClassBits(state);
 	const serverClass = state.serverClasses[stream.readBits(classBits)];
@@ -42,31 +42,36 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState)
 
 	const sendTable = getSendTable(state, serverClass.dataTable);
 
-	const cachedBaseLine = state.baseLineCache.get(serverClass);
-	if (cachedBaseLine) {
-		const result = cachedBaseLine.clone();
-		result.entityIndex = entityId;
-		result.serialNumber = serial;
+	const instanceBaseline = state.instanceBaselines[baseLine].get(entityId);
+	const entity = new PacketEntity(serverClass, entityId, PVS.ENTER);
+	entity.serialNumber = serial;
+	if (instanceBaseline) {
+		const result = entity.clone();
+		result.applyPropUpdate(instanceBaseline);
 		return result;
 	} else {
-		const entity = new PacketEntity(serverClass, entityId, PVS.ENTER);
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
-			staticBaseLine.index = 0;
-			const props = getEntityUpdate(sendTable, staticBaseLine);
-			entity.applyPropUpdate(props);
-			state.baseLineCache.set(serverClass, entity.clone());
+			const cachedBaseline = state.staticBaselineCache.get(serverClass.id);
+			if (cachedBaseline) {
+				entity.applyPropUpdate(cachedBaseline);
+			} else {
+				staticBaseLine.index = 0;
+				const props = getEntityUpdate(sendTable, staticBaseLine);
+				entity.applyPropUpdate(props);
+				// TODO: cache
+				// state.staticBaselineCache.set(serverClass.id, props.map(prop => prop.clone()));
+			}
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
 			// }
 		}
-		entity.serialNumber = serial;
 		return entity;
 	}
 }
 
-function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState) {
+function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState, baseLine: number) {
 	const serverClassId = state.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
 	if (serverClassId === -1) {
 		throw new Error(`Unknown server class ${entity.serverClass.name}(${entity.serverClass.id})`);
@@ -79,19 +84,23 @@ function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserSta
 
 	const sendTable = getSendTable(state, serverClass.dataTable);
 
-	let cachedBaseLine = state.baseLineCache.get(serverClass);
-	if (!cachedBaseLine) {
+	let instanceBaseLine = state.instanceBaselines[baseLine].get(entity.entityIndex);
+	if (!instanceBaseLine) {
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
-			cachedBaseLine = new PacketEntity(serverClass, entity.entityIndex, PVS.ENTER);
 			staticBaseLine.index = 0;
-			const props = getEntityUpdate(sendTable, staticBaseLine);
-			cachedBaseLine.applyPropUpdate(props);
-			state.baseLineCache.set(serverClass, cachedBaseLine.clone());
+			instanceBaseLine = getEntityUpdate(sendTable, staticBaseLine);
+			// state.instanceBaselines.set(serverClass, instanceBaseLine.clone());
 		}
 	}
 
-	const propsToEncode = cachedBaseLine ? entity.diffFromBaseLine(cachedBaseLine) : entity.props;
+	const propsToEncode = instanceBaseLine ? entity.diffFromBaseLine(instanceBaseLine) : entity.props;
+
+	// console.log(propsToEncode.map(prop => `${prop.definition.name}: ${prop.value}`));
+
+	const allProps = sendTable.flattenedProps;
+	propsToEncode.sort((a, b) => allProps.findIndex(propDef => propDef.fullName === a.definition.fullName) -
+		allProps.findIndex(propDef => propDef.fullName === b.definition.fullName));
 
 	encodeEntityUpdate(propsToEncode, sendTable, stream);
 }
@@ -126,22 +135,24 @@ export function ParsePacketEntities(stream: BitStream, state: ParserState, skip:
 	const receivedEntities: PacketEntity[] = [];
 	const removedEntityIds: EntityId[] = [];
 
-	if (true) {
+	if (!skip) {
+		if (updatedBaseLine) {
+			state.instanceBaselines[1 - baseLine] = new Map(state.instanceBaselines[baseLine]);
+			// state.instanceBaselines[baseLine] = new Map();
+		}
+
 		for (let i = 0; i < updatedEntries; i++) {
 			const diff = readUBitVar(stream);
 			entityId += 1 + diff;
 			const pvs = readPVSType(stream);
 			if (pvs === PVS.ENTER) {
-				const packetEntity = readEnterPVS(stream, entityId, state);
+				const packetEntity = readEnterPVS(stream, entityId, state, baseLine);
 				const sendTable = getSendTable(state, packetEntity.serverClass.dataTable);
 				const updatedProps = getEntityUpdate(sendTable, stream);
 				packetEntity.applyPropUpdate(updatedProps);
 
 				if (updatedBaseLine) {
-					// console.log('updated baseline', packetEntity.serverClass.name);
-					const newBaseLine: SendProp[] = [];
-					newBaseLine.concat(packetEntity.props);
-					state.baseLineCache.set(packetEntity.serverClass, packetEntity.clone());
+					state.instanceBaselines[1 - baseLine].set(entityId, packetEntity.clone().props);
 				}
 				packetEntity.inPVS = true;
 				receivedEntities.push(packetEntity);
@@ -199,6 +210,11 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 
 	let lastEntityId = -1;
 
+	if (packet.updatedBaseLine) {
+		state.instanceBaselines[1 - packet.baseLine] = new Map(state.instanceBaselines[packet.baseLine]);
+		// state.instanceBaselines[baseLine] = new Map();
+	}
+
 	for (const entity of packet.entities) {
 		const diff = entity.entityIndex - lastEntityId;
 		lastEntityId = entity.entityIndex;
@@ -206,7 +222,11 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 		writePVSType(entity.pvs, stream);
 
 		if (entity.pvs === PVS.ENTER) {
-			writeEnterPVS(entity, stream, state);
+			if (packet.updatedBaseLine) {
+				state.instanceBaselines[1 - packet.baseLine].set(entity.entityIndex, entity.clone().props);
+			}
+
+			writeEnterPVS(entity, stream, state, packet.baseLine);
 		} else if (entity.pvs === PVS.PRESERVE) {
 			const sendTable = getSendTable(state, entity.serverClass.dataTable);
 			encodeEntityUpdate(entity.props, sendTable, stream);

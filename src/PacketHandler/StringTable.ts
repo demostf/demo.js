@@ -60,7 +60,9 @@ function saveUserData(userData: StringTableEntry, match: Match) {
 
 function saveInstanceBaseLine(entry: StringTableEntry, match: Match) {
 	if (entry.extraData) {
-		match.staticBaseLines.set(parseInt(entry.text, 10), entry.extraData);
+		const serverClassId = parseInt(entry.text, 10);
+		match.staticBaselineCache.delete(serverClassId);
+		match.staticBaseLines.set(serverClassId, entry.extraData);
 	} else {
 		throw new Error('Missing baseline');
 	}

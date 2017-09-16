@@ -23,6 +23,7 @@ import {Chat} from './Chat';
 import {Packet} from './Packet';
 import {GameEventType} from './GameEventTypes';
 import {ParserState} from './ParserState';
+import {SendProp} from './SendProp';
 
 export class Match implements ParserState {
 	public tick: number = 0;
@@ -33,6 +34,7 @@ export class Match implements ParserState {
 	public startTick: number = 0;
 	public intervalPerTick: number = 0;
 	public staticBaseLines: Map<ServerClassId, BitStream> = new Map();
+	public staticBaselineCache: Map<ServerClassId, SendProp[]> = new Map();
 	public eventDefinitions: Map<number, GameEventDefinition<GameEventType>> = new Map();
 	public world: World = {
 		boundaryMin: {x: 0, y: 0, z: 0},
@@ -41,7 +43,7 @@ export class Match implements ParserState {
 	public playerEntityMap: Map<EntityId, Player> = new Map();
 	public entityClasses: Map<EntityId, ServerClass> = new Map();
 	public sendTables: Map<SendTableName, SendTable> = new Map();
-	public baseLineCache: Map<ServerClass, PacketEntity> = new Map();
+	public instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>] = [new Map(), new Map()];
 	public weaponMap: Map<EntityId, Weapon> = new Map();
 	public outerMap: Map<number, EntityId> = new Map();
 	public teams: Map<TeamNumber, Team> = new Map();

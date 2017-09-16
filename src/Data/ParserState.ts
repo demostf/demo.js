@@ -5,16 +5,18 @@ import {SendTable, SendTableName} from './SendTable';
 import {ServerClass, ServerClassId} from './ServerClass';
 import {StringTable} from './StringTable';
 import {GameEventType} from './GameEventTypes';
+import {SendProp} from './SendProp';
 
 export interface ParserState {
 	staticBaseLines: Map<ServerClassId, BitStream>;
+	staticBaselineCache: Map<ServerClassId, SendProp[]>;
 	eventDefinitions: Map<number, GameEventDefinition<GameEventType>>;
 	entityClasses: Map<EntityId, ServerClass>;
 	sendTables: Map<SendTableName, SendTable>;
 	version: number;
 	stringTables: StringTable[];
 	serverClasses: ServerClass[];
-	baseLineCache: Map<ServerClass, PacketEntity>;
+	instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>];
 }
 
 export function getClassBits(state: ParserState) {
@@ -32,13 +34,14 @@ export function getSendTable(state: ParserState, dataTable: string): SendTable {
 export function createParserState(): ParserState {
 	return {
 		staticBaseLines: new Map(),
+		staticBaselineCache: new Map(),
 		eventDefinitions: new Map(),
 		entityClasses: new Map(),
 		sendTables: new Map(),
 		version: 0,
 		stringTables: [],
 		serverClasses: [],
-		baseLineCache: new Map()
+		instanceBaselines: [new Map(), new Map()]
 	};
 }
 

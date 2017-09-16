@@ -1,4 +1,4 @@
-import {SendProp} from './SendProp';
+import {SendProp, SendPropValue} from './SendProp';
 import {SendPropDefinition} from './SendPropDefinition';
 import {ServerClass} from './ServerClass';
 
@@ -28,13 +28,17 @@ export class PacketEntity {
 		this.pvs = pvs;
 	}
 
-	public getPropByDefinition(definition: SendPropDefinition) {
-		for (const prop of this.props) {
-			if (prop.definition.fullName === definition.fullName) {
+	private static getPropByFullName(props: SendProp[], fullName: string): SendProp | null {
+		for (const prop of props) {
+			if (prop.definition.fullName === fullName) {
 				return prop;
 			}
 		}
 		return null;
+	}
+
+	public getPropByDefinition(definition: SendPropDefinition) {
+		return PacketEntity.getPropByFullName(this.props, definition.fullName);
 	}
 
 	public getProperty(originTable: string, name: string) {
@@ -51,6 +55,9 @@ export class PacketEntity {
 		for (const prop of this.props) {
 			result.props.push(prop.clone());
 		}
+		result.serialNumber = this.serialNumber;
+		result.delay = this.delay;
+		result.inPVS = this.inPVS;
 		return result;
 	}
 
@@ -65,10 +72,15 @@ export class PacketEntity {
 		}
 	}
 
-	public diffFromBaseLine(baseline: PacketEntity): SendProp[] {
+	public diffFromBaseLine(baselineProps: SendProp[]): SendProp[] {
 		return this.props.filter(prop => {
-			const baseProp = baseline.getPropByDefinition(prop.definition);
+			const baseProp = PacketEntity.getPropByFullName(baselineProps, prop.definition.fullName);
 			return (!baseProp || prop.value !== baseProp.value);
 		});
+	}
+
+	public getPropValue(fullName: string): SendPropValue | null {
+		const prop = PacketEntity.getPropByFullName(this.props, fullName);
+		return prop ? prop.value : null;
 	}
 }

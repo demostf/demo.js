@@ -35,7 +35,7 @@ export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stre
 		}
 
 		if (index < lastIndex) {
-			throw new Error(`Property index not incremental while encoding ${prop.definition.fullName} in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
+			throw new Error(`Property index not incremental while encoding ${prop.definition.fullName} after ${allProps[lastIndex].fullName} in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
 		}
 		writeFieldIndex(index, stream, lastIndex);
 		lastIndex = index;

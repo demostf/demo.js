@@ -38,7 +38,6 @@ const definition2 = propDataDefinition({
 
 suite('PacketEntity', () => {
 	test('baseLine diff', () => {
-		const baseLine = new PacketEntity(serverClass, 123, PVS.ENTER);
 		const entity = new PacketEntity(serverClass, 123, PVS.ENTER);
 		const prop1 = new SendProp(definition1);
 		prop1.value = 0.03125023842039809;
@@ -46,16 +45,15 @@ suite('PacketEntity', () => {
 		prop2.value = 0;
 		const prop3 = new SendProp(definition2);
 		prop3.value = 0.03125023842039809;
-		baseLine.props = [prop1, prop2];
 		entity.props = [prop1, prop3];
 
-		assert.deepEqual(entity.diffFromBaseLine(baseLine), [prop3]);
+		assert.deepEqual(entity.diffFromBaseLine([prop1, prop2]), [prop3]);
 	});
 
 	test('baseLine diff player', () => {
 		const baseLine = hydrateEntity(playerBaseLineData);
 		const entity = hydrateEntity(playerEntityData);
 
-		assert.deepEqual(entity.diffFromBaseLine(baseLine).length, 75);
+		assert.deepEqual(entity.diffFromBaseLine(baseLine.props).length, 75);
 	});
 });
