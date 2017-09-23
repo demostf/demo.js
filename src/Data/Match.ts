@@ -36,7 +36,11 @@ export class Match {
 	public teamEntityMap: Map<EntityId, Team> = new Map();
 	public buildings: Map<EntityId, Building> = new Map();
 	public playerResources: PlayerResource[] = [];
-	public readonly parserState: ParserState = new ParserState();
+	public readonly parserState: ParserState;
+
+	constructor(parserState: ParserState) {
+		this.parserState = parserState;
+	}
 
 	public getState() {
 		const users = {};

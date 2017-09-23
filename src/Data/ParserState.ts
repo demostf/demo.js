@@ -13,6 +13,7 @@ import {
 } from '../PacketHandler/StringTable';
 import {handleGameEventList} from '../PacketHandler/GameEventList';
 import {DataTablesMessage, Message, MessageType, StringTablesMessage} from './Message';
+import {handlePacketEntitiesForState} from '../PacketHandler/PacketEntities';
 
 export class ParserState {
 	public version: number = 0;
@@ -43,6 +44,9 @@ export class ParserState {
 				break;
 			case 'gameEventList':
 				handleGameEventList(packet, this);
+				break;
+			case 'packetEntities':
+				handlePacketEntitiesForState(packet, this);
 				break;
 		}
 	}

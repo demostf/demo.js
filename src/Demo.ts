@@ -1,6 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {Parser} from './Parser';
 import {PacketTypeId} from './Data/Packet';
+import {Analyser} from './Analyser';
 
 export class Demo {
 	public static fromNodeBuffer(nodeBuffer) {
@@ -30,5 +31,9 @@ export class Demo {
 			this.parser = new Parser(this.stream, skippedPackets);
 		}
 		return this.parser;
+	}
+
+	public getAnalyser(fastMode: boolean = false) {
+		return new Analyser(this.getParser(fastMode));
 	}
 }

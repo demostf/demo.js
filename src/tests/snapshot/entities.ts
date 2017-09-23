@@ -6,37 +6,57 @@ import {BitStream} from 'bit-buffer';
 import * as split2 from 'split2';
 import {createUnzip, createGunzip} from 'zlib';
 import {PassThrough} from 'stream';
+import {EntityId, PVS} from '../../Data/PacketEntity';
+import {SendPropValue} from '../../Data/SendProp';
+
+interface ResultData {
+	tick: number,
+	serverClass: string,
+	id: EntityId,
+	props: {[propName: string]: SendPropValue},
+	pvs: PVS
+}
 
 function writeEntities(name: string) {
 	const targetFile = `${__dirname}/../data/${name}_entities.json`;
 	const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 	const demo = Demo.fromNodeBuffer(source);
 	const parser = demo.getParser(false);
-	parser.readHeader();
-	const match = parser.match;
+
+	const resultData = getResultData(parser.getPackets());
 
 	const writeStream = createWriteStream(targetFile, 'utf8');
 
-	parser.on('packet', (packet: Packet) => {
+	for (const result of resultData) {
+		writeStream.write(JSON.stringify(result) + '\n');
+	}
+
+	writeStream.end();
+}
+
+function* getResultData(packets: Iterable<Packet>): IterableIterator<ResultData> {
+	let tick = 0;
+
+	for (const packet of packets) {
+		if (packet.packetType === 'netTick') {
+			tick = packet.tick;
+		}
 		if (packet.packetType === 'packetEntities') {
 			for (const entity of packet.entities) {
 				const entityProps = {};
 				for (const prop of entity.props) {
 					entityProps[`${prop.definition.name}`] = prop.value;
 				}
-				writeStream.write(JSON.stringify({
-					tick: match.tick,
+				yield {
+					tick: tick,
 					serverClass: entity.serverClass.name,
 					id: entity.entityIndex,
 					props: entityProps,
 					pvs: entity.pvs
-				}) + '\n');
+				};
 			}
 		}
-	});
-	parser.parseBody();
-
-	writeStream.end();
+	}
 }
 
 function testEntities(name: string, entityCount: number) {
@@ -45,34 +65,8 @@ function testEntities(name: string, entityCount: number) {
 		const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 		const demo = Demo.fromNodeBuffer(source);
 		const parser = demo.getParser(false);
-		parser.readHeader();
-		const match = parser.match;
 
-		const resultData: any[] = [];
-		parser.on('packet', (packet: Packet) => {
-			if (packet.packetType === 'packetEntities') {
-				for (const entity of packet.entities) {
-					const entityProps = {};
-					for (const prop of entity.props) {
-						entityProps[`${prop.definition.name}`] = prop.value;
-					}
-					resultData.push({
-						tick: match.tick,
-						serverClass: entity.serverClass.name,
-						id: entity.entityIndex,
-						props: entityProps,
-						pvs: entity.pvs
-					});
-				}
-			}
-		});
-
-		function parseEntities() {
-			const message = parser.tick();
-			if (message && resultData.length === 0) {
-				parseEntities();
-			}
-		}
+		const resultData = getResultData(parser.getPackets());
 
 		const readStream = createReadStream(targetFile);
 
@@ -81,14 +75,10 @@ function testEntities(name: string, entityCount: number) {
 		readStream
 			.pipe(createUnzip())
 			.pipe(split2(JSON.parse)).on('data', (data) => {
-			if (resultData.length < 1) {
-				parseEntities();
-			}
-			const result = resultData.shift();
-			assert.deepEqual(data, result, `Failed asserting that packet ${parsed} is the same`);
+			const result = resultData.next();
+			assert.deepEqual(data, result.value, `Failed asserting that packet ${parsed} is the same`);
 			parsed++;
 		}).on('end', () => {
-			assert.equal(resultData.length, 0, 'Entities left to be checked');
 			assert.equal(parsed, entityCount, 'unexpected number of entities');
 
 			resolve();

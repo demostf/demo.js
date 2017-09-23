@@ -7,24 +7,30 @@ import {SendProp} from '../Data/SendProp';
 import {Vector} from '../Data/Vector';
 import {CWeaponMedigun, Weapon} from '../Data/Weapon';
 import {TeamNumber} from '../Data/Team';
+import {ParserState} from '../Data/ParserState';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
-	for (const removedEntityId of packet.removedEntities) {
-		match.parserState.entityClasses.delete(removedEntityId);
-	}
-
 	for (const entity of packet.entities) {
-		saveEntity(entity, match);
 		handleEntity(entity, match);
 	}
 }
 
-function saveEntity(packetEntity: PacketEntity, match: Match) {
-	if (packetEntity.pvs === PVS.DELETE) {
-		match.parserState.entityClasses.delete(packetEntity.entityIndex);
+export function handlePacketEntitiesForState(packet: PacketEntitiesPacket, state: ParserState) {
+	for (const removedEntityId of packet.removedEntities) {
+		state.entityClasses.delete(removedEntityId);
 	}
 
-	match.parserState.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
+	for (const entity of packet.entities) {
+		saveEntity(entity, state);
+	}
+}
+
+function saveEntity(packetEntity: PacketEntity, state: ParserState) {
+	if (packetEntity.pvs === PVS.DELETE) {
+		state.entityClasses.delete(packetEntity.entityIndex);
+	}
+
+	state.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
 }
 
 function handleEntity(entity: PacketEntity, match: Match) {

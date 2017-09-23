@@ -1,14 +1,13 @@
 import {BitStream} from 'bit-buffer';
-import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
-import {Match} from './Data/Match';
 import {ConsoleCmdHandler} from './Parser/Message/ConsoleCmd';
 import {DataTableHandler} from './Parser/Message/DataTable';
 import {PacketMessageHandler} from './Parser/Message/Packet';
 import {StringTableHandler} from './Parser/Message/StringTable';
 import {UserCmdHandler} from './Parser/Message/UserCmd';
-import {PacketTypeId} from './Data/Packet';
+import {Packet, PacketTypeId} from './Data/Packet';
 import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
+import {ParserState} from './Data/ParserState';
 
 const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
@@ -19,39 +18,41 @@ const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<Messa
 	[MessageType.StringTables, StringTableHandler],
 ]);
 
-export class Parser extends EventEmitter {
-	public stream: BitStream;
-	public match: Match;
-	protected skipPackets: PacketTypeId[];
+export class Parser {
+	public readonly stream: BitStream;
+	public readonly parserState: ParserState;
+	private header: Header | null = null;
+	protected readonly skipPackets: PacketTypeId[];
 
 	public viewOrigin: number[][] = [[], []];
 	public viewAngles: number[][] = [[], []];
 
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
-		super();
 		this.stream = stream;
-		this.match = new Match();
-		this.on('packet', this.match.handlePacket.bind(this.match));
+		this.parserState = new ParserState();
 		this.skipPackets = skipPackets;
 	}
 
-	public readHeader() {
-		return this.parseHeader(this.stream);
+	public getHeader() {
+		if (!this.header) {
+			this.header = this.parseHeader(this.stream);
+		}
+		return this.header;
 	}
 
-	public parseBody() {
+	public * getPackets(): Iterable<Packet> {
+		// ensure that we are past the header
+		this.getHeader();
 		const messages = this.getMessages();
 		for (const message of messages) {
-			this.handleMessage(message);
+			yield* this.handleMessage(message);
 		}
-		this.emit('done', this.match);
-		return this.match;
 	}
 
 	private * getMessages(): Iterable<Message> {
 		let hasNext: boolean = true;
 		while (hasNext) {
-			const message = this.readMessage(this.stream, this.match);
+			const message = this.readMessage(this.stream, this.parserState);
 			if (!message) {
 				hasNext = false;
 			} else {
@@ -60,20 +61,12 @@ export class Parser extends EventEmitter {
 		}
 	}
 
-	public tick() {
-		const message = this.readMessage(this.stream, this.match);
-		if (message) {
-			this.handleMessage(message);
-		}
-		return !!message;
-	}
-
-	protected parseMessage(data: BitStream, type: MessageType, tick: number, match: Match): Message {
+	protected parseMessage(data: BitStream, type: MessageType, tick: number, state: ParserState): Message {
 		const handler = messageHandlers.get(type);
 		if (!handler) {
 			throw new Error(`No handler for message of type ${MessageType[type]}`);
 		}
-		return handler.parseMessage(data, tick, match.parserState);
+		return handler.parseMessage(data, tick, state);
 	}
 
 	protected parseHeader(stream): Header {
@@ -92,17 +85,17 @@ export class Parser extends EventEmitter {
 		};
 	}
 
-	protected handleMessage(message: Message) {
-		this.match.parserState.handleMessage(message);
+	protected * handleMessage(message: Message): Iterable<Packet> {
+		this.parserState.handleMessage(message);
 		if (message.type === MessageType.Packet) {
 			for (const packet of (message as PacketMessage).packets) {
-				this.match.parserState.handlePacket(packet);
-				this.emit('packet', packet);
+				this.parserState.handlePacket(packet);
+				yield packet;
 			}
 		}
 	}
 
-	protected readMessage(stream: BitStream, match: Match): Message | false {
+	protected readMessage(stream: BitStream, state: ParserState): Message | false {
 		if (stream.bitsLeft < 8) {
 			return false;
 		}
@@ -143,6 +136,6 @@ export class Parser extends EventEmitter {
 
 		const length = stream.readInt32();
 		const buffer = stream.readBitStream(length * 8);
-		return this.parseMessage(buffer, type, tick, match);
+		return this.parseMessage(buffer, type, tick, state);
 	}
 }
