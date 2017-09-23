@@ -22,7 +22,6 @@ export class Parser {
 	public readonly stream: BitStream;
 	public readonly parserState: ParserState;
 	private header: Header | null = null;
-	protected readonly skipPackets: PacketTypeId[];
 
 	public viewOrigin: number[][] = [[], []];
 	public viewAngles: number[][] = [[], []];
@@ -30,7 +29,7 @@ export class Parser {
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		this.stream = stream;
 		this.parserState = new ParserState();
-		this.skipPackets = skipPackets;
+		this.parserState.skippedPackets = skipPackets;
 	}
 
 	public getHeader() {
