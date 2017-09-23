@@ -2,18 +2,30 @@ import {BitStream} from 'bit-buffer';
 import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
 import {Match} from './Data/Match';
-import {ConsoleCmd} from './Parser/Message/ConsoleCmd';
-import {DataTable} from './Parser/Message/DataTable';
-import {Packet} from './Parser/Message/Packet';
-import {Parser as MessageParser} from './Parser/Message/Parser';
-import {StringTable} from './Parser/Message/StringTable';
-import {UserCmd} from './Parser/Message/UserCmd';
+import {ConsoleCmdHandler} from './Parser/Message/ConsoleCmd';
+import {DataTableHandler} from './Parser/Message/DataTable';
+import {PacketMessageHandler} from './Parser/Message/Packet';
+import {StringTableHandler} from './Parser/Message/StringTable';
+import {UserCmdHandler} from './Parser/Message/UserCmd';
 import {PacketTypeId} from './Data/Packet';
+import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
+
+const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
+	[MessageType.Sigon, PacketMessageHandler],
+	[MessageType.Packet, PacketMessageHandler],
+	[MessageType.ConsoleCmd, ConsoleCmdHandler],
+	[MessageType.UserCmd, UserCmdHandler],
+	[MessageType.DataTables, DataTableHandler],
+	[MessageType.StringTables, StringTableHandler],
+]);
 
 export class Parser extends EventEmitter {
 	public stream: BitStream;
 	public match: Match;
 	protected skipPackets: PacketTypeId[];
+
+	public viewOrigin: number[][] = [[], []];
+	public viewAngles: number[][] = [[], []];
 
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		super();
@@ -28,39 +40,40 @@ export class Parser extends EventEmitter {
 	}
 
 	public parseBody() {
-		let hasNext = true;
-		while (hasNext) {
-			hasNext = this.tick();
+		const messages = this.getMessages();
+		for (const message of messages) {
+			this.handleMessage(message);
 		}
 		this.emit('done', this.match);
 		return this.match;
 	}
 
+	private * getMessages(): Iterable<Message> {
+		let hasNext: boolean = true;
+		while (hasNext) {
+			const message = this.readMessage(this.stream, this.match);
+			if (!message) {
+				hasNext = false;
+			} else {
+				yield message;
+			}
+		}
+	}
+
 	public tick() {
 		const message = this.readMessage(this.stream, this.match);
-		if (message instanceof MessageParser) {
+		if (message) {
 			this.handleMessage(message);
 		}
 		return !!message;
 	}
 
-	protected parseMessage(data: BitStream, type: MessageType, tick: number, length: number, match: Match): MessageParser {
-
-		switch (type) {
-			case MessageType.Sigon:
-			case MessageType.Packet:
-				return new Packet(type, tick, data, length, match, this.skipPackets);
-			case MessageType.ConsoleCmd:
-				return new ConsoleCmd(type, tick, data, length, match, this.skipPackets);
-			case MessageType.UserCmd:
-				return new UserCmd(type, tick, data, length, match, this.skipPackets);
-			case MessageType.DataTables:
-				return new DataTable(type, tick, data, length, match, this.skipPackets);
-			case MessageType.StringTables:
-				return new StringTable(type, tick, data, length, match, this.skipPackets);
-			default:
-				throw new Error('unknown message type');
+	protected parseMessage(data: BitStream, type: MessageType, tick: number, match: Match): Message {
+		const handler = messageHandlers.get(type);
+		if (!handler) {
+			throw new Error(`No handler for message of type ${MessageType[type]}`);
 		}
+		return handler.parseMessage(data, tick, match.parserState);
 	}
 
 	protected parseHeader(stream): Header {
@@ -79,18 +92,17 @@ export class Parser extends EventEmitter {
 		};
 	}
 
-	protected handleMessage(message: MessageParser) {
-		if (message.parse) {
-			const packets = message.parse();
-			for (const packet of packets) {
-				if (packet) {
-					this.emit('packet', packet);
-				}
+	protected handleMessage(message: Message) {
+		this.match.parserState.handleMessage(message);
+		if (message.type === MessageType.Packet) {
+			for (const packet of (message as PacketMessage).packets) {
+				this.match.parserState.handlePacket(packet);
+				this.emit('packet', packet);
 			}
 		}
 	}
 
-	protected readMessage(stream: BitStream, match: Match): MessageParser | boolean {
+	protected readMessage(stream: BitStream, match: Match): Message | false {
 		if (stream.bitsLeft < 8) {
 			return false;
 		}
@@ -100,21 +112,16 @@ export class Parser extends EventEmitter {
 		}
 		const tick = stream.readInt32();
 
-		const viewOrigin: number[][] = [];
-		const viewAngles: number[][] = [];
-
 		switch (type) {
 			case MessageType.Sigon:
 			case MessageType.Packet:
 				this.stream.readInt32(); // flags
 				for (let j = 0; j < 2; j++) {
-					viewOrigin[j] = [];
-					viewAngles[j] = [];
 					for (let i = 0; i < 3; i++) {
-						viewOrigin[j][i] = this.stream.readInt32();
+						this.viewOrigin[j][i] = this.stream.readFloat32();
 					}
 					for (let i = 0; i < 3; i++) {
-						viewAngles[j][i] = this.stream.readInt32();
+						this.viewAngles[j][i] = this.stream.readFloat32();
 					}
 					for (let i = 0; i < 3; i++) {
 						this.stream.readInt32(); // local viewAngles
@@ -127,22 +134,15 @@ export class Parser extends EventEmitter {
 				stream.byteIndex += 0x04; // unknown / outgoing sequence
 				break;
 			case MessageType.SyncTick:
-				return true;
+				return {
+					type: MessageType.SyncTick,
+					tick,
+					rawData: stream.readBitStream(0)
+				};
 		}
 
 		const length = stream.readInt32();
 		const buffer = stream.readBitStream(length * 8);
-		return this.parseMessage(buffer, type, tick, length, match);
+		return this.parseMessage(buffer, type, tick, match);
 	}
-}
-
-export enum MessageType {
-	Sigon = 1,
-	Packet = 2,
-	SyncTick = 3,
-	ConsoleCmd = 4,
-	UserCmd = 5,
-	DataTables = 6,
-	Stop = 7,
-	StringTables = 8,
 }

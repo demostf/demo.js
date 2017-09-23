@@ -1,19 +1,12 @@
 import {BitStream} from 'bit-buffer';
-import {handleDataTable} from '../PacketHandler/DataTable';
 import {handleGameEvent} from '../PacketHandler/GameEvent';
-import {handleGameEventList} from '../PacketHandler/GameEventList';
 import {handlePacketEntities} from '../PacketHandler/PacketEntities';
 import {handleSayText2} from '../PacketHandler/SayText2';
-import {handleStringTable, handleStringTables, handleStringTableUpdate} from '../PacketHandler/StringTable';
 import {Building} from './Building';
 import {Death} from './Death';
-import {GameEventDefinition} from './GameEvent';
 import {EntityId, PacketEntity} from './PacketEntity';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
-import {SendTable, SendTableName} from './SendTable';
-import {ServerClass, ServerClassId} from './ServerClass';
-import {StringTable} from './StringTable';
 import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
 import {Weapon} from './Weapon';
@@ -21,11 +14,10 @@ import {World} from './World';
 import {Round} from './Round';
 import {Chat} from './Chat';
 import {Packet} from './Packet';
-import {GameEventType} from './GameEventTypes';
 import {ParserState} from './ParserState';
-import {SendProp} from './SendProp';
+import {StringTableEntry} from './StringTable';
 
-export class Match implements ParserState {
+export class Match {
 	public tick: number = 0;
 	public chat: Chat[] = [];
 	public users: Map<number, UserInfo> = new Map();
@@ -33,26 +25,18 @@ export class Match implements ParserState {
 	public rounds: Round[] = [];
 	public startTick: number = 0;
 	public intervalPerTick: number = 0;
-	public staticBaseLines: Map<ServerClassId, BitStream> = new Map();
-	public staticBaselineCache: Map<ServerClassId, SendProp[]> = new Map();
-	public eventDefinitions: Map<number, GameEventDefinition<GameEventType>> = new Map();
 	public world: World = {
 		boundaryMin: {x: 0, y: 0, z: 0},
 		boundaryMax: {x: 0, y: 0, z: 0},
 	};
 	public playerEntityMap: Map<EntityId, Player> = new Map();
-	public entityClasses: Map<EntityId, ServerClass> = new Map();
-	public sendTables: Map<SendTableName, SendTable> = new Map();
-	public instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>] = [new Map(), new Map()];
 	public weaponMap: Map<EntityId, Weapon> = new Map();
 	public outerMap: Map<number, EntityId> = new Map();
 	public teams: Map<TeamNumber, Team> = new Map();
 	public teamEntityMap: Map<EntityId, Team> = new Map();
-	public version: number = 0;
 	public buildings: Map<EntityId, Building> = new Map();
 	public playerResources: PlayerResource[] = [];
-	public stringTables: StringTable[] = [];
-	public serverClasses: ServerClass[] = [];
+	public readonly parserState: ParserState = new ParserState();
 
 	public getState() {
 		const users = {};
@@ -91,29 +75,52 @@ export class Match implements ParserState {
 				break;
 			case 'serverInfo':
 				this.intervalPerTick = packet.intervalPerTick;
-				this.version = packet.version;
+				break;
+			case 'createStringTable':
+				if (packet.table.name === 'userinfo') {
+					this.calculateUserInfo();
+				}
 				break;
 			case 'sayText2':
 				handleSayText2(packet, this);
 				break;
-			case 'dataTable':
-				handleDataTable(packet, this);
-				break;
-			case 'stringTable':
-				handleStringTables(packet, this);
-				break;
-			case 'createStringTable':
-				handleStringTable(packet, this);
-				break;
-			case 'updateStringTable':
-				handleStringTableUpdate(packet, this);
-				break;
-			case 'gameEventList':
-				handleGameEventList(packet, this);
-				break;
 			case 'gameEvent':
 				handleGameEvent(packet, this);
 				break;
+		}
+	}
+
+	private calculateUserInfo() {
+		for (const [text, extraData] of this.parserState.userInfoEntries.entries()) {
+			this.calculateUserInfoFromEntry(text, extraData);
+		}
+	}
+
+	private calculateUserInfoByEntityId(entityId: number) {
+		const text = `${entityId - 1}`;
+		const extraData = this.parserState.userInfoEntries.get(text);
+		if (!extraData) {
+			throw new Error(`No user info in stringable for entity id ${entityId}`);
+		}
+		return this.calculateUserInfoFromEntry(text, extraData);
+	}
+
+	private calculateUserInfoFromEntry(text: string, extraData: BitStream): UserInfo {
+		if (extraData.bitsLeft > (32 * 8)) {
+			const name = extraData.readUTF8String(32);
+			const userId = extraData.readUint32();
+			const steamId = extraData.readUTF8String();
+			if (steamId) {
+				const userState = this.getUserInfo(userId);
+				userState.name = name;
+				userState.steamId = steamId;
+				userState.entityId = parseInt(text, 10) + 1;
+				return userState;
+			} else {
+				throw new Error(`No steamid for user info ${text}`);
+			}
+		} else {
+			throw new Error();
 		}
 	}
 
@@ -125,6 +132,7 @@ export class Match implements ParserState {
 		}
 		const user = this.users.get(userId);
 		if (!user) {
+
 			const newUser = {
 				name: '',
 				userId,
@@ -139,12 +147,12 @@ export class Match implements ParserState {
 		return user;
 	}
 
-	public getUserInfoForEntity(entity: PacketEntity): UserInfo {
+	public getUserInfoForEntity(entity: PacketEntity): UserInfo | null {
 		for (const user of this.users.values()) {
 			if (user && user.entityId === entity.entityIndex) {
 				return user;
 			}
 		}
-		throw new Error('User not found for entity ' + entity.entityIndex);
+		return this.calculateUserInfoByEntityId(entity.entityIndex);
 	}
 }

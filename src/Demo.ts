@@ -1,9 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {Parser} from './Parser';
-import {StreamDemo} from './StreamDemo';
 import {PacketTypeId} from './Data/Packet';
-
-export {StreamDemo} from './StreamDemo';
 
 export class Demo {
 	public static fromNodeBuffer(nodeBuffer) {
@@ -13,10 +10,6 @@ export class Demo {
 			view[i] = nodeBuffer[i];
 		}
 		return new Demo(arrayBuffer);
-	}
-
-	public static fromNodeStream(nodeStream) {
-		return new StreamDemo(nodeStream);
 	}
 
 	public stream: BitStream;

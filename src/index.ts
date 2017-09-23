@@ -1,6 +1,5 @@
 export {Demo} from './Demo';
 export {Parser} from './Parser';
-export {StreamParser} from './StreamParser';
 export {Match} from './Data/Match';
 export {Player} from './Data/Player';
 export {PlayerCondition} from './Data/PlayerCondition';

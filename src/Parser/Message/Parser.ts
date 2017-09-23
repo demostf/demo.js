@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {Packet, PacketTypeId} from '../../Data/Packet';
-import {MessageType} from '../../Parser';
+import {MessageType} from '../../Data/Message';
 import {ParserState} from '../../Data/ParserState';
 
 export abstract class Parser {

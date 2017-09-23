@@ -1,6 +1,6 @@
-import {Match} from '../Data/Match';
 import {GameEventListPacket} from '../Data/Packet';
+import {ParserState} from '../Data/ParserState';
 
-export function handleGameEventList(packet: GameEventListPacket, match: Match) {
-	match.eventDefinitions = packet.eventList;
+export function handleGameEventList(packet: GameEventListPacket, state: ParserState) {
+	state.eventDefinitions = packet.eventList;
 }

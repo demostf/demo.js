@@ -10,7 +10,7 @@ import {TeamNumber} from '../Data/Team';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const removedEntityId of packet.removedEntities) {
-		match.entityClasses.delete(removedEntityId);
+		match.parserState.entityClasses.delete(removedEntityId);
 	}
 
 	for (const entity of packet.entities) {
@@ -21,10 +21,10 @@ export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match)
 
 function saveEntity(packetEntity: PacketEntity, match: Match) {
 	if (packetEntity.pvs === PVS.DELETE) {
-		match.entityClasses.delete(packetEntity.entityIndex);
+		match.parserState.entityClasses.delete(packetEntity.entityIndex);
 	}
 
-	match.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
+	match.parserState.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
 }
 
 function handleEntity(entity: PacketEntity, match: Match) {
@@ -80,9 +80,13 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			 * "DT_TFPlayerShared.m_flCloakMeter": 100,
 			 */
 
+			const userInfo = match.getUserInfoForEntity(entity);
+			if (!userInfo) {
+				throw new Error(`No user info for entity ${entity.entityIndex}`);
+			}
 			const player: Player = (match.playerEntityMap.has(entity.entityIndex)) ?
 				match.playerEntityMap.get(entity.entityIndex) as Player :
-				new Player(match, match.getUserInfoForEntity(entity));
+				new Player(match, userInfo);
 			if (!match.playerEntityMap.has(entity.entityIndex)) {
 				match.playerEntityMap.set(entity.entityIndex, player);
 			}
