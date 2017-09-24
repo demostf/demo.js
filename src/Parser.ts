@@ -38,7 +38,7 @@ export class Parser {
 		return this.header;
 	}
 
-	public * getPackets(): Iterable<Packet> {
+	public * getPackets(): IterableIterator<Packet> {
 		// ensure that we are past the header
 		this.getHeader();
 		const messages = this.getMessages();
@@ -48,13 +48,12 @@ export class Parser {
 	}
 
 	private * getMessages(): Iterable<Message> {
-		let hasNext: boolean = true;
-		while (hasNext) {
+		while (true) {
 			const message = this.readMessage(this.stream, this.parserState);
-			if (!message) {
-				hasNext = false;
-			} else {
+			if (message) {
 				yield message;
+			} else {
+				return;
 			}
 		}
 	}

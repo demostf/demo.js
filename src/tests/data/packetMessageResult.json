@@ -1,0 +1,64 @@
+{
+    "type": 2,
+    "packets": [
+        {
+            "packetType": "netTick",
+            "tick": 43601,
+            "frameTime": 1509,
+            "stdDev": 352
+        },
+        {
+            "packetType": "packetEntities",
+            "entities": [],
+            "removedEntities": [],
+            "maxEntries": 1047,
+            "delta": 43597,
+            "baseLine": 0,
+            "updatedBaseLine": false
+        },
+        {
+            "packetType": "tempEntities",
+            "entities": []
+        }
+    ],
+    "tick": 21768,
+    "flags": 0,
+    "viewOrigin": [
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    ],
+    "viewAngles": [
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    ],
+    "localViewAngles": [
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    ],
+    "sequenceIn": 5426,
+    "sequenceOut": 5426
+}

@@ -192,7 +192,7 @@ export function ParsePacketEntities(stream: BitStream, state: ParserState, skip:
 
 export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitStream, state: ParserState) {
 	stream.writeBits(packet.maxEntries, 11);
-	const isDelta = packet.removedEntities.length > 0;
+	const isDelta = packet.delta > 0;
 	stream.writeBoolean(isDelta);
 	if (isDelta) {
 		stream.writeInt32(packet.delta);

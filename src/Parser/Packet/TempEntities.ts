@@ -76,5 +76,7 @@ export function EncodeTempEntities(packet: TempEntitiesPacket, stream: BitStream
 
 	writeVarInt(entityDataLength, stream);
 
-	stream.writeBitStream(entityStream, entityDataLength);
+	if (entityDataLength > 0) {
+		stream.writeBitStream(entityStream, entityDataLength);
+	}
 }

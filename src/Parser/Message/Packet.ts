@@ -4,8 +4,8 @@ import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
 import {EncodeGameEvent, ParseGameEvent} from '../Packet/GameEvent';
 import {EncodeGameEventList, ParseGameEventList} from '../Packet/GameEventList';
-import {ParsePacketEntities} from '../Packet/PacketEntities';
-import {PacketHandler, voidEncoder} from '../Packet/Parser';
+import {EncodePacketEntities, ParsePacketEntities} from '../Packet/PacketEntities';
+import {PacketHandler} from '../Packet/Parser';
 import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {EncodeTempEntities, ParseTempEntities} from '../Packet/TempEntities';
@@ -67,7 +67,7 @@ const handlers: PacketHandlerMap = new Map<PacketTypeId, PacketHandler<IPacket>>
 	[PacketTypeId.gameEvent,
 		{parser: ParseGameEvent, encoder: EncodeGameEvent}],
 	[PacketTypeId.packetEntities,
-		{parser: ParsePacketEntities, encoder: voidEncoder}],
+		{parser: ParsePacketEntities, encoder: EncodePacketEntities}],
 	[PacketTypeId.tempEntities,
 		{parser: ParseTempEntities, encoder: EncodeTempEntities}],
 	[PacketTypeId.preFetch,
@@ -107,10 +107,10 @@ export const PacketMessageHandler: MessageHandler<PacketMessage> = {
 		while (messageStream.bitsLeft > 6) { // last 6 bits for NOOP
 			const type = messageStream.readBits(6) as PacketTypeId;
 			if (type !== 0) {
-				const parser = handlers.get(type);
-				if (parser) {
+				const handler = handlers.get(type);
+				if (handler) {
 					const skip = state.skippedPackets.indexOf(type) !== -1;
-					const packet = parser.parser(messageStream, state, skip);
+					const packet = handler.parser(messageStream, state, skip);
 					packets.push(packet);
 				} else {
 					throw new Error(`Unknown packet type ${type} just parsed a ${PacketTypeId[lastPacketType]}`);
@@ -131,7 +131,55 @@ export const PacketMessageHandler: MessageHandler<PacketMessage> = {
 			sequenceOut
 		};
 	},
-	encodeMessage: (message, stream) => {
-		throw new Error('Not implemented');
+	encodeMessage: (message: PacketMessage, stream: BitStream, state: ParserState) => {
+		stream.writeUint32(message.tick);
+		stream.writeUint32(message.flags);
+
+		for (let j = 0; j < 2; j++) {
+			stream.writeFloat32(message.viewOrigin[j].x);
+			stream.writeFloat32(message.viewOrigin[j].y);
+			stream.writeFloat32(message.viewOrigin[j].z);
+
+			stream.writeFloat32(message.viewAngles[j].x);
+			stream.writeFloat32(message.viewAngles[j].y);
+			stream.writeFloat32(message.viewAngles[j].z);
+
+			stream.writeFloat32(message.localViewAngles[j].x);
+			stream.writeFloat32(message.localViewAngles[j].y);
+			stream.writeFloat32(message.localViewAngles[j].z);
+		}
+
+		stream.writeUint32(message.sequenceIn);
+		stream.writeUint32(message.sequenceOut);
+
+		const lengthStart = stream.index;
+
+		stream.index += 32;
+
+		const dataStart = stream.index;
+
+		for (const packet of message.packets) {
+			const type = PacketTypeId[packet.packetType];
+			stream.writeBits(type, 6);
+
+			const handler = handlers.get(type);
+			if (handler) {
+				handler.encoder(packet, stream, state);
+			} else {
+				throw new Error(`No handler for packet type ${packet.packetType}`);
+			}
+		}
+
+		stream.writeBits(0, 6);
+
+		const dataEnd = stream.index;
+
+		stream.index = lengthStart;
+
+		const byteLength = Math.ceil((dataEnd - dataStart) / 8);
+		stream.writeUint32(byteLength);
+
+		// align to byte;
+		stream.index = dataStart + byteLength * 8;
 	}
 };
