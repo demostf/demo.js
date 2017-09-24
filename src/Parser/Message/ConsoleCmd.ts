@@ -2,6 +2,7 @@ import {ConsoleCmdPacket} from '../../Data/Packet';
 import {Parser} from './Parser';
 import {BitStream} from 'bit-buffer';
 import {ConsoleCmdMessage, MessageHandler, MessageType} from '../../Data/Message';
+import {TextEncoder} from 'text-encoding-shim';
 
 export class ConsoleCmd extends Parser {
 	public parse(): ConsoleCmdPacket[] {
@@ -27,6 +28,11 @@ export const ConsoleCmdHandler: MessageHandler<ConsoleCmdMessage> = {
 		};
 	},
 	encodeMessage: (message: ConsoleCmdMessage, stream: BitStream) => {
+		stream.writeUint32(message.tick);
+
+		const byteLength = (new TextEncoder('utf-8').encode(message.command)).length + 1; // +1 for null termination
+		stream.writeUint32(byteLength);
+
 		stream.writeUTF8String(message.command);
 	}
 };

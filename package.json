@@ -12,7 +12,8 @@
     "bit-buffer": "^0.2.3",
     "clone": "^2.1.0",
     "minimist": "1.1.x",
-    "snappyjs": "^0.5.0"
+    "snappyjs": "^0.5.0",
+    "text-encoding-shim": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^6.0.52",
