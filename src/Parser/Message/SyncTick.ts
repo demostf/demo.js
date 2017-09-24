@@ -12,6 +12,6 @@ export const SyncTickHandler: MessageHandler<SyncTickMessage> = {
 		};
 	},
 	encodeMessage: (message, stream) => {
-		throw new Error('not implemented');
+		stream.writeUint32(message.tick);
 	}
 };
