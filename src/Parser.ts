@@ -8,6 +8,7 @@ import {UserCmdHandler} from './Parser/Message/UserCmd';
 import {Packet, PacketTypeId} from './Data/Packet';
 import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
 import {ParserState} from './Data/ParserState';
+import {SyncTickHandler} from './Parser/Message/SyncTick';
 
 const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
@@ -16,15 +17,13 @@ const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<Messa
 	[MessageType.UserCmd, UserCmdHandler],
 	[MessageType.DataTables, DataTableHandler],
 	[MessageType.StringTables, StringTableHandler],
+	[MessageType.SyncTick, SyncTickHandler]
 ]);
 
 export class Parser {
 	public readonly stream: BitStream;
 	public readonly parserState: ParserState;
 	private header: Header | null = null;
-
-	public viewOrigin: number[][] = [[], []];
-	public viewAngles: number[][] = [[], []];
 
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		this.stream = stream;
@@ -60,12 +59,12 @@ export class Parser {
 		}
 	}
 
-	protected parseMessage(data: BitStream, type: MessageType, tick: number, state: ParserState): Message {
+	protected parseMessage(data: BitStream, type: MessageType, state: ParserState): Message {
 		const handler = messageHandlers.get(type);
 		if (!handler) {
 			throw new Error(`No handler for message of type ${MessageType[type]}`);
 		}
-		return handler.parseMessage(data, tick, state);
+		return handler.parseMessage(data, state);
 	}
 
 	protected parseHeader(stream): Header {
@@ -98,43 +97,11 @@ export class Parser {
 		if (stream.bitsLeft < 8) {
 			return false;
 		}
-		const type: MessageType = stream.readBits(8);
+		const type: MessageType = stream.readUint8();
 		if (type === MessageType.Stop) {
 			return false;
 		}
-		const tick = stream.readInt32();
 
-		switch (type) {
-			case MessageType.Sigon:
-			case MessageType.Packet:
-				this.stream.readInt32(); // flags
-				for (let j = 0; j < 2; j++) {
-					for (let i = 0; i < 3; i++) {
-						this.viewOrigin[j][i] = this.stream.readFloat32();
-					}
-					for (let i = 0; i < 3; i++) {
-						this.viewAngles[j][i] = this.stream.readFloat32();
-					}
-					for (let i = 0; i < 3; i++) {
-						this.stream.readInt32(); // local viewAngles
-					}
-				}
-				this.stream.readInt32(); // sequence in
-				this.stream.readInt32(); // sequence out
-				break;
-			case MessageType.UserCmd:
-				stream.byteIndex += 0x04; // unknown / outgoing sequence
-				break;
-			case MessageType.SyncTick:
-				return {
-					type: MessageType.SyncTick,
-					tick,
-					rawData: stream.readBitStream(0)
-				};
-		}
-
-		const length = stream.readInt32();
-		const buffer = stream.readBitStream(length * 8);
-		return this.parseMessage(buffer, type, tick, state);
+		return this.parseMessage(stream, type, state);
 	}
 }

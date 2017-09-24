@@ -4,6 +4,7 @@ import {ServerClass} from './ServerClass';
 import {SendTable} from './SendTable';
 import {StringTable} from './StringTable';
 import {ParserState} from './ParserState';
+import {Vector} from './Vector';
 
 export enum MessageType {
 	Sigon = 1,
@@ -21,14 +22,18 @@ export interface BaseMessage {
 	rawData: BitStream;
 }
 
-export interface SigonMessage extends BaseMessage {
-	type: MessageType.Sigon;
-	packets: Packet[];
-}
-
 export interface PacketMessage extends BaseMessage {
 	type: MessageType.Packet;
 	packets: Packet[];
+	viewOrigin: [Vector, Vector];
+	viewAngles: [Vector, Vector];
+	localViewAngles: [Vector, Vector];
+	sequenceIn: number;
+	sequenceOut: number;
+	flags: number;
+}
+
+export interface SigonMessage extends PacketMessage {
 }
 
 export interface SyncTickMessage extends BaseMessage {
@@ -42,6 +47,7 @@ export interface ConsoleCmdMessage extends BaseMessage {
 
 export interface UserCmdMessage extends BaseMessage {
 	type: MessageType.UserCmd;
+	sequenceOut: number;
 }
 
 export interface DataTablesMessage extends BaseMessage {
@@ -69,6 +75,6 @@ export type Message = SigonMessage |
 	StringTablesMessage;
 
 export interface MessageHandler<M extends Message> {
-	parseMessage: (stream: BitStream, tick: number, state: ParserState) => M;
+	parseMessage: (stream: BitStream, state: ParserState) => M;
 	encodeMessage: (message: M, stream: BitStream, state: ParserState) => void;
 }

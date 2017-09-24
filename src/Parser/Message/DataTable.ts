@@ -5,37 +5,42 @@ import {DataTablesMessage, MessageHandler, MessageType} from '../../Data/Message
 import {BitStream} from 'bit-buffer';
 
 export const DataTableHandler: MessageHandler<DataTablesMessage> = {
-	parseMessage: (stream: BitStream, tick: number) => {
+	parseMessage: (stream: BitStream) => {
+		const tick = stream.readInt32();
+
+		const length = stream.readInt32();
+		const messageStream = stream.readBitStream(length * 8);
+
 		// https://github.com/LestaD/SourceEngine2007/blob/43a5c90a5ada1e69ca044595383be67f40b33c61/src_main/engine/dt_common_eng.cpp#L356
 		// https://github.com/LestaD/SourceEngine2007/blob/43a5c90a5ada1e69ca044595383be67f40b33c61/src_main/engine/dt_recv_eng.cpp#L310
 		// https://github.com/PazerOP/DemoLib/blob/master/DemoLib/Commands/DemoDataTablesCommand.cs
 		const tables: SendTable[] = [];
 		const tableMap: {[key: string]: SendTable} = {};
-		while (stream.readBoolean()) {
-			const needsDecoder = stream.readBoolean();
-			const tableName = stream.readASCIIString();
-			const numProps = stream.readBits(10);
+		while (messageStream.readBoolean()) {
+			const needsDecoder = messageStream.readBoolean();
+			const tableName = messageStream.readASCIIString();
+			const numProps = messageStream.readBits(10);
 			const table = new SendTable(tableName);
 
 			// get props metadata
 			let arrayElementProp;
 			for (let i = 0; i < numProps; i++) {
-				const propType = stream.readBits(5);
-				const propName = stream.readASCIIString();
+				const propType = messageStream.readBits(5);
+				const propName = messageStream.readASCIIString();
 				const nFlagsBits = 16; // might be 11 (old?), 13 (new?), 16(networked) or 17(??)
-				const flags = stream.readBits(nFlagsBits);
+				const flags = messageStream.readBits(nFlagsBits);
 				const prop = new SendPropDefinition(propType, propName, flags, tableName);
 				if (propType === SendPropType.DPT_DataTable) {
-					prop.excludeDTName = stream.readASCIIString();
+					prop.excludeDTName = messageStream.readASCIIString();
 				} else {
 					if (prop.isExcludeProp()) {
-						prop.excludeDTName = stream.readASCIIString();
+						prop.excludeDTName = messageStream.readASCIIString();
 					} else if (prop.type === SendPropType.DPT_Array) {
-						prop.numElements = stream.readBits(10);
+						prop.numElements = messageStream.readBits(10);
 					} else {
-						prop.lowValue = stream.readFloat32();
-						prop.highValue = stream.readFloat32();
-						prop.bitCount = stream.readBits(7);
+						prop.lowValue = messageStream.readFloat32();
+						prop.highValue = messageStream.readFloat32();
+						prop.bitCount = messageStream.readBits(7);
 					}
 				}
 
@@ -85,23 +90,23 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 			}
 		}
 
-		const numServerClasses = stream.readUint16(); // short
+		const numServerClasses = messageStream.readUint16(); // short
 		const serverClasses: ServerClass[] = [];
 		if (numServerClasses <= 0) {
 			throw new Error('expected one or more serverclasses');
 		}
 
 		for (let i = 0; i < numServerClasses; i++) {
-			const classId = stream.readUint16();
+			const classId = messageStream.readUint16();
 			if (classId > numServerClasses) {
 				throw new Error('invalid class id');
 			}
-			const className = stream.readASCIIString();
-			const dataTable = stream.readASCIIString();
+			const className = messageStream.readASCIIString();
+			const dataTable = messageStream.readASCIIString();
 			serverClasses.push(new ServerClass(classId, className, dataTable));
 		}
 
-		const bitsLeft = (this.length * 8) - stream.index;
+		const bitsLeft = (this.length * 8) - messageStream.index;
 		if (bitsLeft > 7 || bitsLeft < 0) {
 			throw new Error('unexpected remaining data in datatable (' + bitsLeft + ' bits)');
 		}
@@ -109,7 +114,7 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 		return {
 			type: MessageType.DataTables,
 			tick,
-			rawData: stream,
+			rawData: messageStream,
 			tables,
 			serverClasses,
 		};

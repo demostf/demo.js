@@ -13,12 +13,17 @@ export class ConsoleCmd extends Parser {
 }
 
 export const ConsoleCmdHandler: MessageHandler<ConsoleCmdMessage> = {
-	parseMessage: (stream: BitStream, tick: number) => {
+	parseMessage: (stream: BitStream) => {
+		const tick = stream.readInt32();
+
+		const length = stream.readInt32();
+		const messageStream = stream.readBitStream(length * 8);
+
 		return {
 			type: MessageType.ConsoleCmd,
 			tick,
-			rawData: stream,
-			command: stream.readUTF8String()
+			rawData: messageStream,
+			command: messageStream.readUTF8String()
 		};
 	},
 	encodeMessage: (message: ConsoleCmdMessage, stream: BitStream) => {

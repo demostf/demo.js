@@ -3,47 +3,47 @@ import {MessageHandler, MessageType, StringTablesMessage} from '../../Data/Messa
 import {BitStream} from 'bit-buffer';
 
 export const StringTableHandler: MessageHandler<StringTablesMessage> = {
-	parseMessage: (stream: BitStream, tick: number) => {
-		// we get the tables from the packets
-		// return [{
-		// 	packetType: 'stringTable',
-		// 	tables:     []
-		// }];
+	parseMessage: (stream: BitStream) => {
+		const tick = stream.readInt32();
+
+		const length = stream.readInt32();
+		const messageStream = stream.readBitStream(length * 8);
+
 		// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
-		const tableCount = stream.readUint8();
+		const tableCount = messageStream.readUint8();
 		const tables: StringTableObject[] = [];
 		let extraDataLength;
 		for (let i = 0; i < tableCount; i++) {
 			const entries: StringTableEntry[] = [];
-			const tableName = stream.readASCIIString();
-			const entryCount = stream.readUint16();
+			const tableName = messageStream.readASCIIString();
+			const entryCount = messageStream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
 				let entry: StringTableEntry;
 				try {
 					entry = {
-						text: stream.readUTF8String(),
+						text: messageStream.readUTF8String(),
 					};
 				} catch (e) {
 					return {
 						type: MessageType.StringTables,
 						tick,
-						rawData: stream,
+						rawData: messageStream,
 						tables,
 					};
 				}
-				if (stream.readBoolean()) {
-					extraDataLength = stream.readUint16();
-					if ((extraDataLength * 8) > stream.bitsLeft) {
+				if (messageStream.readBoolean()) {
+					extraDataLength = messageStream.readUint16();
+					if ((extraDataLength * 8) > messageStream.bitsLeft) {
 						// extradata to long, can't continue parsing the tables
 						// seems to happen in POV demos after the MyM update
 						return {
 							type: MessageType.StringTables,
 							tick,
-							rawData: stream,
+							rawData: messageStream,
 							tables,
 						};
 					}
-					entry.extraData = stream.readBitStream(extraDataLength * 8);
+					entry.extraData = messageStream.readBitStream(extraDataLength * 8);
 				}
 				entries.push(entry);
 			}
@@ -53,19 +53,19 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 				maxEntries: entryCount,
 			};
 			tables.push(table);
-			if (stream.readBits(1)) {
-				stream.readASCIIString();
-				if (stream.readBits(1)) {
+			if (messageStream.readBits(1)) {
+				messageStream.readASCIIString();
+				if (messageStream.readBits(1)) {
 					// throw 'more extra data not implemented';
-					extraDataLength = stream.readBits(16);
-					stream.readBits(extraDataLength);
+					extraDataLength = messageStream.readBits(16);
+					messageStream.readBits(extraDataLength);
 				}
 			}
 		}
 		return {
 			type: MessageType.StringTables,
 			tick,
-			rawData: stream,
+			rawData: messageStream,
 			tables,
 		};
 	},

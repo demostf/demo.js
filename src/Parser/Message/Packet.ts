@@ -18,6 +18,7 @@ import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
 import {MessageHandler, MessageType, PacketMessage} from '../../Data/Message';
 import {BitStream} from 'bit-buffer';
 import {ParserState} from '../../Data/ParserState';
+import {Vector} from '../../Data/Vector';
 
 type PacketHandlerMap = Map<PacketTypeId, PacketHandler<IPacket>>;
 
@@ -82,16 +83,34 @@ const handlers: PacketHandlerMap = new Map<PacketTypeId, PacketHandler<IPacket>>
 ]);
 
 export const PacketMessageHandler: MessageHandler<PacketMessage> = {
-	parseMessage: (stream: BitStream, tick: number, state: ParserState) => {
+	parseMessage: (stream: BitStream, state: ParserState) => {
+		const tick = stream.readInt32();
+		const flags = stream.readInt32();
+
+		const viewOrigin: [Vector, Vector] = [new Vector(0, 0, 0), new Vector(0, 0, 0)];
+		const viewAngles: [Vector, Vector] = [new Vector(0, 0, 0), new Vector(0, 0, 0)];
+		const localViewAngles: [Vector, Vector] = [new Vector(0, 0, 0), new Vector(0, 0, 0)];
+
+		for (let j = 0; j < 2; j++) {
+			viewOrigin[j] = new Vector(stream.readFloat32(), stream.readFloat32(), stream.readFloat32());
+			viewAngles[j] = new Vector(stream.readFloat32(), stream.readFloat32(), stream.readFloat32());
+			localViewAngles[j] = new Vector(stream.readFloat32(), stream.readFloat32(), stream.readFloat32());
+		}
+		const sequenceIn = stream.readInt32();
+		const sequenceOut = stream.readInt32();
+
+		const length = stream.readInt32();
+		const messageStream = stream.readBitStream(length * 8);
+
 		const packets: IPacket[] = [];
 		let lastPacketType = 0;
-		while (stream.bitsLeft > 6) { // last 6 bits for NOOP
-			const type = stream.readBits(6) as PacketTypeId;
+		while (messageStream.bitsLeft > 6) { // last 6 bits for NOOP
+			const type = messageStream.readBits(6) as PacketTypeId;
 			if (type !== 0) {
 				const parser = handlers.get(type);
 				if (parser) {
 					const skip = state.skippedPackets.indexOf(type) !== -1;
-					const packet = parser.parser(stream, state, skip);
+					const packet = parser.parser(messageStream, state, skip);
 					packets.push(packet);
 				} else {
 					throw new Error(`Unknown packet type ${type} just parsed a ${PacketTypeId[lastPacketType]}`);
@@ -102,8 +121,14 @@ export const PacketMessageHandler: MessageHandler<PacketMessage> = {
 		return {
 			type: MessageType.Packet,
 			tick,
-			rawData: stream,
-			packets
+			rawData: messageStream,
+			packets,
+			flags,
+			viewOrigin,
+			viewAngles,
+			localViewAngles,
+			sequenceIn,
+			sequenceOut
 		};
 	},
 	encodeMessage: (message, stream) => {
