@@ -31,7 +31,6 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	stream.index = 0;
 
 	const result = parser(stream);
-	deepEqual(result, data);
 	if (!deepEqual(result, data)) {
 		assert.deepEqual(result, data, 'Re-decoded value not equal to original value' + message);
 	}

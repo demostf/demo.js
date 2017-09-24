@@ -5,6 +5,7 @@ export type SendTableName = string;
 export class SendTable {
 	public name: SendTableName;
 	public props: SendPropDefinition[];
+	public needsDecoder: boolean;
 	private cachedFlattenedProps: SendPropDefinition[];
 
 	constructor(name) {

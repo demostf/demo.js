@@ -49,6 +49,7 @@ export function propDataDefinition(propData): SendPropDefinition {
 
 export function hydrateTable(tableData): SendTable {
 	const table = new SendTable(tableData.name);
+	table.needsDecoder = tableData.needsDecoder;
 	table.props = tableData.props.map(propDataDefinition);
 	return table;
 }
