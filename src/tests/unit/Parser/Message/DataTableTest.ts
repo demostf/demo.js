@@ -8,7 +8,6 @@ import {DataTablesMessage} from '../../../../Data/Message';
 import {hydrateTable} from '../Packet/hydrate';
 import {ServerClass} from '../../../../Data/ServerClass';
 import * as assert from 'assert';
-import {deepEqual} from 'assert';
 
 const data = Array.from(readFileSync(__dirname + '/../../../data/dataTableData.bin').values());
 const expectedRaw = JSON.parse(gunzipSync(readFileSync(__dirname + '/../../../data/dataTableResult.json.gz')).toString('utf8')) as DataTablesMessage;

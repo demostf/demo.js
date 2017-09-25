@@ -12,36 +12,26 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 		// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/ST/StringTableParser.cs
 		const tableCount = messageStream.readUint8();
 		const tables: StringTableObject[] = [];
-		let extraDataLength;
 		for (let i = 0; i < tableCount; i++) {
 			const entries: StringTableEntry[] = [];
 			const tableName = messageStream.readASCIIString();
 			const entryCount = messageStream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
-				let entry: StringTableEntry;
-				try {
-					entry = {
-						text: messageStream.readUTF8String(),
-					};
-				} catch (e) {
-					return {
-						type: MessageType.StringTables,
-						tick,
-						rawData: messageStream,
-						tables,
-					};
-				}
+				const entry: StringTableEntry = {
+					text: messageStream.readUTF8String(),
+				};
 				if (messageStream.readBoolean()) {
-					extraDataLength = messageStream.readUint16();
+					const extraDataLength = messageStream.readUint16();
 					if ((extraDataLength * 8) > messageStream.bitsLeft) {
 						// extradata to long, can't continue parsing the tables
 						// seems to happen in POV demos after the MyM update
-						return {
-							type: MessageType.StringTables,
-							tick,
-							rawData: messageStream,
-							tables,
-						};
+						throw new Error(`to long extraData ${extraDataLength} from ${messageStream.bitsLeft}`);
+						// return {
+						// 	type: MessageType.StringTables,
+						// 	tick,
+						// 	rawData: messageStream,
+						// 	tables,
+						// };
 					}
 					entry.extraData = messageStream.readBitStream(extraDataLength * 8);
 				}
@@ -52,15 +42,16 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 				name: tableName,
 				maxEntries: entryCount,
 			};
-			tables.push(table);
-			if (messageStream.readBits(1)) {
-				messageStream.readASCIIString();
-				if (messageStream.readBits(1)) {
-					// throw 'more extra data not implemented';
-					extraDataLength = messageStream.readBits(16);
-					messageStream.readBits(extraDataLength);
+
+			if (messageStream.readBoolean()) {
+				table.tableEntry = {text: messageStream.readASCIIString()};
+				if (messageStream.readBoolean()) {
+					const extraDataLength = messageStream.readBits(16);
+					table.tableEntry.extraData = messageStream.readBitStream(extraDataLength);
 				}
 			}
+
+			tables.push(table);
 		}
 		return {
 			type: MessageType.StringTables,
@@ -70,6 +61,56 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 		};
 	},
 	encodeMessage: (message, stream) => {
-		throw new Error('Not implemented');
+		stream.writeUint32(message.tick);
+
+		const lengthStart = stream.index;
+		stream.index += 32;
+		const dataStart = stream.index;
+
+		stream.writeUint8(message.tables.length);
+
+		for (const table of message.tables) {
+			stream.writeASCIIString(table.name);
+			stream.writeUint16(table.entries.length);
+
+			for (const entry of table.entries) {
+				stream.writeUTF8String(entry.text);
+				if (entry.extraData) {
+					stream.writeBoolean(true);
+
+					stream.writeUint16(Math.ceil(entry.extraData.length / 8));
+					entry.extraData.index = 0;
+					stream.writeBitStream(entry.extraData, entry.extraData.length);
+				} else {
+					stream.writeBoolean(false);
+				}
+			}
+
+			if (table.tableEntry) {
+				stream.writeBoolean(true);
+				stream.writeASCIIString(table.tableEntry.text);
+				if (table.tableEntry.extraData) {
+					stream.writeBoolean(true);
+					stream.writeUint16(table.tableEntry.extraData.length);
+					table.tableEntry.extraData.index = 0;
+					stream.writeBitStream(table.tableEntry.extraData, table.tableEntry.extraData.length);
+				} else {
+					stream.writeBoolean(false);
+				}
+			} else {
+				stream.writeBoolean(false);
+			}
+
+		}
+
+		const dataEnd = stream.index;
+
+		stream.index = lengthStart;
+
+		const byteLength = Math.ceil((dataEnd - dataStart) / 8);
+		stream.writeUint32(byteLength);
+
+		// align to byte;
+		stream.index = dataStart + byteLength * 8;
 	}
 };
