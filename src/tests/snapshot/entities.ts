@@ -25,10 +25,10 @@ function writeEntities(name: string) {
 
 	const resultData = getResultData(parser.getPackets());
 
-	const writeStream = createWriteStream(targetFile, 'utf8');
+	const writeStream = createWriteStream(targetFile);
 
 	for (const result of resultData) {
-		writeStream.write(JSON.stringify(result) + '\n');
+		writeStream.write(JSON.stringify(result) + '\n', 'utf8');
 	}
 
 	writeStream.end();

@@ -45,7 +45,7 @@ export function ParseCreateStringTable(stream: BitStream): CreateStringTablePack
 			throw new Error('Incorrect length of decompressed stringtable');
 		}
 
-		data = new BitStream(decompressedData.buffer);
+		data = new BitStream(decompressedData.buffer as ArrayBuffer);
 	}
 
 	const table: StringTable = {

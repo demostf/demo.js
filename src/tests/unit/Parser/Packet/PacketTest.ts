@@ -11,7 +11,7 @@ export function getStream(data: string | number[]) {
 		return new BitStream(buffer);
 	} else {
 		const array = new Uint8Array(data as number[]);
-		return new BitStream(array.buffer);
+		return new BitStream(array.buffer as ArrayBuffer);
 	}
 }
 
