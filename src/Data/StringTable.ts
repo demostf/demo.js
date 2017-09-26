@@ -6,7 +6,7 @@ export interface StringTable {
 	maxEntries: number;
 	fixedUserDataSize?: number;
 	fixedUserDataSizeBits?: number;
-	tableEntry?: StringTableEntry;
+	clientEntries?: StringTableEntry[];
 }
 
 export interface StringTableEntry {

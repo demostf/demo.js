@@ -23,15 +23,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 				if (messageStream.readBoolean()) {
 					const extraDataLength = messageStream.readUint16();
 					if ((extraDataLength * 8) > messageStream.bitsLeft) {
-						// extradata to long, can't continue parsing the tables
-						// seems to happen in POV demos after the MyM update
-						throw new Error(`to long extraData ${extraDataLength} from ${messageStream.bitsLeft}`);
-						// return {
-						// 	type: MessageType.StringTables,
-						// 	tick,
-						// 	rawData: messageStream,
-						// 	tables,
-						// };
+						throw new Error(`to long extraData ${tableName}[${i}]`);
 					}
 					entry.extraData = messageStream.readBitStream(extraDataLength * 8);
 				}
@@ -40,14 +32,19 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			const table: StringTableObject = {
 				entries,
 				name: tableName,
-				maxEntries: entryCount
+				maxEntries: entryCount,
+				clientEntries: []
 			};
 
 			if (messageStream.readBoolean()) {
-				table.tableEntry = {text: messageStream.readASCIIString()};
-				if (messageStream.readBoolean()) {
-					const extraDataLength = messageStream.readBits(16);
-					table.tableEntry.extraData = messageStream.readBitStream(extraDataLength);
+				const clientEntries = messageStream.readUint16();
+				for (let j = 0; j < clientEntries; j++) {
+					const entry: StringTableEntry = {text: messageStream.readUTF8String()};
+					if (messageStream.readBoolean()) {
+						const extraDataLength = messageStream.readBits(16);
+						entry.extraData = messageStream.readBitStream(extraDataLength * 8);
+					}
+					(table.clientEntries as StringTableEntry[]).push(entry);
 				}
 			}
 
@@ -74,28 +71,14 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			stream.writeUint16(table.entries.length);
 
 			for (const entry of table.entries) {
-				stream.writeUTF8String(entry.text);
-				if (entry.extraData) {
-					stream.writeBoolean(true);
-
-					stream.writeUint16(Math.ceil(entry.extraData.length / 8));
-					entry.extraData.index = 0;
-					stream.writeBitStream(entry.extraData, entry.extraData.length);
-				} else {
-					stream.writeBoolean(false);
-				}
+				writeEntry(entry, stream);
 			}
 
-			if (table.tableEntry) {
+			if (table.clientEntries) {
 				stream.writeBoolean(true);
-				stream.writeASCIIString(table.tableEntry.text);
-				if (table.tableEntry.extraData) {
-					stream.writeBoolean(true);
-					stream.writeUint16(table.tableEntry.extraData.length);
-					table.tableEntry.extraData.index = 0;
-					stream.writeBitStream(table.tableEntry.extraData, table.tableEntry.extraData.length);
-				} else {
-					stream.writeBoolean(false);
+				stream.writeUint16(table.clientEntries.length);
+				for (const entry of table.clientEntries) {
+					writeEntry(entry, stream);
 				}
 			} else {
 				stream.writeBoolean(false);
@@ -114,3 +97,16 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 		stream.index = dataStart + byteLength * 8;
 	}
 };
+
+function writeEntry(entry: StringTableEntry, stream: BitStream) {
+	stream.writeUTF8String(entry.text);
+	if (entry.extraData) {
+		stream.writeBoolean(true);
+
+		stream.writeUint16(Math.ceil(entry.extraData.length / 8));
+		entry.extraData.index = 0;
+		stream.writeBitStream(entry.extraData, entry.extraData.length);
+	} else {
+		stream.writeBoolean(false);
+	}
+}

@@ -26,6 +26,10 @@ unit: node_modules
 lint: node_modules
 	node_modules/.bin/tslint -p tsconfig.json
 
+.PHONY: lint-fix
+lint-fix: node_modules
+	node_modules/.bin/tslint -p tsconfig.json --fix
+
 .PHONY: src/Data/GameEventTypes.ts
 src/Data/GameEventTypes.ts:
 	node bin/analyse.js --create-event-definitions src/tests/data/celt.dem > src/Data/GameEventTypes.ts
