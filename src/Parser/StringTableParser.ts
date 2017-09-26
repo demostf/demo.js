@@ -83,11 +83,13 @@ export function parseStringTableEntries(
 
 export function guessStringTableEntryLength(table: StringTable, entries: StringTableEntry[]): number {
 	// a rough guess of how many bytes are needed to encode the table entries
-	const entryBytes = Math.ceil(logBase2(table.maxEntries) / 8);
+	const entryBits = Math.ceil(logBase2(table.maxEntries) / 8);
 	return entries.reduce((length: number, entry: StringTableEntry) => {
 		return length +
-			entryBytes +
+			entryBits +
+			1 + // new index bit
 			1 + // misc boolean
+			1 + // substring bit
 			entry.text.length + 1 + // +1 for null termination
 			(entry.extraData ? Math.ceil(entry.extraData.length / 8) : 0);
 	}, 1);
