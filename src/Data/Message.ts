@@ -18,11 +18,11 @@ export enum MessageType {
 }
 
 export interface BaseMessage {
-	tick: number;
 	rawData: BitStream;
 }
 
 export interface PacketMessage extends BaseMessage {
+	tick: number;
 	type: MessageType.Packet;
 	packets: Packet[];
 	viewOrigin: [Vector, Vector];
@@ -36,30 +36,35 @@ export interface PacketMessage extends BaseMessage {
 export type SigonMessage = PacketMessage;
 
 export interface SyncTickMessage extends BaseMessage {
+	tick: number;
 	type: MessageType.SyncTick;
-}
-
-export interface ConsoleCmdMessage extends BaseMessage {
-	type: MessageType.ConsoleCmd;
-	command: string;
-}
-
-export interface UserCmdMessage extends BaseMessage {
-	type: MessageType.UserCmd;
-	sequenceOut: number;
-}
-
-export interface DataTablesMessage extends BaseMessage {
-	type: MessageType.DataTables;
-	tables: SendTable[];
-	serverClasses: ServerClass[];
 }
 
 export interface StopMessage extends BaseMessage {
 	type: MessageType.Stop;
 }
 
+export interface ConsoleCmdMessage extends BaseMessage {
+	tick: number;
+	type: MessageType.ConsoleCmd;
+	command: string;
+}
+
+export interface UserCmdMessage extends BaseMessage {
+	tick: number;
+	type: MessageType.UserCmd;
+	sequenceOut: number;
+}
+
+export interface DataTablesMessage extends BaseMessage {
+	tick: number;
+	type: MessageType.DataTables;
+	tables: SendTable[];
+	serverClasses: ServerClass[];
+}
+
 export interface StringTablesMessage extends BaseMessage {
+	tick: number;
 	type: MessageType.StringTables;
 	tables: StringTable[];
 }

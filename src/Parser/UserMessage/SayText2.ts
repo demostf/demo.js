@@ -44,7 +44,8 @@ export function ParseSayText2(stream: BitStream): SayText2Packet { // 4: ParseSa
 	}
 
 	return {
-		packetType: 'sayText2',
+		packetType: 'userMessage',
+		userMessageType: 'sayText2',
 		client,
 		raw,
 		kind,

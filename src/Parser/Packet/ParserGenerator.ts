@@ -1,16 +1,20 @@
 import {BitStream} from 'bit-buffer';
-import {PacketMapType, PacketType} from '../../Data/Packet';
+import {Packet, PacketMapType, PacketType} from '../../Data/Packet';
 import {Encoder, PacketHandler, Parser} from './Parser';
+import {UserMessagePacketType} from '../../Data/UserMessage';
 
-export function make<T extends PacketType>(name: T, definition: string): PacketHandler<PacketMapType[T]> {
+export interface NamedPacketHandler<P extends Packet, N extends PacketType | UserMessagePacketType> extends PacketHandler<P> {
+	name: N;
+}
+
+export function make<T extends PacketType | UserMessagePacketType>(name: T, definition: string, nameKey: string = 'packetType', extraData: any = {}): NamedPacketHandler<PacketMapType[T], T> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');
 	}).filter((part) => part[0]);
 	const parser: Parser<PacketMapType[T]> = (stream: BitStream) => {
-		const result = {
-			packetType: name
-		};
+		const result = Object.assign({}, extraData);
+		result[nameKey] = name;
 		try {
 			for (const group of items) {
 				const value = readItem(stream, group[1], result);
@@ -28,7 +32,7 @@ export function make<T extends PacketType>(name: T, definition: string): PacketH
 			writeItem(stream, group[1], packet, packet[group[0]]);
 		}
 	};
-	return {parser, encoder};
+	return {parser, encoder, name};
 }
 
 function readItem(stream: BitStream, description: string, data) {

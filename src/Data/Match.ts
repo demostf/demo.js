@@ -85,8 +85,12 @@ export class Match {
 					this.calculateUserInfo();
 				}
 				break;
-			case 'sayText2':
-				handleSayText2(packet, this);
+			case 'userMessage':
+				switch (packet.userMessageType) {
+					case 'sayText2':
+						handleSayText2(packet, this);
+						break;
+				}
 				break;
 			case 'gameEvent':
 				handleGameEvent(packet, this);

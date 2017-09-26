@@ -2,21 +2,21 @@ import {BitStream} from 'bit-buffer';
 import {
 	UnknownUserMessageBasePacket,
 	UnknownUserMessagePacket,
-	UserMessagePacket,
+	UserMessagePacket, UserMessagePacketType,
 	UserMessagePacketTypeMap,
 	UserMessageType,
 	UserMessageTypeMap
 } from '../../Data/UserMessage';
 import {EncodeSayText2, ParseSayText2} from '../UserMessage/SayText2';
-import {PacketHandler} from './Parser';
-import {make} from './ParserGenerator';
+import {make, NamedPacketHandler} from './ParserGenerator';
 
-function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(packetType: T): PacketHandler<UserMessageTypeMap[T]> {
+function unknownPacketHandler<T extends UnknownUserMessagePacket['userMessageType']>(userMessageType: T): NamedPacketHandler<UserMessageTypeMap[T], UserMessagePacketType> {
 	return {
 		parser: (data: BitStream) => {
 			return {
-				packetType,
-				type: UserMessagePacketTypeMap.get(packetType),
+				packetType: 'userMessage',
+				userMessageType,
+				type: UserMessagePacketTypeMap.get(userMessageType),
 				data
 			} as UserMessageTypeMap[T];
 		},
@@ -24,23 +24,38 @@ function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(
 			packet.data.index = 0;
 			data.writeBitStream(packet.data);
 			packet.data.index = 0;
-		}
+		},
+		name: userMessageType
 	};
 }
 
-const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>> =
-	new Map<UserMessageType, PacketHandler<UserMessagePacket>>([
-		[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2}],
-		[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}substitute1{s}substitute2{s}substitute3{s}substitute4{s}')],
-		[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
-		[UserMessageType.Train, make('train', 'data{8}')],
-		[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
+const userMessageParsers: Map<UserMessageType, NamedPacketHandler<UserMessagePacket, UserMessagePacketType>> =
+	new Map<UserMessageType, NamedPacketHandler<UserMessagePacket, UserMessagePacketType>>([
+		[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2, name: 'sayText2'}],
+		[UserMessageType.TextMsg,
+			make('textMsg', 'destType{8}text{s}substitute1{s}substitute2{s}substitute3{s}substitute4{s}', 'userMessageType', {
+				packetType: 'userMessage'
+			})],
+		[UserMessageType.ResetHUD,
+			make('resetHUD', 'data{8}', 'userMessageType', {
+				packetType: 'userMessage'
+			})],
+		[UserMessageType.Train,
+			make('train', 'data{8}', 'userMessageType', {
+				packetType: 'userMessage'
+			})],
+		[UserMessageType.VoiceSubtitle,
+			make('voiceSubtitle', 'client{8}menu{8}item{8}', 'userMessageType', {
+				packetType: 'userMessage'
+			})],
 		[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')],
-		[UserMessageType.Shake, make('shake', 'command{8}amplitude{f32}frequency{f32}duration{f32}')]
+		[UserMessageType.Shake,
+			make('shake', 'command{8}amplitude{f32}frequency{f32}duration{f32}', 'userMessageType', {
+				packetType: 'userMessage'
+			})]
 	]);
 
 export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: user message
-	const s = stream.index;
 	const type = stream.readUint8();
 	const length = stream.readBits(11);
 	const messageData = stream.readBitStream(length);
@@ -49,7 +64,8 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 
 	if (!handler) {
 		return {
-			packetType: 'unknownUserMessage',
+			packetType: 'userMessage',
+			userMessageType: 'unknownUserMessage',
 			type,
 			data: messageData
 		};
@@ -59,14 +75,14 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 }
 
 export function EncodeUserMessage(packet: UserMessagePacket, stream: BitStream) {
-	if (packet.packetType === 'unknownUserMessage') {
+	if (packet.userMessageType === 'unknownUserMessage') {
 		stream.writeUint8(packet.type);
 		stream.writeBits(packet.data.length, 11);
 		packet.data.index = 0;
 		stream.writeBitStream(packet.data);
 		packet.data.index = 0;
 	} else {
-		const messageType = UserMessagePacketTypeMap.get(packet.packetType);
+		const messageType = UserMessagePacketTypeMap.get(packet.userMessageType);
 		if (!messageType) {
 			throw new Error(`Unknown userMessage type ${messageType}`);
 		}
@@ -78,7 +94,7 @@ export function EncodeUserMessage(packet: UserMessagePacket, stream: BitStream) 
 
 		const handler = userMessageParsers.get(messageType);
 		if (!handler) {
-			throw new Error(`No encoder for userMessage ${packet.packetType}(${messageType})`);
+			throw new Error(`No encoder for userMessage ${packet.userMessageType}(${messageType})`);
 		}
 
 		handler.encoder(packet, stream);
