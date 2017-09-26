@@ -55,32 +55,32 @@ function encodeGameEventValue(value: GameEventValue | null, stream: BitStream, e
 	switch (entry.type) {
 		case GameEventValueType.STRING:
 			if (typeof value !== 'string') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected string got ${typeof value}`);
 			}
 			return stream.writeASCIIString(value);
 		case GameEventValueType.FLOAT:
 			if (typeof value !== 'number') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected number got ${typeof value}`);
 			}
 			return stream.writeFloat32(value);
 		case GameEventValueType.LONG:
 			if (typeof value !== 'number') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected number got ${typeof value}`);
 			}
 			return stream.writeUint32(value);
 		case GameEventValueType.SHORT:
 			if (typeof value !== 'number') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected number got ${typeof value}`);
 			}
 			return stream.writeUint16(value);
 		case GameEventValueType.BYTE:
 			if (typeof value !== 'number') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected number got ${typeof value}`);
 			}
 			return stream.writeUint8(value);
 		case GameEventValueType.BOOLEAN:
 			if (typeof value !== 'boolean') {
-				throw new Error('Invalid value for game event');
+				throw new Error(`Invalid value for game event, expected boolean got ${typeof value}`);
 			}
 			return stream.writeBoolean(value);
 	}
