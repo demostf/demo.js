@@ -2,7 +2,12 @@ import {BitStream} from 'bit-buffer';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
 import {logBase2} from '../Math';
 
-export function parseStringTableEntries(stream: BitStream, table: StringTable, entryCount: number, existingEntries: StringTableEntry[] = []): StringTableEntry[] {
+export function parseStringTableEntries(
+	stream: BitStream,
+	table: StringTable,
+	entryCount: number,
+	existingEntries: StringTableEntry[] = []
+): StringTableEntry[] {
 	const entryBits = logBase2(table.maxEntries);
 	const entries: StringTableEntry[] = [];
 	let lastEntry = -1;
@@ -64,7 +69,7 @@ export function parseStringTableEntries(stream: BitStream, table: StringTable, e
 		} else {
 			entries[entryIndex] = {
 				text: value,
-				extraData: userData,
+				extraData: userData
 			};
 			history.push(entries[entryIndex]);
 		}
@@ -90,7 +95,7 @@ export function guessStringTableEntryLength(table: StringTable, entries: StringT
 
 export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[]) {
 	const entryBits = logBase2(table.maxEntries);
-	let lastIndex = -1;
+	const lastIndex = -1;
 	for (let i = 0; i < entries.length; i++) {
 		if (entries[i]) {
 			const entry = entries[i];

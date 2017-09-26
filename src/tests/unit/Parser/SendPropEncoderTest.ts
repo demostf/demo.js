@@ -1,9 +1,9 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './Packet/PacketTest';
-import {readBitVar, readVarInt, writeBitVar, writeVarInt} from '../../../Parser/readBitVar';
-import {SendPropParser} from '../../../Parser/SendPropParser';
 import {SendPropDefinition, SendPropFlag, SendPropType} from '../../../Data/SendPropDefinition';
+import {readBitVar, readVarInt, writeBitVar, writeVarInt} from '../../../Parser/readBitVar';
 import {SendPropEncoder} from '../../../Parser/SendPropEncoder';
+import {SendPropParser} from '../../../Parser/SendPropParser';
+import {assertEncoder, assertParser, getStream} from './Packet/PacketTest';
 
 function basicIntReader(bitCount: number, signed: boolean) {
 	return (stream: BitStream) => {

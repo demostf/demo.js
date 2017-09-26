@@ -1,14 +1,14 @@
+import {BitStream} from 'bit-buffer';
+import {TextEncoder} from 'text-encoding-shim';
+import {ConsoleCmdMessage, MessageHandler, MessageType} from '../../Data/Message';
 import {ConsoleCmdPacket} from '../../Data/Packet';
 import {Parser} from './Parser';
-import {BitStream} from 'bit-buffer';
-import {ConsoleCmdMessage, MessageHandler, MessageType} from '../../Data/Message';
-import {TextEncoder} from 'text-encoding-shim';
 
 export class ConsoleCmd extends Parser {
 	public parse(): ConsoleCmdPacket[] {
 		return [{
 			packetType: 'consoleCmd',
-			command: this.stream.readUTF8String(),
+			command: this.stream.readUTF8String()
 		}];
 	}
 }

@@ -1,5 +1,5 @@
-import {MessageHandler, MessageType, SyncTickMessage} from '../../Data/Message';
 import {BitStream} from 'bit-buffer';
+import {MessageHandler, MessageType, SyncTickMessage} from '../../Data/Message';
 
 export const SyncTickHandler: MessageHandler<SyncTickMessage> = {
 	parseMessage: (stream: BitStream) => {

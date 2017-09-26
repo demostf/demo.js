@@ -12,7 +12,7 @@ export function ParseVoiceData(stream: BitStream): VoiceDataPacket {
 		client,
 		proximity,
 		length,
-		data,
+		data
 	};
 }
 

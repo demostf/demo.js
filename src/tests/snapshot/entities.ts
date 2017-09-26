@@ -1,20 +1,20 @@
 import * as assert from 'assert';
-import {readFileSync, createWriteStream, createReadStream} from 'fs';
-import {Demo} from '../../Demo';
-import {Packet} from '../../Data/Packet';
 import {BitStream} from 'bit-buffer';
+import {createReadStream, createWriteStream, readFileSync} from 'fs';
 import * as split2 from 'split2';
-import {createUnzip, createGunzip} from 'zlib';
 import {PassThrough} from 'stream';
+import {createGunzip, createUnzip} from 'zlib';
+import {Packet} from '../../Data/Packet';
 import {EntityId, PVS} from '../../Data/PacketEntity';
 import {SendPropValue} from '../../Data/SendProp';
+import {Demo} from '../../Demo';
 
 interface ResultData {
-	tick: number,
-	serverClass: string,
-	id: EntityId,
-	props: {[propName: string]: SendPropValue},
-	pvs: PVS
+	tick: number;
+	serverClass: string;
+	id: EntityId;
+	props: {[propName: string]: SendPropValue};
+	pvs: PVS;
 }
 
 function writeEntities(name: string) {
@@ -48,7 +48,7 @@ function* getResultData(packets: Iterable<Packet>): IterableIterator<ResultData>
 					entityProps[`${prop.definition.name}`] = prop.value;
 				}
 				yield {
-					tick: tick,
+					tick,
 					serverClass: entity.serverClass.name,
 					id: entity.entityIndex,
 					props: entityProps,
@@ -82,7 +82,7 @@ function testEntities(name: string, entityCount: number) {
 			assert.equal(parsed, entityCount, 'unexpected number of entities');
 
 			resolve();
-		}).on('error', err => {
+		}).on('error', (err) => {
 			reject(err);
 		});
 	});

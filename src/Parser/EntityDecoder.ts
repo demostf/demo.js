@@ -2,8 +2,8 @@ import {BitStream} from 'bit-buffer';
 import {SendProp} from '../Data/SendProp';
 import {SendTable} from '../Data/SendTable';
 import {readBitVar, writeBitVar} from './readBitVar';
-import {SendPropParser} from './SendPropParser';
 import {SendPropEncoder} from './SendPropEncoder';
+import {SendPropParser} from './SendPropParser';
 
 export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendProp[] {
 	let index = -1;
@@ -29,13 +29,15 @@ export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stre
 	let lastIndex = -1;
 	for (const prop of props) {
 		stream.writeBoolean(true);
-		const index = allProps.findIndex(propDef => propDef.fullName === prop.definition.fullName);
+		const index = allProps.findIndex((propDef) => propDef.fullName === prop.definition.fullName);
 		if (index === -1) {
 			throw new Error(`Unknown definition for property ${prop.definition.fullName} in ${sendTable.name}`);
 		}
 
 		if (index < lastIndex) {
-			throw new Error(`Property index not incremental while encoding ${prop.definition.fullName} after ${allProps[lastIndex].fullName} in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
+			throw new Error(`Property index not incremental while encoding` +
+				`${prop.definition.fullName} after ${allProps[lastIndex].fullName}` +
+				`in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
 		}
 		writeFieldIndex(index, stream, lastIndex);
 		lastIndex = index;

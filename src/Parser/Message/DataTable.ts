@@ -1,8 +1,8 @@
+import {BitStream} from 'bit-buffer';
+import {DataTablesMessage, MessageHandler, MessageType} from '../../Data/Message';
 import {SendPropDefinition, SendPropFlag, SendPropType} from '../../Data/SendPropDefinition';
 import {SendTable} from '../../Data/SendTable';
 import {ServerClass} from '../../Data/ServerClass';
-import {DataTablesMessage, MessageHandler, MessageType} from '../../Data/Message';
-import {BitStream} from 'bit-buffer';
 
 export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 	parseMessage: (stream: BitStream) => {
@@ -129,7 +129,7 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 			tick,
 			rawData: messageStream,
 			tables,
-			serverClasses,
+			serverClasses
 		};
 	},
 	encodeMessage: (message, stream) => {

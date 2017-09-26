@@ -49,7 +49,7 @@ export function ParseSayText2(stream: BitStream): SayText2Packet { // 4: ParseSa
 		raw,
 		kind,
 		from,
-		text,
+		text
 	};
 }
 

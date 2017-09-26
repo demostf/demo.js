@@ -34,7 +34,14 @@
         "timeEnd",
         "trace"
       ]
-    }
+    },
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ]
   },
   "jsRules": {
     "max-line-length": {

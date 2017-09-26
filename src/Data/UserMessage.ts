@@ -1,4 +1,3 @@
-import {BasePacket} from './Packet';
 import {BitStream} from 'bit-buffer';
 
 export enum UserMessageType {
@@ -59,14 +58,14 @@ export enum UserMessageType {
 	HapPunch = 54,
 	HapSetDrag = 55,
 	HapSet = 56,
-	HapMeleeContact = 57,
+	HapMeleeContact = 57
 }
 
-export interface BaseDataUserPacket extends BasePacket {
+export interface BaseDataUserPacket {
 	data: number;
 }
 
-export interface SayText2Packet extends BasePacket {
+export interface SayText2Packet {
 	packetType: 'sayText2';
 	client: number;
 	raw: number;
@@ -82,7 +81,7 @@ export enum HudTextLocation {
 	HUD_PRINTCENTER = 4
 }
 
-export interface TextMessagePacket extends BasePacket {
+export interface TextMessagePacket {
 	packetType: 'textMsg';
 	destType: HudTextLocation;
 	text: string;
@@ -96,14 +95,14 @@ export interface TrainPacket extends BaseDataUserPacket {
 	packetType: 'train';
 }
 
-export interface VoiceSubtitlePacket extends BasePacket {
+export interface VoiceSubtitlePacket {
 	packetType: 'voiceSubtitle';
 	client: number;
 	menu: number;
 	item: number;
 }
 
-export interface ShakePacket extends BasePacket {
+export interface ShakePacket {
 	packetType: 'shake';
 	command: number;
 	amplitude: number;
@@ -111,7 +110,7 @@ export interface ShakePacket extends BasePacket {
 	duration: number;
 }
 
-export interface UnknownUserMessageBasePacket extends BasePacket {
+export interface UnknownUserMessageBasePacket {
 	data: BitStream;
 	type: number;
 }
@@ -136,7 +135,7 @@ export type UserMessagePacket = SayText2Packet
 	| BreakModelPumpkinPacket
 	| ShakePacket;
 
-export type UserMessageTypeMap = {
+export interface UserMessageTypeMap {
 	sayText2: SayText2Packet;
 	textMsg: TextMessagePacket;
 	unknownUserMessage: GenericUnknownUserMessagePacket;
@@ -147,12 +146,13 @@ export type UserMessageTypeMap = {
 	shake: ShakePacket;
 }
 
-export const UserMessagePacketTypeMap: Map<UserMessagePacket['packetType'], UserMessageType> = new Map<UserMessagePacket['packetType'], UserMessageType>([
-	['sayText2', UserMessageType.SayText2],
-	['textMsg', UserMessageType.TextMsg],
-	['train', UserMessageType.Train],
-	['voiceSubtitle', UserMessageType.VoiceSubtitle],
-	['breakModelPumpkin', UserMessageType.BreakModel_Pumpkin],
-	['resetHUD', UserMessageType.ResetHUD],
-	['shake', UserMessageType.Shake]
-]);
+export const UserMessagePacketTypeMap: Map<UserMessagePacket['packetType'], UserMessageType> =
+	new Map<UserMessagePacket['packetType'], UserMessageType>([
+		['sayText2', UserMessageType.SayText2],
+		['textMsg', UserMessageType.TextMsg],
+		['train', UserMessageType.Train],
+		['voiceSubtitle', UserMessageType.VoiceSubtitle],
+		['breakModelPumpkin', UserMessageType.BreakModel_Pumpkin],
+		['resetHUD', UserMessageType.ResetHUD],
+		['shake', UserMessageType.Shake]
+	]);

@@ -1,4 +1,3 @@
-import {make} from '../Packet/ParserGenerator';
 import {EncodeBSPDecal, ParseBSPDecal} from '../Packet/BSPDecal';
 import {EncodeClassInfo, ParseClassInfo} from '../Packet/ClassInfo';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../Packet/CreateStringTable';
@@ -6,6 +5,7 @@ import {EncodeGameEvent, ParseGameEvent} from '../Packet/GameEvent';
 import {EncodeGameEventList, ParseGameEventList} from '../Packet/GameEventList';
 import {EncodePacketEntities, ParsePacketEntities} from '../Packet/PacketEntities';
 import {PacketHandler} from '../Packet/Parser';
+import {make} from '../Packet/ParserGenerator';
 import {EncodeParseSounds, ParseParseSounds} from '../Packet/ParseSounds';
 import {EncodeSetConVar, ParseSetConVar} from '../Packet/SetConVar';
 import {EncodeTempEntities, ParseTempEntities} from '../Packet/TempEntities';
@@ -14,9 +14,9 @@ import {EncodeUserMessage, ParseUserMessage} from '../Packet/UserMessage';
 import {EncodeVoiceData, ParseVoiceData} from '../Packet/VoiceData';
 import {EncodeVoiceInit, ParseVoiceInit} from '../Packet/VoiceInit';
 
-import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
-import {MessageHandler, MessageType, PacketMessage} from '../../Data/Message';
 import {BitStream} from 'bit-buffer';
+import {MessageHandler, MessageType, PacketMessage} from '../../Data/Message';
+import {Packet as IPacket, PacketTypeId} from '../../Data/Packet';
 import {ParserState} from '../../Data/ParserState';
 import {Vector} from '../../Data/Vector';
 
@@ -79,7 +79,7 @@ const handlers: PacketHandlerMap = new Map<PacketTypeId, PacketHandler<IPacket>>
 	[PacketTypeId.getCvarValue,
 		make('getCvarValue', 'cookie{32}value{s}')],
 	[PacketTypeId.cmdKeyValues,
-		make('cmdKeyValues', 'length{32}data{$length}')],
+		make('cmdKeyValues', 'length{32}data{$length}')]
 ]);
 
 export const PacketMessageHandler: MessageHandler<PacketMessage> = {

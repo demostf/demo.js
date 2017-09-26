@@ -1,8 +1,8 @@
 import {BitStream} from 'bit-buffer';
 import {BSPDecalPacket} from '../../Data/Packet';
 import {Vector} from '../../Data/Vector';
-import {SendPropParser} from '../SendPropParser';
 import {SendPropEncoder} from '../SendPropEncoder';
+import {SendPropParser} from '../SendPropParser';
 
 export function getVecCoord(stream: BitStream): Vector {
 	const hasX = stream.readBoolean();
@@ -12,7 +12,7 @@ export function getVecCoord(stream: BitStream): Vector {
 	return {
 		x: hasX ? SendPropParser.readBitCoord(stream) : 0,
 		y: hasY ? SendPropParser.readBitCoord(stream) : 0,
-		z: hasZ ? SendPropParser.readBitCoord(stream) : 0,
+		z: hasZ ? SendPropParser.readBitCoord(stream) : 0
 	};
 }
 
@@ -49,7 +49,7 @@ export function ParseBSPDecal(stream: BitStream): BSPDecalPacket { // 21: ParseB
 		textureIndex,
 		entIndex,
 		modelIndex,
-		lowPriority,
+		lowPriority
 	};
 }
 

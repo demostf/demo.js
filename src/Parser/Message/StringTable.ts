@@ -1,6 +1,6 @@
-import {StringTable as StringTableObject, StringTableEntry} from '../../Data/StringTable';
-import {MessageHandler, MessageType, StringTablesMessage} from '../../Data/Message';
 import {BitStream} from 'bit-buffer';
+import {MessageHandler, MessageType, StringTablesMessage} from '../../Data/Message';
+import {StringTable as StringTableObject, StringTableEntry} from '../../Data/StringTable';
 
 export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 	parseMessage: (stream: BitStream) => {
@@ -18,7 +18,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			const entryCount = messageStream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
 				const entry: StringTableEntry = {
-					text: messageStream.readUTF8String(),
+					text: messageStream.readUTF8String()
 				};
 				if (messageStream.readBoolean()) {
 					const extraDataLength = messageStream.readUint16();
@@ -40,7 +40,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			const table: StringTableObject = {
 				entries,
 				name: tableName,
-				maxEntries: entryCount,
+				maxEntries: entryCount
 			};
 
 			if (messageStream.readBoolean()) {
@@ -57,7 +57,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			type: MessageType.StringTables,
 			tick,
 			rawData: messageStream,
-			tables,
+			tables
 		};
 	},
 	encodeMessage: (message, stream) => {

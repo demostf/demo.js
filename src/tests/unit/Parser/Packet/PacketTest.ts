@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
-import {Packet} from '../../../../Data/Packet';
-import {deepEqual} from '../../deepEqual';
 import {isObject} from 'util';
+import {Packet} from '../../../../Data/Packet';
 import {ParserState} from '../../../../Data/ParserState';
+import {deepEqual} from '../../deepEqual';
 
 export function getStream(data: string | number[]) {
 	if (typeof data === 'string') {

@@ -3,19 +3,19 @@ import {handleGameEvent} from '../PacketHandler/GameEvent';
 import {handlePacketEntities} from '../PacketHandler/PacketEntities';
 import {handleSayText2} from '../PacketHandler/SayText2';
 import {Building} from './Building';
+import {Chat} from './Chat';
 import {Death} from './Death';
+import {Packet} from './Packet';
 import {EntityId, PacketEntity} from './PacketEntity';
+import {ParserState} from './ParserState';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
+import {Round} from './Round';
+import {StringTableEntry} from './StringTable';
 import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
 import {Weapon} from './Weapon';
 import {World} from './World';
-import {Round} from './Round';
-import {Chat} from './Chat';
-import {Packet} from './Packet';
-import {ParserState} from './ParserState';
-import {StringTableEntry} from './StringTable';
 
 export class Match {
 	public tick: number = 0;
@@ -27,7 +27,7 @@ export class Match {
 	public intervalPerTick: number = 0;
 	public world: World = {
 		boundaryMin: {x: 0, y: 0, z: 0},
-		boundaryMax: {x: 0, y: 0, z: 0},
+		boundaryMax: {x: 0, y: 0, z: 0}
 	};
 	public playerEntityMap: Map<EntityId, Player> = new Map();
 	public weaponMap: Map<EntityId, Weapon> = new Map();
@@ -49,7 +49,7 @@ export class Match {
 				classes: user.classes,
 				name: user.name,
 				steamId: user.steamId,
-				userId: user.userId,
+				userId: user.userId
 			};
 			if (user.team) {
 				users[key].team = user.team;
@@ -62,7 +62,7 @@ export class Match {
 			deaths: this.deaths,
 			rounds: this.rounds,
 			startTick: this.startTick,
-			intervalPerTick: this.intervalPerTick,
+			intervalPerTick: this.intervalPerTick
 		};
 	}
 
@@ -92,6 +92,38 @@ export class Match {
 				handleGameEvent(packet, this);
 				break;
 		}
+	}
+
+	public getUserInfo(userId: number): UserInfo {
+		// no clue why it does this
+		// only seems to be the case with per user ready
+		while (userId > 256) {
+			userId -= 256;
+		}
+		const user = this.users.get(userId);
+		if (!user) {
+
+			const newUser = {
+				name: '',
+				userId,
+				steamId: '',
+				classes: {},
+				entityId: 0,
+				team: ''
+			};
+			this.users.set(userId, newUser);
+			return newUser;
+		}
+		return user;
+	}
+
+	public getUserInfoForEntity(entity: PacketEntity): UserInfo | null {
+		for (const user of this.users.values()) {
+			if (user && user.entityId === entity.entityIndex) {
+				return user;
+			}
+		}
+		return this.calculateUserInfoByEntityId(entity.entityIndex);
 	}
 
 	private calculateUserInfo() {
@@ -126,37 +158,5 @@ export class Match {
 		} else {
 			throw new Error();
 		}
-	}
-
-	public getUserInfo(userId: number): UserInfo {
-		// no clue why it does this
-		// only seems to be the case with per user ready
-		while (userId > 256) {
-			userId -= 256;
-		}
-		const user = this.users.get(userId);
-		if (!user) {
-
-			const newUser = {
-				name: '',
-				userId,
-				steamId: '',
-				classes: {},
-				entityId: 0,
-				team: '',
-			};
-			this.users.set(userId, newUser);
-			return newUser;
-		}
-		return user;
-	}
-
-	public getUserInfoForEntity(entity: PacketEntity): UserInfo | null {
-		for (const user of this.users.values()) {
-			if (user && user.entityId === entity.entityIndex) {
-				return user;
-			}
-		}
-		return this.calculateUserInfoByEntityId(entity.entityIndex);
 	}
 }

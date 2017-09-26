@@ -3528,7 +3528,7 @@ export type GameEvent = ServerSpawnEvent |
 
 export type GameEventType = GameEvent['name'];
 
-export type GameEventTypeMap = {
+export interface GameEventTypeMap {
 	server_spawn: ServerSpawnEvent;
 	server_changelevel_failed: ServerChangelevelFailedEvent;
 	server_shutdown: ServerShutdownEvent;
@@ -3905,7 +3905,7 @@ export type GameEventTypeMap = {
 	replay_endrecord: ReplayEndRecordEvent;
 	replay_replaysavailable: ReplayReplaysAvailableEvent;
 	replay_servererror: ReplayServerErrorEvent;
-};
+}
 
 export type GameEventTypeId = number;
 
@@ -4285,6 +4285,5 @@ export const GameEventTypeIdMap: Map<GameEventType, GameEventTypeId> = new Map<G
 	['replay_sessioninfo', 372],
 	['replay_endrecord', 373],
 	['replay_replaysavailable', 374],
-	['replay_servererror', 375],
+	['replay_servererror', 375]
 ]);
-

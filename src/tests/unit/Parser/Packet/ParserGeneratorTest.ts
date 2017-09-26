@@ -1,5 +1,5 @@
-import {make} from '../../../../Parser/Packet/ParserGenerator';
 import {BitStream} from 'bit-buffer';
+import {make} from '../../../../Parser/Packet/ParserGenerator';
 import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 function assertGeneratedParser(definition: string, stream: BitStream, expected: any, length: number) {

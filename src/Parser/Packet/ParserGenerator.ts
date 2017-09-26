@@ -1,15 +1,15 @@
+import {BitStream} from 'bit-buffer';
 import {PacketMapType, PacketType} from '../../Data/Packet';
 import {Encoder, PacketHandler, Parser} from './Parser';
-import {BitStream} from 'bit-buffer';
 
 export function make<T extends PacketType>(name: T, definition: string): PacketHandler<PacketMapType[T]> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');
-	}).filter(part => part[0]);
+	}).filter((part) => part[0]);
 	const parser: Parser<PacketMapType[T]> = (stream: BitStream) => {
 		const result = {
-			packetType: name,
+			packetType: name
 		};
 		try {
 			for (const group of items) {

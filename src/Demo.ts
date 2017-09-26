@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
-import {Parser} from './Parser';
-import {PacketTypeId} from './Data/Packet';
 import {Analyser} from './Analyser';
+import {PacketTypeId} from './Data/Packet';
+import {Parser} from './Parser';
 
 export class Demo {
 	public static fromNodeBuffer(nodeBuffer) {
@@ -26,7 +26,7 @@ export class Demo {
 			const skippedPackets = fastMode ? [
 				PacketTypeId.packetEntities,
 				PacketTypeId.tempEntities,
-				PacketTypeId.entityMessage,
+				PacketTypeId.entityMessage
 			] : [];
 			this.parser = new Parser(this.stream, skippedPackets);
 		}

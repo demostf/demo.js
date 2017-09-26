@@ -1,10 +1,10 @@
 import {BitStream} from 'bit-buffer';
 import {TempEntitiesPacket} from '../../Data/Packet';
 import {PacketEntity, PVS} from '../../Data/PacketEntity';
+import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
+import {DynamicBitStream} from '../../DynamicBitStream';
 import {encodeEntityUpdate, getEntityUpdate} from '../EntityDecoder';
 import {readVarInt, writeVarInt} from '../readBitVar';
-import {DynamicBitStream} from '../../DynamicBitStream';
-import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
 
 export function ParseTempEntities(stream: BitStream, state: ParserState, skip: boolean = false): TempEntitiesPacket { // 10: classInfo
 	const entityCount = stream.readUint8();
@@ -45,7 +45,7 @@ export function ParseTempEntities(stream: BitStream, state: ParserState, skip: b
 
 	return {
 		packetType: 'tempEntities',
-		entities,
+		entities
 	};
 }
 
@@ -63,7 +63,7 @@ export function EncodeTempEntities(packet: TempEntitiesPacket, stream: BitStream
 
 		entityStream.writeBoolean(true);
 
-		const classId = state.serverClasses.findIndex(serverClass => serverClass && serverClass.name === entity.serverClass.name) + 1;
+		const classId = state.serverClasses.findIndex((serverClass) => serverClass && serverClass.name === entity.serverClass.name) + 1;
 		entityStream.writeBits(classId, getClassBits(state));
 
 		const sendTable = getSendTable(state, entity.serverClass.dataTable);

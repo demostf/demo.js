@@ -2,12 +2,12 @@ import {Building, Dispenser, Sentry, Teleporter} from '../Data/Building';
 import {Match} from '../Data/Match';
 import {PacketEntitiesPacket} from '../Data/Packet';
 import {PacketEntity, PVS} from '../Data/PacketEntity';
+import {ParserState} from '../Data/ParserState';
 import {LifeState, Player} from '../Data/Player';
 import {SendProp} from '../Data/SendProp';
+import {TeamNumber} from '../Data/Team';
 import {Vector} from '../Data/Vector';
 import {CWeaponMedigun, Weapon} from '../Data/Weapon';
-import {TeamNumber} from '../Data/Team';
-import {ParserState} from '../Data/ParserState';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
 	for (const entity of packet.entities) {
@@ -47,7 +47,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 			if (!match.weaponMap.has(entity.entityIndex)) {
 				match.weaponMap.set(entity.entityIndex, {
 					className: entity.serverClass.name,
-					owner: prop.value as number,
+					owner: prop.value as number
 				});
 			}
 		}
@@ -176,7 +176,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						score: entity.getProperty('DT_Team', 'm_iScore').value as number,
 						roundsWon: entity.getProperty('DT_Team', 'm_iRoundsWon').value as number,
 						players: entity.getProperty('DT_Team', '"player_array"').value as number[],
-						teamNumber: teamId,
+						teamNumber: teamId
 					};
 					match.teams.set(teamId, team);
 					match.teamEntityMap.set(entity.entityIndex, team);
@@ -225,7 +225,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					shieldLevel: 0,
 					isMini: false,
 					team: 0,
-					angle: 0,
+					angle: 0
 				});
 			}
 			const sentry = match.buildings.get(entity.entityIndex) as Sentry;
@@ -274,7 +274,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					team: 0,
 					healing: [],
 					metal: 0,
-					angle: 0,
+					angle: 0
 				});
 			}
 			const dispenser = match.buildings.get(entity.entityIndex) as Dispenser;
@@ -312,7 +312,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					rechargeDuration: 0,
 					timesUsed: 0,
 					angle: 0,
-					yawToExit: 0,
+					yawToExit: 0
 				});
 			}
 			const teleporter = match.buildings.get(entity.entityIndex) as Teleporter;
@@ -372,7 +372,7 @@ function handleEntity(entity: PacketEntity, match: Match) {
 						score: 0,
 						team: 0,
 						totalScore: 0,
-						damage: 0,
+						damage: 0
 					};
 				}
 				const playerResource = match.playerResources[playerId];

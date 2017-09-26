@@ -6,8 +6,8 @@ export type Parser<P extends Packet> = (stream: BitStream, state?: ParserState, 
 export type Encoder<P extends Packet> = (packet: P, stream: BitStream, state?: ParserState) => void;
 
 export interface PacketHandler<P extends Packet> {
-	parser: Parser<P>,
-	encoder: Encoder<P>
+	parser: Parser<P>;
+	encoder: Encoder<P>;
 }
 
 export const voidEncoder: Encoder<VoidPacket> = () => {

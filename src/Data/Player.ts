@@ -1,15 +1,15 @@
 import {Match} from './Match';
+import {EntityId} from './PacketEntity';
 import {PlayerCondition} from './PlayerCondition';
 import {UserInfo} from './UserInfo';
 import {Vector} from './Vector';
 import {Weapon} from './Weapon';
-import {EntityId} from './PacketEntity';
 
 export enum LifeState {
 	ALIVE = 0,
 	DYING = 1,
 	DEATH = 2,
-	RESPAWNABLE = 3,
+	RESPAWNABLE = 3
 }
 
 export class Player {
@@ -33,8 +33,8 @@ export class Player {
 
 	get weapons(): Weapon[] {
 		return this.weaponIds
-			.map(id => this.match.outerMap.get(id) as EntityId)
-			.filter(entityId => entityId > 0)
-			.map(entityId => this.match.weaponMap.get(entityId) as Weapon);
+			.map((id) => this.match.outerMap.get(id) as EntityId)
+			.filter((entityId) => entityId > 0)
+			.map((entityId) => this.match.weaponMap.get(entityId) as Weapon);
 	}
 }

@@ -1,11 +1,11 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {
 	EncodeBSPDecal, encodeVecCoord, getVecCoord,
 	ParseBSPDecal
 } from '../../../../Parser/Packet/BSPDecal';
-import {SendPropParser} from '../../../../Parser/SendPropParser';
 import {SendPropEncoder} from '../../../../Parser/SendPropEncoder';
+import {SendPropParser} from '../../../../Parser/SendPropParser';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 const data = [239, 236, 208, 85, 33, 127, 128, 9, 8];
 

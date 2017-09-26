@@ -1,15 +1,15 @@
 import {BitStream} from 'bit-buffer';
-import {EncodeSayText2, ParseSayText2} from '../UserMessage/SayText2';
-import {make} from './ParserGenerator';
-import {PacketHandler} from './Parser';
 import {
-	UserMessageType,
-	UserMessagePacket,
-	UnknownUserMessagePacket,
 	UnknownUserMessageBasePacket,
-	UserMessageTypeMap,
-	UserMessagePacketTypeMap
+	UnknownUserMessagePacket,
+	UserMessagePacket,
+	UserMessagePacketTypeMap,
+	UserMessageType,
+	UserMessageTypeMap
 } from '../../Data/UserMessage';
+import {EncodeSayText2, ParseSayText2} from '../UserMessage/SayText2';
+import {PacketHandler} from './Parser';
+import {make} from './ParserGenerator';
 
 function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(packetType: T): PacketHandler<UserMessageTypeMap[T]> {
 	return {
@@ -28,15 +28,16 @@ function unknownPacketHandler<T extends UnknownUserMessagePacket['packetType']>(
 	};
 }
 
-const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>> = new Map<UserMessageType, PacketHandler<UserMessagePacket>>([
-	[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2}],
-	[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}substitute1{s}substitute2{s}substitute3{s}substitute4{s}')],
-	[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
-	[UserMessageType.Train, make('train', 'data{8}')],
-	[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
-	[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')],
-	[UserMessageType.Shake, make('shake', 'command{8}amplitude{f32}frequency{f32}duration{f32}')]
-]);
+const userMessageParsers: Map<UserMessageType, PacketHandler<UserMessagePacket>> =
+	new Map<UserMessageType, PacketHandler<UserMessagePacket>>([
+		[UserMessageType.SayText2, {parser: ParseSayText2, encoder: EncodeSayText2}],
+		[UserMessageType.TextMsg, make('textMsg', 'destType{8}text{s}substitute1{s}substitute2{s}substitute3{s}substitute4{s}')],
+		[UserMessageType.ResetHUD, make('resetHUD', 'data{8}')],
+		[UserMessageType.Train, make('train', 'data{8}')],
+		[UserMessageType.VoiceSubtitle, make('voiceSubtitle', 'client{8}menu{8}item{8}')],
+		[UserMessageType.BreakModel_Pumpkin, unknownPacketHandler('breakModelPumpkin')],
+		[UserMessageType.Shake, make('shake', 'command{8}amplitude{f32}frequency{f32}duration{f32}')]
+	]);
 
 export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: user message
 	const s = stream.index;
@@ -50,7 +51,7 @@ export function ParseUserMessage(stream: BitStream): UserMessagePacket { // 23: 
 		return {
 			packetType: 'unknownUserMessage',
 			type,
-			data: messageData,
+			data: messageData
 		};
 	} else {
 		return handler.parser(messageData);

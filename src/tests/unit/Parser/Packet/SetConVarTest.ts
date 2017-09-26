@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeSetConVar, ParseSetConVar} from '../../../../Parser/Packet/SetConVar';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 suite('SetConVar', () => {
 	test('Parse setConVar', () => {

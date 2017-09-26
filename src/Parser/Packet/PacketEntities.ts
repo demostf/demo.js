@@ -1,23 +1,23 @@
 import {BitStream} from 'bit-buffer';
 import {PacketEntitiesPacket} from '../../Data/Packet';
 import {EntityId, PacketEntity, PVS} from '../../Data/PacketEntity';
+import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
 import {SendProp} from '../../Data/SendProp';
 import {encodeEntityUpdate, getEntityUpdate} from '../EntityDecoder';
 import {readUBitVar, writeBitVar} from '../readBitVar';
-import {getClassBits, getSendTable, ParserState} from '../../Data/ParserState';
 
 const pvsMap = new Map([
 	[0, PVS.PRESERVE],
 	[2, PVS.ENTER],
 	[1, PVS.LEAVE],
-	[3, PVS.LEAVE + PVS.DELETE],
+	[3, PVS.LEAVE + PVS.DELETE]
 ]);
 
 const pvsReverseMap = new Map([
 	[PVS.PRESERVE, 0],
 	[PVS.ENTER, 2],
 	[PVS.LEAVE, 1],
-	[PVS.LEAVE + PVS.DELETE, 3],
+	[PVS.LEAVE + PVS.DELETE, 3]
 ]);
 
 function readPVSType(stream: BitStream): PVS {
@@ -70,7 +70,9 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 }
 
 function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserState, baseLineIndex: number) {
-	const serverClassId = state.serverClasses.findIndex(serverClass => serverClass && entity.serverClass.id === serverClass.id);
+	const serverClassId = state.serverClasses.findIndex(
+		(existingServerClass) => existingServerClass && entity.serverClass.id === existingServerClass.id
+	);
 	if (serverClassId === -1) {
 		throw new Error(`Unknown server class ${entity.serverClass.name}(${entity.serverClass.id})`);
 	}
@@ -100,8 +102,8 @@ function writeEnterPVS(entity: PacketEntity, stream: BitStream, state: ParserSta
 	// console.log(propsToEncode.map(prop => `${prop.definition.name}: ${prop.value}`));
 
 	const allProps = sendTable.flattenedProps;
-	propsToEncode.sort((a, b) => allProps.findIndex(propDef => propDef.fullName === a.definition.fullName) -
-		allProps.findIndex(propDef => propDef.fullName === b.definition.fullName));
+	propsToEncode.sort((a, b) => allProps.findIndex((propDef) => propDef.fullName === a.definition.fullName) -
+		allProps.findIndex((propDef) => propDef.fullName === b.definition.fullName));
 
 	encodeEntityUpdate(propsToEncode, sendTable, stream);
 }
@@ -115,7 +117,11 @@ function getPacketEntityForExisting(entityId: EntityId, state: ParserState, pvs:
 	return new PacketEntity(serverClass, entityId, pvs);
 }
 
-export function ParsePacketEntities(stream: BitStream, state: ParserState, skip: boolean = false): PacketEntitiesPacket { // 26: packetEntities
+export function ParsePacketEntities(
+	stream: BitStream,
+	state: ParserState,
+	skip: boolean = false
+): PacketEntitiesPacket { // 26: packetEntities
 	// https://github.com/skadistats/smoke/blob/master/smoke/replay/handler/svc_packetentities.pyx
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Handler/PacketEntitesHandler.cs
 	// https://github.com/StatsHelix/demoinfo/blob/3d28ea917c3d44d987b98bb8f976f1a3fcc19821/DemoInfo/DP/Entity.cs
@@ -186,7 +192,7 @@ export function ParsePacketEntities(stream: BitStream, state: ParserState, skip:
 		maxEntries,
 		delta,
 		baseLine,
-		updatedBaseLine,
+		updatedBaseLine
 	};
 }
 

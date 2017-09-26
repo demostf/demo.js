@@ -1,6 +1,21 @@
 import {SendTable} from './SendTable';
 
 export class SendPropDefinition {
+	public static formatFlags(flags: number) {
+		const names: string[] = [];
+		for (const name in SendPropFlag) {
+			if ((SendPropFlag as object).hasOwnProperty(name)) {
+				const flagValue = SendPropFlag[name] as SendPropFlag | string;
+				if (typeof flagValue === 'number') {
+					if (flags & flagValue) {
+						names.push(name);
+					}
+				}
+			}
+		}
+		return names;
+	}
+
 	public type: SendPropType;
 	public name: string;
 	public flags: number;
@@ -41,7 +56,7 @@ export class SendPropDefinition {
 			name: this.name,
 			type: SendPropType[this.type],
 			flags: this.flags,
-			bitCount: this.bitCount,
+			bitCount: this.bitCount
 		};
 		if (this.type === SendPropType.DPT_Float) {
 			data.lowValue = this.lowValue;
@@ -61,19 +76,6 @@ export class SendPropDefinition {
 	get allFlags() {
 		return SendPropDefinition.formatFlags(this.flags);
 	}
-
-	static formatFlags(flags: number) {
-		let names: string[] = [];
-		for (const name in SendPropFlag) {
-			const flagValue = <SendPropFlag | string>SendPropFlag[name];
-			if (typeof flagValue === 'number') {
-				if (flags & flagValue) {
-					names.push(name);
-				}
-			}
-		}
-		return names;
-	}
 }
 
 export enum SendPropType {
@@ -84,7 +86,7 @@ export enum SendPropType {
 	DPT_String,
 	DPT_Array,
 	DPT_DataTable,
-	DPT_NUMSendPropTypes,
+	DPT_NUMSendPropTypes
 }
 
 export enum SendPropFlag {
@@ -111,5 +113,5 @@ export enum SendPropFlag {
 	SPROP_COORD_MP_LOWPRECISION = (1 << 14), // Like SPROP_COORD, but special handling for multiplayer games
 	// where the fractional component only gets a 3 bits instead of 5
 	SPROP_COORD_MP_INTEGRAL = (1 << 15), // SPROP_COORD_MP, but coordinates are rounded to integral boundaries
-	SPROP_VARINT = (1 << 5),
+	SPROP_VARINT = (1 << 5)
 }

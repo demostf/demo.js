@@ -2,7 +2,7 @@ export enum TeamNumber {
 	UNASGINED = 0,
 	SPECTATOR = 1,
 	RED = 2,
-	BLU = 3,
+	BLU = 3
 }
 
 export interface Team {

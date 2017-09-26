@@ -1,39 +1,39 @@
-import {PacketEntity, PVS} from '../../../Data/PacketEntity';
-import {ServerClass} from '../../../Data/ServerClass';
-import {hydrateEntity, propDataDefinition} from '../Parser/Packet/hydrate';
-import {SendProp} from '../../../Data/SendProp';
 import * as assert from 'assert';
 import {readFileSync} from 'fs';
+import {PacketEntity, PVS} from '../../../Data/PacketEntity';
+import {SendProp} from '../../../Data/SendProp';
+import {ServerClass} from '../../../Data/ServerClass';
+import {hydrateEntity, propDataDefinition} from '../Parser/Packet/hydrate';
 
 const serverClass = new ServerClass(241, 'CTFPlayer', 'DT_TFPlayer');
 const playerBaseLineData = JSON.parse(readFileSync(__dirname + '/../../data/packetEntitiesPlayerBaseline.json', 'utf8'));
 const playerEntityData = JSON.parse(readFileSync(__dirname + '/../../data/packetEntitiesPlayerEntity.json', 'utf8'));
 
 const definition1 = propDataDefinition({
-	'type': 1,
-	'name': 'm_flDucktime',
-	'flags': 1032,
-	'excludeDTName': null,
-	'lowValue': 0,
-	'highValue': 2047.5,
-	'bitCount': 12,
-	'table': null,
-	'numElements': 0,
-	'arrayProperty': null,
-	'ownerTableName': 'DT_Local'
+	type: 1,
+	name: 'm_flDucktime',
+	flags: 1032,
+	excludeDTName: null,
+	lowValue: 0,
+	highValue: 2047.5,
+	bitCount: 12,
+	table: null,
+	numElements: 0,
+	arrayProperty: null,
+	ownerTableName: 'DT_Local'
 });
 const definition2 = propDataDefinition({
-	'type': 1,
-	'name': 'm_flFallVelocity',
-	'flags': 1024,
-	'excludeDTName': null,
-	'lowValue': -4096,
-	'highValue': 4096,
-	'bitCount': 17,
-	'table': null,
-	'numElements': 0,
-	'arrayProperty': null,
-	'ownerTableName': 'DT_Local'
+	type: 1,
+	name: 'm_flFallVelocity',
+	flags: 1024,
+	excludeDTName: null,
+	lowValue: -4096,
+	highValue: 4096,
+	bitCount: 17,
+	table: null,
+	numElements: 0,
+	arrayProperty: null,
+	ownerTableName: 'DT_Local'
 });
 
 suite('PacketEntity', () => {

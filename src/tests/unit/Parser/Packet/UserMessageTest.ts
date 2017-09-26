@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
-import {EncodeUserMessage, ParseUserMessage} from '../../../../Parser/Packet/UserMessage';
 import {HudTextLocation} from '../../../../Data/UserMessage';
+import {EncodeUserMessage, ParseUserMessage} from '../../../../Parser/Packet/UserMessage';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 const data = [
 	5,
@@ -40,7 +40,7 @@ const expected = {
 	substitute1: 'sekr',
 	substitute2: '',
 	substitute3: '',
-	substitute4: '',
+	substitute4: ''
 };
 
 suite('UserMessage', () => {

@@ -1,12 +1,12 @@
-import {SendProp, SendPropValue} from '../../../../Data/SendProp';
 import {PacketEntity} from '../../../../Data/PacketEntity';
+import {SendProp, SendPropValue} from '../../../../Data/SendProp';
 import {SendPropDefinition, SendPropType} from '../../../../Data/SendPropDefinition';
-import {Vector} from '../../../../Data/Vector';
 import {SendTable} from '../../../../Data/SendTable';
+import {Vector} from '../../../../Data/Vector';
 
 export function hydrateEntity(entityData): PacketEntity {
 	const entity = new PacketEntity(entityData.serverClass, entityData.entityIndex, entityData.pvs);
-	entity.props = entityData.props.map(propData => {
+	entity.props = entityData.props.map((propData) => {
 		const prop = new SendProp(propDataDefinition(propData.definition));
 		prop.value = hydrateProp(propData.value, prop.definition);
 		return prop;
@@ -27,7 +27,7 @@ function hydrateProp(value: any, definition: SendPropDefinition): SendPropValue 
 		if (arrayProp === null) {
 			throw new Error('arrayProperty not set for array property');
 		}
-		return value.map(arrayValue => hydrateProp(arrayValue, arrayProp)) as SendPropValue;
+		return value.map((arrayValue) => hydrateProp(arrayValue, arrayProp)) as SendPropValue;
 	} else if (definition.type === SendPropType.DPT_Vector || definition.type === SendPropType.DPT_VectorXY) {
 		return new Vector(value.x, value.y, value.z);
 	} else {

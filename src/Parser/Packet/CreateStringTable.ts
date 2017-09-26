@@ -53,14 +53,14 @@ export function ParseCreateStringTable(stream: BitStream): CreateStringTablePack
 		entries: [],
 		maxEntries,
 		fixedUserDataSize: userDataSize,
-		fixedUserDataSizeBits: userDataSizeBits,
+		fixedUserDataSizeBits: userDataSizeBits
 	};
 
 	table.entries = parseStringTableEntries(data, table, entityCount);
 
 	return {
 		packetType: 'createStringTable',
-		table: table,
+		table
 	};
 }
 

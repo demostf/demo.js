@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../../../../Parser/Packet/CreateStringTable';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 const exampleData = [
 	100,
@@ -79,7 +79,6 @@ const examplePacket2 = {
 		fixedUserDataSizeBits: 0
 	}
 };
-
 
 suite('CreateStringTable', () => {
 	test('Parse createStringTable', () => {

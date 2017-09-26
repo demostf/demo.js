@@ -11,7 +11,7 @@ export function ParseSetConVar(stream: BitStream): SetConVarPacket { // 5: setco
 	}
 	return {
 		packetType: 'setConVar',
-		vars,
+		vars
 	};
 }
 

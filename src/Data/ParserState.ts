@@ -1,19 +1,19 @@
 import {BitStream} from 'bit-buffer';
-import {GameEventDefinition} from './GameEvent';
-import {EntityId} from './PacketEntity';
-import {SendTable, SendTableName} from './SendTable';
-import {ServerClass, ServerClassId} from './ServerClass';
-import {StringTable} from './StringTable';
-import {GameEventType} from './GameEventTypes';
-import {SendProp} from './SendProp';
-import {Packet, PacketTypeId} from './Packet';
+import {handleGameEventList} from '../PacketHandler/GameEventList';
+import {handlePacketEntitiesForState} from '../PacketHandler/PacketEntities';
 import {
 	handleStringTable, handleStringTables, handleStringTableUpdate,
 	handleTable
 } from '../PacketHandler/StringTable';
-import {handleGameEventList} from '../PacketHandler/GameEventList';
+import {GameEventDefinition} from './GameEvent';
+import {GameEventType} from './GameEventTypes';
 import {DataTablesMessage, Message, MessageType, StringTablesMessage} from './Message';
-import {handlePacketEntitiesForState} from '../PacketHandler/PacketEntities';
+import {Packet, PacketTypeId} from './Packet';
+import {EntityId} from './PacketEntity';
+import {SendProp} from './SendProp';
+import {SendTable, SendTableName} from './SendTable';
+import {ServerClass, ServerClassId} from './ServerClass';
+import {StringTable} from './StringTable';
 
 export class ParserState {
 	public version: number = 0;
@@ -62,6 +62,14 @@ export class ParserState {
 		}
 	}
 
+	public getStringTable(name: string): StringTable | null {
+		const table = this.stringTables.find((stringTable) => stringTable.name === name);
+		if (!table) {
+			return null;
+		}
+		return table;
+	}
+
 	private handleDataTableMessage(message: DataTablesMessage) {
 		for (const table of message.tables) {
 			this.sendTables.set(table.name, table);
@@ -73,14 +81,6 @@ export class ParserState {
 		for (const table of message.tables) {
 			handleTable(table, this);
 		}
-	}
-
-	public getStringTable(name: string): StringTable | null {
-		const table = this.stringTables.find(table => table.name === name);
-		if (!table) {
-			return null;
-		}
-		return table;
 	}
 }
 

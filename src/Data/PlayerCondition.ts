@@ -77,5 +77,5 @@ export enum PlayerCondition {
 	TF_COND_HALLOWEEN_TINY                  = (1 << 75),
 	TF_COND_HALLOWEEN_IN_HELL               = (1 << 76),
 	TF_COND_HALLOWEEN_GHOST_MODE            = (1 << 77),
-	TF_COND_MINICRITBOOSTED_ON_KILL         = (1 << 78),
+	TF_COND_MINICRITBOOSTED_ON_KILL         = (1 << 78)
 }

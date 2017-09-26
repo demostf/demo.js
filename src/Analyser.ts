@@ -1,7 +1,7 @@
-import {Parser} from './Parser';
-import {Match} from './Data/Match';
 import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
+import {Match} from './Data/Match';
+import {Parser} from './Parser';
 
 export class Analyser extends EventEmitter {
 	private parser: Parser;

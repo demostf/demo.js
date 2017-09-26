@@ -1,48 +1,45 @@
 import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from './GameEvent';
+import {GameEvent, GameEventType} from './GameEventTypes';
 import {EntityId, PacketEntity} from './PacketEntity';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
-import {Vector} from './Vector';
-import {GameEvent, GameEventType} from './GameEventTypes';
 import {
-	BreakModelPumpkinPacket, ResetHUDPacket, TextMessagePacket, TrainPacket, UnknownUserMessagePacket,
-	UserMessagePacket, UserMessageType,
-	UserMessageTypeMap, VoiceSubtitlePacket, SayText2Packet
+	BreakModelPumpkinPacket, ResetHUDPacket, SayText2Packet, TextMessagePacket, TrainPacket,
+	UnknownUserMessagePacket, UserMessagePacket,
+	UserMessageType, UserMessageTypeMap, VoiceSubtitlePacket
 } from './UserMessage';
+import {Vector} from './Vector';
 
-export interface BasePacket {
-}
-
-export interface StringTablePacket extends BasePacket {
+export interface StringTablePacket {
 	packetType: 'stringTable';
 	tables: StringTable[];
 }
 
-export interface CreateStringTablePacket extends BasePacket {
+export interface CreateStringTablePacket {
 	packetType: 'createStringTable';
 	table: StringTable;
 }
 
-export interface UpdateStringTablePacket extends BasePacket {
+export interface UpdateStringTablePacket {
 	packetType: 'updateStringTable';
 	entries: StringTableEntry[];
 	tableId: number;
 }
 
-export interface ConsoleCmdPacket extends BasePacket {
+export interface ConsoleCmdPacket {
 	packetType: 'consoleCmd';
 	command: string;
 }
 
-export interface DataTablePacket extends BasePacket {
+export interface DataTablePacket {
 	packetType: 'dataTable';
 	tables: SendTable[];
 	serverClasses: ServerClass[];
 }
 
-export interface BSPDecalPacket extends BasePacket {
+export interface BSPDecalPacket {
 	packetType: 'bspDecal';
 	position: Vector;
 	textureIndex: number;
@@ -51,35 +48,35 @@ export interface BSPDecalPacket extends BasePacket {
 	lowPriority: boolean;
 }
 
-export interface ClassInfoPacket extends BasePacket {
+export interface ClassInfoPacket {
 	packetType: 'classInfo';
 	number: number;
 	create: boolean;
-	entries: {
+	entries: Array<{
 		classId: number;
 		className: string;
 		dataTableName: string;
-	}[];
+	}>;
 }
 
-export interface EntityMessagePacket extends BasePacket {
+export interface EntityMessagePacket {
 	packetType: 'entityMessage';
 	classId: number;
 	length: number;
 	data: string;
 }
 
-export interface GameEventPacket extends BasePacket {
+export interface GameEventPacket {
 	packetType: 'gameEvent';
 	event: GameEvent;
 }
 
-export interface GameEventListPacket extends BasePacket {
+export interface GameEventListPacket {
 	packetType: 'gameEventList';
 	eventList: Map<number, GameEventDefinition<GameEvent['name']>>;
 }
 
-export interface PacketEntitiesPacket extends BasePacket {
+export interface PacketEntitiesPacket {
 	packetType: 'packetEntities';
 	entities: PacketEntity[];
 	removedEntities: EntityId[];
@@ -89,7 +86,7 @@ export interface PacketEntitiesPacket extends BasePacket {
 	updatedBaseLine: boolean;
 }
 
-export interface ParseSoundsPacket extends BasePacket {
+export interface ParseSoundsPacket {
 	packetType: 'parseSounds';
 	reliable: boolean;
 	num: number;
@@ -97,24 +94,24 @@ export interface ParseSoundsPacket extends BasePacket {
 	data: BitStream;
 }
 
-export interface SetConVarPacket extends BasePacket {
+export interface SetConVarPacket {
 	packetType: 'setConVar';
 	vars: Map<string, string>;
 }
 
-export interface TempEntitiesPacket extends BasePacket {
+export interface TempEntitiesPacket {
 	packetType: 'tempEntities';
 	entities: PacketEntity[];
 }
 
-export interface VoiceInitPacket extends BasePacket {
+export interface VoiceInitPacket {
 	packetType: 'voiceInit';
 	codec: string;
 	quality: number;
 	extraData: number;
 }
 
-export interface VoiceDataPacket extends BasePacket {
+export interface VoiceDataPacket {
 	packetType: 'voiceData';
 	client: number;
 	proximity: number;
@@ -122,54 +119,54 @@ export interface VoiceDataPacket extends BasePacket {
 	data: BitStream;
 }
 
-export interface MenuPacket extends BasePacket {
+export interface MenuPacket {
 	packetType: 'menu';
 	type: number;
 	length: number;
 	data: BitStream;
 }
 
-export interface CmdKeyValuesPacket extends BasePacket {
+export interface CmdKeyValuesPacket {
 	packetType: 'cmdKeyValues';
 	length: number;
 	data: BitStream;
 }
 
-export interface VoidPacket extends BasePacket {
+export interface VoidPacket {
 	packetType: 'void';
 }
 
-export interface FilePacket extends BasePacket {
+export interface FilePacket {
 	packetType: 'file';
 	transferId: number;
 	fileName: string;
 	requested: boolean;
 }
 
-export interface NetTickPacket extends BasePacket {
+export interface NetTickPacket {
 	packetType: 'netTick';
 	tick: number;
 	frameTime: number;
 	stdDev: number;
 }
 
-export interface StringCmdPacket extends BasePacket {
+export interface StringCmdPacket {
 	packetType: 'stringCmd';
 	command: string;
 }
 
-export interface SigOnStatePacket extends BasePacket {
+export interface SigOnStatePacket {
 	packetType: 'sigOnState';
 	state: number;
 	count: number;
 }
 
-export interface PrintPacket extends BasePacket {
+export interface PrintPacket {
 	packetType: 'print';
 	value: string;
 }
 
-export interface ServerInfoPacket extends BasePacket {
+export interface ServerInfoPacket {
 	packetType: 'serverInfo';
 	version: number;
 	serverCount: number;
@@ -188,17 +185,17 @@ export interface ServerInfoPacket extends BasePacket {
 	replay: boolean;
 }
 
-export interface SetPausePacket extends BasePacket {
+export interface SetPausePacket {
 	packetType: 'setPause';
 	paused: boolean;
 }
 
-export interface SetViewPacket extends BasePacket {
+export interface SetViewPacket {
 	packetType: 'setView';
 	index: number;
 }
 
-export interface FixAnglePacket extends BasePacket {
+export interface FixAnglePacket {
 	packetType: 'fixAngle';
 	relative: boolean;
 	x: number;
@@ -206,12 +203,12 @@ export interface FixAnglePacket extends BasePacket {
 	z: number;
 }
 
-export interface PreFetchPacket extends BasePacket {
+export interface PreFetchPacket {
 	packetType: 'preFetch';
 	index: number;
 }
 
-export interface GetCvarValuePacket extends BasePacket {
+export interface GetCvarValuePacket {
 	packetType: 'getCvarValue';
 	cookie: number;
 	value: string;
@@ -312,5 +309,5 @@ export enum PacketTypeId {
 	menu = 29,
 	gameEventList = 30,
 	getCvarValue = 31,
-	cmdKeyValues = 32,
+	cmdKeyValues = 32
 }

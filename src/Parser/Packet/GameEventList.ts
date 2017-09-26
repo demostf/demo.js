@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {GameEventDefinition, GameEventEntry} from '../../Data/GameEvent';
-import {GameEventListPacket} from '../../Data/Packet';
 import {GameEvent, GameEventType} from '../../Data/GameEventTypes';
+import {GameEventListPacket} from '../../Data/Packet';
 
 export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
 	const s = stream.index;
@@ -18,19 +18,19 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 		while (type !== 0) {
 			entries.push({
 				type,
-				name: stream.readASCIIString(),
+				name: stream.readASCIIString()
 			});
 			type = stream.readBits(3);
 		}
 		eventList.set(id, {
 			id,
 			name,
-			entries,
+			entries
 		});
 	}
 	return {
 		packetType: 'gameEventList',
-		eventList,
+		eventList
 	};
 }
 

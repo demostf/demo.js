@@ -6,6 +6,6 @@ export function handleSayText2(packet: SayText2Packet, match: Match) {
 		kind: packet.kind,
 		from: packet.from,
 		text: packet.text,
-		tick: match.tick,
+		tick: match.tick
 	});
 }

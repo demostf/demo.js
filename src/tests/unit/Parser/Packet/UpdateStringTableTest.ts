@@ -1,9 +1,9 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
-import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../../../../Parser/Packet/UpdateStringTable';
-import {StringTable} from '../../../../Data/StringTable';
 import {UpdateStringTablePacket} from '../../../../Data/Packet';
 import {createParserState} from '../../../../Data/ParserState';
+import {StringTable} from '../../../../Data/StringTable';
+import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../../../../Parser/Packet/UpdateStringTable';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 const exampleData = [200, 3, 0, 48, 130, 53];
 
@@ -35,7 +35,6 @@ examplePacket.entries[70] = {
 		1
 	)
 };
-
 
 const examplePacket2: UpdateStringTablePacket = {
 	packetType: 'updateStringTable',

@@ -1,7 +1,7 @@
 import * as assert from 'assert';
+import {BitStream} from 'bit-buffer';
 import {readFileSync} from 'fs';
 import {Demo} from '../../Demo';
-import {BitStream} from 'bit-buffer';
 
 function testDemo(name: string, fastMode: boolean = false) {
 	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}.json`, 'utf8'));

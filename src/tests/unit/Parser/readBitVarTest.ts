@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './Packet/PacketTest';
 import {readBitVar, readVarInt, writeBitVar, writeVarInt} from '../../../Parser/readBitVar';
+import {assertEncoder, assertParser, getStream} from './Packet/PacketTest';
 
 function readVarIntSigned(stream: BitStream) {
 	return readVarInt(stream, true);

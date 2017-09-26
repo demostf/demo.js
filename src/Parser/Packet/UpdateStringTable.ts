@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {UpdateStringTablePacket} from '../../Data/Packet';
-import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
 import {ParserState} from '../../Data/ParserState';
+import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
 
 export function ParseUpdateStringTable(stream: BitStream, state: ParserState): UpdateStringTablePacket { // 12: updateStringTable
 	const tableId = stream.readBits(5);
@@ -30,7 +30,7 @@ export function ParseUpdateStringTable(stream: BitStream, state: ParserState): U
 export function EncodeUpdateStringTable(packet: UpdateStringTablePacket, stream: BitStream, state: ParserState) {
 	stream.writeBits(packet.tableId, 5);
 
-	const changedEntryCount = packet.entries.filter(entry => entry).length;
+	const changedEntryCount = packet.entries.filter((entry) => entry).length;
 	const multipleChanged = changedEntryCount > 1;
 	stream.writeBoolean(multipleChanged);
 

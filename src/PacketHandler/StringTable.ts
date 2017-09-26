@@ -1,6 +1,6 @@
 import {CreateStringTablePacket, StringTablePacket, UpdateStringTablePacket} from '../Data/Packet';
-import {StringTable, StringTableEntry} from '../Data/StringTable';
 import {ParserState} from '../Data/ParserState';
+import {StringTable, StringTableEntry} from '../Data/StringTable';
 
 export function handleStringTable(packet: CreateStringTablePacket, state: ParserState) {
 	handleTable(packet.table, state);
@@ -16,7 +16,6 @@ export function handleStringTableUpdate(packet: UpdateStringTablePacket, state: 
 	const updatedTable = state.stringTables[packet.tableId];
 	handleStringTableEntries(updatedTable.name, packet.entries, state);
 }
-
 
 export function handleTable(table: StringTable, state: ParserState) {
 	if (!state.getStringTable(table.name)) {

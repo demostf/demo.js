@@ -6,12 +6,21 @@ export enum PVS {
 	PRESERVE = 0,
 	ENTER = 1,
 	LEAVE = 2,
-	DELETE = 4,
+	DELETE = 4
 }
 
 export type EntityId = number;
 
 export class PacketEntity {
+	public static getPropByFullName(props: SendProp[], fullName: string): SendProp | null {
+		for (const prop of props) {
+			if (prop.definition.fullName === fullName) {
+				return prop;
+			}
+		}
+		return null;
+	}
+
 	public serverClass: ServerClass;
 	public entityIndex: EntityId;
 	public props: SendProp[];
@@ -26,15 +35,6 @@ export class PacketEntity {
 		this.props = [];
 		this.inPVS = false;
 		this.pvs = pvs;
-	}
-
-	public static getPropByFullName(props: SendProp[], fullName: string): SendProp | null {
-		for (const prop of props) {
-			if (prop.definition.fullName === fullName) {
-				return prop;
-			}
-		}
-		return null;
 	}
 
 	public getPropByDefinition(definition: SendPropDefinition) {
@@ -75,7 +75,7 @@ export class PacketEntity {
 	}
 
 	public diffFromBaseLine(baselineProps: SendProp[]): SendProp[] {
-		return this.props.filter(prop => {
+		return this.props.filter((prop) => {
 			const baseProp = PacketEntity.getPropByFullName(baselineProps, prop.definition.fullName);
 			return (!baseProp || prop.value !== baseProp.value);
 		});

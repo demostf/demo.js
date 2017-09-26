@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeVoiceInit, ParseVoiceInit} from '../../../../Parser/Packet/VoiceInit';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 const data = [118, 97, 117, 100, 105, 111, 95, 99, 101, 108, 116, 0, 255, 34, 86];
 

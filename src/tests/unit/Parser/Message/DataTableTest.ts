@@ -1,21 +1,26 @@
-import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
-import {readFileSync} from 'fs';
-import {ParserState} from '../../../../Data/ParserState';
-import {gunzipSync} from 'zlib';
-import {DataTableHandler} from '../../../../Parser/Message/DataTable';
-import {DataTablesMessage} from '../../../../Data/Message';
-import {hydrateTable} from '../Packet/hydrate';
-import {ServerClass} from '../../../../Data/ServerClass';
 import * as assert from 'assert';
+import {BitStream} from 'bit-buffer';
+import {readFileSync} from 'fs';
+import {gunzipSync} from 'zlib';
+import {DataTablesMessage} from '../../../../Data/Message';
+import {ParserState} from '../../../../Data/ParserState';
+import {ServerClass} from '../../../../Data/ServerClass';
+import {DataTableHandler} from '../../../../Parser/Message/DataTable';
+import {hydrateTable} from '../Packet/hydrate';
+import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
 
 const data = Array.from(readFileSync(__dirname + '/../../../data/dataTableData.bin').values());
-const expectedRaw = JSON.parse(gunzipSync(readFileSync(__dirname + '/../../../data/dataTableResult.json.gz')).toString('utf8')) as DataTablesMessage;
+const expectedRaw = JSON.parse(
+	gunzipSync(
+		readFileSync(__dirname + '/../../../data/dataTableResult.json.gz'
+		)
+	).toString('utf8')
+) as DataTablesMessage;
 
 const expected = {
 	type: expectedRaw.type,
 	tick: expectedRaw.tick,
-	serverClasses: expectedRaw.serverClasses.map(serverClass => new ServerClass(serverClass.id, serverClass.name, serverClass.dataTable)),
+	serverClasses: expectedRaw.serverClasses.map((serverClass) => new ServerClass(serverClass.id, serverClass.name, serverClass.dataTable)),
 	tables: expectedRaw.tables.map(hydrateTable)
 };
 

@@ -18,7 +18,7 @@ export enum GameEventValueType {
 	SHORT = 4,
 	BYTE = 5,
 	BOOLEAN = 6,
-	LOCAL = 7,
+	LOCAL = 7
 }
 
 export type GameEventValue = string | number | boolean;

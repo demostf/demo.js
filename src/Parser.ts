@@ -1,14 +1,14 @@
 import {BitStream} from 'bit-buffer';
 import {Header} from './Data/Header';
+import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
+import {Packet, PacketTypeId} from './Data/Packet';
+import {ParserState} from './Data/ParserState';
 import {ConsoleCmdHandler} from './Parser/Message/ConsoleCmd';
 import {DataTableHandler} from './Parser/Message/DataTable';
 import {PacketMessageHandler} from './Parser/Message/Packet';
 import {StringTableHandler} from './Parser/Message/StringTable';
-import {UserCmdHandler} from './Parser/Message/UserCmd';
-import {Packet, PacketTypeId} from './Data/Packet';
-import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
-import {ParserState} from './Data/ParserState';
 import {SyncTickHandler} from './Parser/Message/SyncTick';
+import {UserCmdHandler} from './Parser/Message/UserCmd';
 
 const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
@@ -47,7 +47,7 @@ export class Parser {
 		}
 	}
 
-	private * getMessages(): Iterable<Message> {
+	protected * getMessages(): Iterable<Message> {
 		while (true) {
 			const message = this.readMessage(this.stream, this.parserState);
 			if (message) {
@@ -78,7 +78,7 @@ export class Parser {
 			duration: stream.readFloat32(),
 			ticks: stream.readInt32(),
 			frames: stream.readInt32(),
-			sigon: stream.readInt32(),
+			sigon: stream.readInt32()
 		};
 	}
 

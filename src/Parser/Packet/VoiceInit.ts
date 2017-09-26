@@ -12,7 +12,7 @@ export function ParseVoiceInit(stream: BitStream): VoiceInitPacket {
 		packetType: 'voiceInit',
 		codec,
 		quality,
-		extraData,
+		extraData
 	};
 }
 

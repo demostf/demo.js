@@ -1,8 +1,8 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder} from '../Packet/PacketTest';
-import {ConsoleCmdHandler} from '../../../../Parser/Message/ConsoleCmd';
-import {ParserState} from '../../../../Data/ParserState';
 import {MessageType} from '../../../../Data/Message';
+import {ParserState} from '../../../../Data/ParserState';
+import {ConsoleCmdHandler} from '../../../../Parser/Message/ConsoleCmd';
+import {assertEncoder} from '../Packet/PacketTest';
 
 function parse(stream) {
 	const result = ConsoleCmdHandler.parseMessage(stream, new ParserState());

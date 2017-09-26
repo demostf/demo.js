@@ -1,9 +1,9 @@
-import {Packet} from './Packet';
 import {BitStream} from 'bit-buffer';
-import {ServerClass} from './ServerClass';
-import {SendTable} from './SendTable';
-import {StringTable} from './StringTable';
+import {Packet} from './Packet';
 import {ParserState} from './ParserState';
+import {SendTable} from './SendTable';
+import {ServerClass} from './ServerClass';
+import {StringTable} from './StringTable';
 import {Vector} from './Vector';
 
 export enum MessageType {
@@ -14,7 +14,7 @@ export enum MessageType {
 	UserCmd = 5,
 	DataTables = 6,
 	Stop = 7,
-	StringTables = 8,
+	StringTables = 8
 }
 
 export interface BaseMessage {
@@ -33,8 +33,7 @@ export interface PacketMessage extends BaseMessage {
 	flags: number;
 }
 
-export interface SigonMessage extends PacketMessage {
-}
+export type SigonMessage = PacketMessage;
 
 export interface SyncTickMessage extends BaseMessage {
 	type: MessageType.SyncTick;
@@ -53,7 +52,7 @@ export interface UserCmdMessage extends BaseMessage {
 export interface DataTablesMessage extends BaseMessage {
 	type: MessageType.DataTables;
 	tables: SendTable[];
-	serverClasses: ServerClass[]
+	serverClasses: ServerClass[];
 }
 
 export interface StopMessage extends BaseMessage {
@@ -62,7 +61,7 @@ export interface StopMessage extends BaseMessage {
 
 export interface StringTablesMessage extends BaseMessage {
 	type: MessageType.StringTables;
-	tables: StringTable[]
+	tables: StringTable[];
 }
 
 export type Message = SigonMessage |

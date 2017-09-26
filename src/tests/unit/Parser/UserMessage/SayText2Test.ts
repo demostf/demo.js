@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
 import {EncodeSayText2, ParseSayText2} from '../../../../Parser/UserMessage/SayText2';
+import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
 
 const data = [
 	3,

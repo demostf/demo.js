@@ -1,5 +1,5 @@
-import {MessageHandler, MessageType, UserCmdMessage} from '../../Data/Message';
 import {BitStream} from 'bit-buffer';
+import {MessageHandler, MessageType, UserCmdMessage} from '../../Data/Message';
 
 export const UserCmdHandler: MessageHandler<UserCmdMessage> = {
 	parseMessage: (stream: BitStream) => {

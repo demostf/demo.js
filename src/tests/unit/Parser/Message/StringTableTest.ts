@@ -1,18 +1,18 @@
-import {StringTable, StringTableEntry} from '../../../../Data/StringTable';
+import {BitStream} from 'bit-buffer';
 import {readFileSync} from 'fs';
 import {ParserState} from '../../../../Data/ParserState';
+import {StringTable, StringTableEntry} from '../../../../Data/StringTable';
 import {StringTableHandler} from '../../../../Parser/Message/StringTable';
 import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
-import {BitStream} from 'bit-buffer';
 
 const encodeEntry = (entry: StringTableEntry) => {
-	const encodeEntry: any = {
-		text: entry.text,
+	const result: any = {
+		text: entry.text
 	};
 	if (entry.extraData) {
-		encodeEntry.extraData = Array.from(entry.extraData.readArrayBuffer(Math.ceil(entry.extraData.length / 8)).values());
+		result.extraData = Array.from(entry.extraData.readArrayBuffer(Math.ceil(entry.extraData.length / 8)).values());
 	}
-	return encodeEntry;
+	return result;
 };
 const encodeTables = (tables) => {
 	return tables.map((table) => {
@@ -27,13 +27,13 @@ const encodeTables = (tables) => {
 	});
 };
 const decodeEntry = (entry) => {
-	const decodeEntry: any = {
-		text: entry.text,
+	const result: any = {
+		text: entry.text
 	};
 	if (entry.extraData) {
-		decodeEntry.extraData = getStream(entry.extraData);
+		result.extraData = getStream(entry.extraData);
 	}
-	return decodeEntry;
+	return result;
 };
 const decodeTables = (tables) => {
 	return tables.map((table) => {
@@ -61,7 +61,6 @@ const expected = {
 	tables: decodeTables(expectedRaw.tables),
 	rawData: getStream('')
 };
-
 
 const getParserState = () => {
 	return new ParserState();

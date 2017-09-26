@@ -1,9 +1,9 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
 import {readFileSync} from 'fs';
-import {PacketMessageHandler} from '../../../../Parser/Message/Packet';
-import {ParserState} from '../../../../Data/ParserState';
 import {PacketTypeId} from '../../../../Data/Packet';
+import {ParserState} from '../../../../Data/ParserState';
+import {PacketMessageHandler} from '../../../../Parser/Message/Packet';
+import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
 
 const data = Object.values(JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageData.json', 'utf8')));
 const expected = JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageResult.json', 'utf8'));
@@ -14,7 +14,7 @@ const getParserState = (fastMode) => {
 	state.skippedPackets = fastMode ? [
 		PacketTypeId.packetEntities,
 		PacketTypeId.tempEntities,
-		PacketTypeId.entityMessage,
+		PacketTypeId.entityMessage
 	] : [];
 	return state;
 };

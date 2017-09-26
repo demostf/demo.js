@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {
 	GameEventDefinition, GameEventEntry,
-	GameEventValue, GameEventValueType,
+	GameEventValue, GameEventValueType
 } from '../../Data/GameEvent';
 import {GameEvent, GameEventType, GameEventTypeIdMap, GameEventTypeMap} from '../../Data/GameEventTypes';
 import {GameEventPacket} from '../../Data/Packet';
@@ -19,7 +19,7 @@ function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition
 
 	return {
 		name,
-		values,
+		values
 	};
 }
 
@@ -98,7 +98,7 @@ export function ParseGameEvent(stream: BitStream, state: ParserState): GameEvent
 
 	return {
 		packetType: 'gameEvent',
-		event: event as GameEvent,
+		event: event as GameEvent
 	};
 }
 

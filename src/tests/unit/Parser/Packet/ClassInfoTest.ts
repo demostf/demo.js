@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
 import {EncodeClassInfo, ParseClassInfo} from '../../../../Parser/Packet/ClassInfo';
+import {assertEncoder, assertParser, getStream} from './PacketTest';
 
 suite('ClassInfo', () => {
 	test('Parse classInfo', () => {

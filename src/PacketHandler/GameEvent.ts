@@ -1,8 +1,8 @@
-import {Match} from '../Data/Match';
-import {GameEventPacket} from '../Data/Packet';
 import {
 	ObjectDestroyedEvent, PlayerDeathEvent, PlayerSpawnEvent, TeamPlayRoundStartEvent, TeamPlayRoundWinEvent
 } from '../Data/GameEventTypes';
+import {Match} from '../Data/Match';
+import {GameEventPacket} from '../Data/Packet';
 
 export function handleGameEvent(packet: GameEventPacket, match: Match) {
 	switch (packet.event.name) {
@@ -42,7 +42,7 @@ function handlePlayerDeath(event: PlayerDeathEvent, match: Match) {
 		assister,
 		victim: values.userid,
 		weapon: values.weapon,
-		tick: match.tick,
+		tick: match.tick
 	});
 }
 
@@ -52,7 +52,7 @@ function handleRoundWin(event: TeamPlayRoundWinEvent, match: Match) {
 		match.rounds.push({
 			winner: values.team === 2 ? 'red' : 'blue',
 			length: values.round_time,
-			end_tick: match.tick,
+			end_tick: match.tick
 		});
 	}
 }
