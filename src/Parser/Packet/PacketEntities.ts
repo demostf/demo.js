@@ -28,7 +28,7 @@ function readPVSType(stream: BitStream): PVS {
 
 function writePVSType(pvs: PVS, stream: BitStream) {
 	const raw = pvsReverseMap.get(pvs);
-	if (!raw) {
+	if (typeof raw === 'undefined') {
 		throw new Error(`Unknown pvs ${pvs}`);
 	}
 	stream.writeBits(raw, 2);
