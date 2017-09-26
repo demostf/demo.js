@@ -26,7 +26,7 @@ function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition
 function encodeGameEvent<T extends GameEventType>(event: GameEventTypeMap[T], definition: GameEventDefinition<T>, stream: BitStream) {
 	for (const entry of definition.entries) {
 		const value = event.values[entry.name];
-		if (value !== null) {
+		if (value !== null && typeof value !== 'undefined') {
 			encodeGameEventValue(value, stream, entry);
 		}
 	}
