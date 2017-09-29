@@ -56,6 +56,7 @@ export function ParseCreateStringTable(stream: BitStream): CreateStringTablePack
 		fixedUserDataSizeBits: userDataSizeBits
 	};
 
+	// console.log(`${tableName} ${entityCount} ${bitCount}`);
 	table.entries = parseStringTableEntries(data, table, entityCount);
 
 	return {
@@ -68,7 +69,8 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 	stream.writeASCIIString(packet.table.name);
 	stream.writeUint16(packet.table.maxEntries);
 	const encodeBits = logBase2(packet.table.maxEntries);
-	stream.writeBits(packet.table.entries.length, encodeBits + 1);
+	const numEntries = packet.table.entries.filter((entry) => entry).length;
+	stream.writeBits(numEntries, encodeBits + 1);
 
 	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table, packet.table.entries)));
 	encodeStringTableEntries(entryData, packet.table, packet.table.entries);
@@ -78,10 +80,10 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 
 	writeVarInt(entryLength, stream);
 
-	if (packet.table.fixedUserDataSize && packet.table.fixedUserDataSizeBits) {
+	if (packet.table.fixedUserDataSize || packet.table.fixedUserDataSizeBits) {
 		stream.writeBoolean(true);
-		stream.writeBits(packet.table.fixedUserDataSize, 12);
-		stream.writeBits(packet.table.fixedUserDataSizeBits, 4);
+		stream.writeBits(packet.table.fixedUserDataSize || 0, 12);
+		stream.writeBits(packet.table.fixedUserDataSizeBits || 0, 4);
 	} else {
 		stream.writeBoolean(false);
 	}
@@ -89,5 +91,7 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 	// we never compress table data
 	stream.writeBoolean(false);
 
-	stream.writeBitStream(entryData, entryLength);
+	if (entryLength) {
+		stream.writeBitStream(entryData, entryLength);
+	}
 }
