@@ -20,6 +20,7 @@ export class ParserState {
 	public staticBaseLines: Map<ServerClassId, BitStream> = new Map();
 	public staticBaselineCache: Map<ServerClassId, SendProp[]> = new Map();
 	public eventDefinitions: Map<number, GameEventDefinition<GameEventType>> = new Map();
+	public eventDefinitionTypes: Map<GameEventType, number> = new Map();
 	public entityClasses: Map<EntityId, ServerClass> = new Map();
 	public sendTables: Map<SendTableName, SendTable> = new Map();
 	public stringTables: StringTable[] = [];

@@ -11,7 +11,7 @@ function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition
 	const values: GameEventTypeMap[T]['values'] = {};
 	for (const entry of definition.entries) {
 		const value = getGameEventValue(stream, entry);
-		if (value) {
+		if (value !== null) {
 			values[entry.name] = value;
 		}
 	}
@@ -26,7 +26,9 @@ function parseGameEvent<T extends GameEventType>(definition: GameEventDefinition
 function encodeGameEvent<T extends GameEventType>(event: GameEventTypeMap[T], definition: GameEventDefinition<T>, stream: BitStream) {
 	for (const entry of definition.entries) {
 		const value = event.values[entry.name];
-		if (value !== null && typeof value !== 'undefined') {
+		if (typeof value === 'undefined') {
+			throw new Error('empty event value');
+		} else {
 			encodeGameEventValue(value, stream, entry);
 		}
 	}
@@ -105,7 +107,7 @@ export function ParseGameEvent(stream: BitStream, state: ParserState): GameEvent
 export function EncodeGameEvent(packet: GameEventPacket, stream: BitStream, state: ParserState) {
 	const lengthStart = stream.index;
 	stream.index += 11;
-	const eventId = GameEventTypeIdMap.get(packet.event.name);
+	const eventId = state.eventDefinitionTypes.get(packet.event.name);
 	if (typeof eventId === 'undefined') {
 		throw new Error(`Unknown game event type ${packet.event.name}`);
 	}
