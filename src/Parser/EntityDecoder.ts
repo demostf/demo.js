@@ -26,6 +26,13 @@ export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendPr
 
 export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stream: BitStream) {
 	const allProps = sendTable.flattenedProps;
+
+	props.sort((propA, propB) => {
+		const indexA = allProps.findIndex((propDef) => propDef.fullName === propA.definition.fullName);
+		const indexB = allProps.findIndex((propDef) => propDef.fullName === propB.definition.fullName);
+		return indexA - indexB;
+	});
+
 	let lastIndex = -1;
 	for (const prop of props) {
 		stream.writeBoolean(true);
