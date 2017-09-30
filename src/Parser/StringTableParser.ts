@@ -90,7 +90,7 @@ export function guessStringTableEntryLength(table: StringTable, entries: StringT
 			1 + // new index bit
 			1 + // misc boolean
 			1 + // substring bit
-			entry.text.length + 1 + // +1 for null termination
+			(entry.text ? entry.text.length + 1 : 1) + // +1 for null termination
 			(entry.extraData ? Math.ceil(entry.extraData.length / 8) : 0);
 	}, 1);
 }
@@ -108,18 +108,21 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 				stream.writeBoolean(true);
 			}
 
-			// we always encode a value
-			stream.writeBoolean(true);
-			// we don't encode substring optimizations
-			stream.writeBoolean(false);
+			if (typeof entry.text !== 'undefined') {
+				stream.writeBoolean(true);
+				// we don't encode substring optimizations
+				stream.writeBoolean(false);
 
-			stream.writeASCIIString(entry.text);
+				stream.writeASCIIString(entry.text);
+			} else {
+				stream.writeBoolean(false);
+			}
 
 			if (entry.extraData) {
 				stream.writeBoolean(true);
 
 				entry.extraData.index = 0;
-				if (table.fixedUserDataSizeBits) {
+				if (table.fixedUserDataSize && table.fixedUserDataSizeBits) {
 					stream.writeBitStream(entry.extraData, table.fixedUserDataSizeBits);
 				} else {
 					const byteLength = Math.ceil(entry.extraData.length / 8);
