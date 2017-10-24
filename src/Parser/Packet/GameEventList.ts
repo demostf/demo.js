@@ -6,19 +6,21 @@ import {GameEventListPacket} from '../../Data/Packet';
 export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
 	// list of game events and parameters
 	const numEvents = stream.readBits(9);
+
 	const length = stream.readBits(20);
+	const listData = stream.readBitStream(length);
 	const eventList: Map<number, GameEventDefinition<GameEventType>> = new Map();
 	for (let i = 0; i < numEvents; i++) {
-		const id = stream.readBits(9);
-		const name = stream.readASCIIString() as GameEvent['name'];
-		let type = stream.readBits(3);
+		const id = listData.readBits(9);
+		const name = listData.readASCIIString() as GameEvent['name'];
+		let type = listData.readBits(3);
 		const entries: GameEventEntry[] = [];
 		while (type !== 0) {
 			entries.push({
 				type,
-				name: stream.readASCIIString()
+				name: listData.readASCIIString()
 			});
-			type = stream.readBits(3);
+			type = listData.readBits(3);
 		}
 		eventList.set(id, {
 			id,

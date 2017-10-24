@@ -6,7 +6,7 @@ export function ParseVoiceInit(stream: BitStream): VoiceInitPacket {
 	const quality = stream.readUint8();
 
 	// no clue, from 2017-2-14 update
-	const extraData = (codec === 'vaudio_celt' && quality === 255) ? stream.readUint16() : 0;
+	const extraData = readExtraData(stream, codec, quality);
 
 	return {
 		packetType: 'voiceInit',
@@ -14,6 +14,16 @@ export function ParseVoiceInit(stream: BitStream): VoiceInitPacket {
 		quality,
 		extraData
 	};
+}
+
+function readExtraData(stream: BitStream, codec: string, quality: number) {
+	if (quality === 255) {
+		return stream.readUint16();
+	} else if (codec === 'vaudio_celt') {
+		return 11025;
+	} else {
+		return 0;
+	}
 }
 
 export function EncodeVoiceInit(packet: VoiceInitPacket, stream: BitStream) {
