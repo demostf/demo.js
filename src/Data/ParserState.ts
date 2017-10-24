@@ -28,9 +28,13 @@ export class ParserState {
 	public instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>] = [new Map(), new Map()];
 	public skippedPackets: PacketTypeId[] = [];
 	public userInfoEntries: Map<string, BitStream> = new Map();
+	public tick: number = 0;
 
 	public handlePacket(packet: Packet) {
 		switch (packet.packetType) {
+			case 'netTick':
+				this.tick = packet.tick;
+				break;
 			case 'serverInfo':
 				this.version = packet.version;
 				break;

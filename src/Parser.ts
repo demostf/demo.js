@@ -6,18 +6,20 @@ import {ParserState} from './Data/ParserState';
 import {ConsoleCmdHandler} from './Parser/Message/ConsoleCmd';
 import {DataTableHandler} from './Parser/Message/DataTable';
 import {PacketMessageHandler} from './Parser/Message/Packet';
+import {StopHandler} from './Parser/Message/Stop';
 import {StringTableHandler} from './Parser/Message/StringTable';
 import {SyncTickHandler} from './Parser/Message/SyncTick';
 import {UserCmdHandler} from './Parser/Message/UserCmd';
 
-const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
+export const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
 	[MessageType.Packet, PacketMessageHandler],
 	[MessageType.ConsoleCmd, ConsoleCmdHandler],
 	[MessageType.UserCmd, UserCmdHandler],
 	[MessageType.DataTables, DataTableHandler],
 	[MessageType.StringTables, StringTableHandler],
-	[MessageType.SyncTick, SyncTickHandler]
+	[MessageType.SyncTick, SyncTickHandler],
+	[MessageType.Stop, StopHandler]
 ]);
 
 export class Parser {
@@ -50,20 +52,11 @@ export class Parser {
 	protected * getMessages(): Iterable<Message> {
 		while (true) {
 			const message = this.readMessage(this.stream, this.parserState);
-			if (message) {
-				yield message;
-			} else {
+			yield message;
+			if (message.type === MessageType.Stop) {
 				return;
 			}
 		}
-	}
-
-	protected parseMessage(data: BitStream, type: MessageType, state: ParserState): Message {
-		const handler = messageHandlers.get(type);
-		if (!handler) {
-			throw new Error(`No handler for message of type ${MessageType[type]}`);
-		}
-		return handler.parseMessage(data, state);
 	}
 
 	protected parseHeader(stream): Header {
@@ -85,22 +78,28 @@ export class Parser {
 	protected * handleMessage(message: Message): Iterable<Packet> {
 		this.parserState.handleMessage(message);
 		if (message.type === MessageType.Packet) {
-			for (const packet of (message as PacketMessage).packets) {
+			for (const packet of message.packets) {
 				this.parserState.handlePacket(packet);
 				yield packet;
 			}
 		}
 	}
 
-	protected readMessage(stream: BitStream, state: ParserState): Message | false {
+	protected readMessage(stream: BitStream, state: ParserState): Message {
 		if (stream.bitsLeft < 8) {
-			return false;
+			throw new Error('Stream ended without stop packet');
 		}
 		const type: MessageType = stream.readUint8();
-		if (type === MessageType.Stop) {
-			return false;
+		if (type === 0) {
+			return {
+				type: MessageType.Stop,
+				rawData: stream.readBitStream(0)
+			};
 		}
-
-		return this.parseMessage(stream, type, state);
+		const handler = messageHandlers.get(type);
+		if (!handler) {
+			throw new Error(`No handler for message of type ${MessageType[type]}(${type})`);
+		}
+		return handler.parseMessage(this.stream, state);
 	}
 }

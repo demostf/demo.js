@@ -133,6 +133,7 @@ export function ParsePacketEntities(
 	const updatedEntries = stream.readBits(11);
 	const length = stream.readBits(20);
 	const updatedBaseLine = stream.readBoolean();
+	const start = stream.index;
 	const end = stream.index + length;
 	let entityId = -1;
 
@@ -166,6 +167,10 @@ export function ParsePacketEntities(
 				if (!sendTable) {
 					throw new Error(`Unknown sendTable ${packetEntity.serverClass.dataTable}`);
 				}
+				if (entityId === 55) {
+					console.log(`decode preserve: ${entityId} = ${sendTable.name}, ${receivedEntities.length}/${i} ${stream.index} ${end} tick ${state.tick}`);
+					console.log(receivedEntities[receivedEntities.length - 1], start, entityId, diff);
+				}
 				const updatedProps = getEntityUpdate(sendTable, stream);
 				packetEntity.applyPropUpdate(updatedProps);
 				receivedEntities.push(packetEntity);
@@ -173,7 +178,7 @@ export function ParsePacketEntities(
 				const packetEntity = getPacketEntityForExisting(entityId, state, pvs);
 				receivedEntities.push(packetEntity);
 			} else {
-				// throw new Error(`No existing entity to update with id ${entityId}`);
+				throw new Error(`No existing entity to update with id ${entityId}`);
 			}
 		}
 
@@ -233,6 +238,9 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 			writeEnterPVS(entity, stream, state, packet.baseLine);
 		} else if (entity.pvs === PVS.PRESERVE) {
 			const sendTable = getSendTable(state, entity.serverClass.dataTable);
+			if (entity.entityIndex === 55) {
+				console.log(`encode preserve: ${entity.entityIndex} = ${entity.serverClass.dataTable}`);
+			}
 			encodeEntityUpdate(entity.props, sendTable, stream);
 		}
 	}

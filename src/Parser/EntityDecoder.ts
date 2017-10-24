@@ -9,11 +9,13 @@ export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendPr
 	let index = -1;
 	const allProps = sendTable.flattenedProps;
 	const props: Map<string, SendProp> = new Map();
+	let lastIndex = -1;
 	while (stream.readBoolean()) {
+		lastIndex = index;
 		index = readFieldIndex(stream, index);
 		if (index >= 4096 || index > allProps.length) {
-			throw new Error('prop index out of bounds while applying update for ' + sendTable.name + ' got ' + index
-				+ ' property only has ' + allProps.length + ' properties');
+			throw new Error(`prop index out of bounds while applying update for ${sendTable.name} 
+			got ${index} property only has ${allProps.length} properties (lastProp: ${lastIndex})`);
 		}
 
 		const propDefinition = allProps[index];
@@ -42,8 +44,8 @@ export function encodeEntityUpdate(props: SendProp[], sendTable: SendTable, stre
 		}
 
 		if (index < lastIndex) {
-			throw new Error(`Property index not incremental while encoding` +
-				`${prop.definition.fullName} after ${allProps[lastIndex].fullName}` +
+			throw new Error(`Property index not incremental while encoding ` +
+				`${prop.definition.fullName} after ${allProps[lastIndex].fullName} ` +
 				`in ${sendTable.name} (current: ${index}, last: ${lastIndex})`);
 		}
 		writeFieldIndex(index, stream, lastIndex);

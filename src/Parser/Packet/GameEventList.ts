@@ -4,8 +4,6 @@ import {GameEvent, GameEventType} from '../../Data/GameEventTypes';
 import {GameEventListPacket} from '../../Data/Packet';
 
 export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 30: gameEventList
-	const s = stream.index;
-
 	// list of game events and parameters
 	const numEvents = stream.readBits(9);
 	const length = stream.readBits(20);
@@ -28,6 +26,7 @@ export function ParseGameEventList(stream: BitStream): GameEventListPacket { // 
 			entries
 		});
 	}
+
 	return {
 		packetType: 'gameEventList',
 		eventList

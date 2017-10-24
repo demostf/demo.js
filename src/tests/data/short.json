@@ -1,0 +1,695 @@
+{
+  "chat": [
+    {
+      "kind": "TF_Chat_All",
+      "from": "-[MG]-  Linc",
+      "text": "hf",
+      "tick": 41683
+    },
+    {
+      "kind": "TF_Chat_All",
+      "from": "-[MG]-  Linc",
+      "text": "gg",
+      "tick": 74952
+    },
+    {
+      "kind": "TF_Chat_All",
+      "from": "sientalprime",
+      "text": "gr",
+      "tick": 75279
+    }
+  ],
+  "users": {
+    "2": {
+      "classes": {},
+      "name": "SourceTV",
+      "steamId": "BOT",
+      "userId": 2
+    },
+    "3": {
+      "classes": {
+        "3": 12
+      },
+      "name": "Oneflower",
+      "steamId": "[U:1:72084]",
+      "userId": 3,
+      "team": "blue"
+    },
+    "4": {
+      "classes": {
+        "4": 10,
+        "5": 2
+      },
+      "name": "THG | The Bearded MIG",
+      "steamId": "[U:1:79943218]",
+      "userId": 4,
+      "team": "blue"
+    },
+    "5": {
+      "classes": {
+        "4": 3,
+        "5": 7,
+        "6": 1
+      },
+      "name": "sientalprime",
+      "steamId": "[U:1:315192136]",
+      "userId": 5,
+      "team": "blue"
+    },
+    "6": {
+      "classes": {
+        "1": 11,
+        "2": 2,
+        "6": 1,
+        "7": 4
+      },
+      "name": "Colonel Miggy-Bears",
+      "steamId": "[U:1:4783268]",
+      "userId": 6,
+      "team": "blue"
+    },
+    "7": {
+      "classes": {
+        "1": 11,
+        "2": 1
+      },
+      "name": "-[MG]-  Linc",
+      "steamId": "[U:1:25900190]",
+      "userId": 7,
+      "team": "blue"
+    },
+    "8": {
+      "classes": {
+        "3": 11
+      },
+      "name": "J1ll ✧ stipuha zavisimyy",
+      "steamId": "[U:1:70354528]",
+      "userId": 8,
+      "team": "red"
+    },
+    "9": {
+      "classes": {
+        "3": 10
+      },
+      "name": "dzapis",
+      "steamId": "[U:1:134795814]",
+      "userId": 9,
+      "team": "red"
+    },
+    "10": {
+      "classes": {
+        "1": 1,
+        "3": 10,
+        "8": 2
+      },
+      "name": "SAVE_THE_SPYCRABS",
+      "steamId": "[U:1:125755589]",
+      "userId": 10,
+      "team": "blue"
+    },
+    "11": {
+      "classes": {
+        "1": 9
+      },
+      "name": "skq",
+      "steamId": "[U:1:113575586]",
+      "userId": 11,
+      "team": "red"
+    },
+    "12": {
+      "classes": {
+        "4": 7
+      },
+      "name": "Dunkelheit",
+      "steamId": "[U:1:52631210]",
+      "userId": 12,
+      "team": "red"
+    },
+    "13": {
+      "classes": {
+        "1": 7
+      },
+      "name": "Alexander",
+      "steamId": "[U:1:101341390]",
+      "userId": 13,
+      "team": "red"
+    },
+    "14": {
+      "classes": {
+        "5": 6
+      },
+      "name": "Dr.Oetker",
+      "steamId": "[U:1:76315857]",
+      "userId": 14,
+      "team": "red"
+    }
+  },
+  "deaths": [
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 11,
+      "weapon": "quake_rl",
+      "tick": 41352
+    },
+    {
+      "killer": 11,
+      "assister": null,
+      "victim": 6,
+      "weapon": "scattergun",
+      "tick": 43136
+    },
+    {
+      "killer": 9,
+      "assister": 12,
+      "victim": 7,
+      "weapon": "quake_rl",
+      "tick": 43190
+    },
+    {
+      "killer": 11,
+      "assister": 12,
+      "victim": 10,
+      "weapon": "scattergun",
+      "tick": 43515
+    },
+    {
+      "killer": 11,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 43817
+    },
+    {
+      "killer": 8,
+      "assister": 14,
+      "victim": 4,
+      "weapon": "shotgun_soldier",
+      "tick": 44729
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 7,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 45866
+    },
+    {
+      "killer": 3,
+      "assister": 7,
+      "victim": 8,
+      "weapon": "world",
+      "tick": 45900
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 3,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 45954
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 6,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 46185
+    },
+    {
+      "killer": 4,
+      "assister": null,
+      "victim": 13,
+      "weapon": "tf_projectile_pipe",
+      "tick": 46445
+    },
+    {
+      "killer": 11,
+      "assister": 12,
+      "victim": 10,
+      "weapon": "scattergun",
+      "tick": 46456
+    },
+    {
+      "killer": 9,
+      "assister": null,
+      "victim": 4,
+      "weapon": "quake_rl",
+      "tick": 46491
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 5,
+      "weapon": "tf_projectile_pipe",
+      "tick": 46607
+    },
+    {
+      "killer": 11,
+      "assister": 9,
+      "victim": 7,
+      "weapon": "scattergun",
+      "tick": 48554
+    },
+    {
+      "killer": 8,
+      "assister": 13,
+      "victim": 4,
+      "weapon": "cow_mangler",
+      "tick": 48693
+    },
+    {
+      "killer": 11,
+      "assister": 12,
+      "victim": 6,
+      "weapon": "scattergun",
+      "tick": 48763
+    },
+    {
+      "killer": 9,
+      "assister": 8,
+      "victim": 3,
+      "weapon": "quake_rl",
+      "tick": 48835
+    },
+    {
+      "killer": 13,
+      "assister": 14,
+      "victim": 10,
+      "weapon": "scattergun",
+      "tick": 48959
+    },
+    {
+      "killer": 11,
+      "assister": null,
+      "victim": 5,
+      "weapon": "scattergun",
+      "tick": 49312
+    },
+    {
+      "killer": 8,
+      "assister": null,
+      "victim": 4,
+      "weapon": "shotgun_soldier",
+      "tick": 51581
+    },
+    {
+      "killer": 10,
+      "assister": 3,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 51658
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 51866
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 7,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 51907
+    },
+    {
+      "killer": 6,
+      "assister": null,
+      "victim": 11,
+      "weapon": "degreaser",
+      "tick": 52054
+    },
+    {
+      "killer": 12,
+      "assister": 13,
+      "victim": 6,
+      "weapon": "tf_projectile_pipe",
+      "tick": 52087
+    },
+    {
+      "killer": 10,
+      "assister": null,
+      "victim": 12,
+      "weapon": "tf_projectile_rocket",
+      "tick": 52117
+    },
+    {
+      "killer": 9,
+      "assister": null,
+      "victim": 10,
+      "weapon": "quake_rl",
+      "tick": 52431
+    },
+    {
+      "killer": 5,
+      "assister": null,
+      "victim": 9,
+      "weapon": "ubersaw",
+      "tick": 52628
+    },
+    {
+      "killer": 14,
+      "assister": 13,
+      "victim": 5,
+      "weapon": "ubersaw",
+      "tick": 52721
+    },
+    {
+      "killer": 9,
+      "assister": 11,
+      "victim": 4,
+      "weapon": "quake_rl",
+      "tick": 55162
+    },
+    {
+      "killer": 3,
+      "assister": 4,
+      "victim": 9,
+      "weapon": "quake_rl",
+      "tick": 55369
+    },
+    {
+      "killer": 13,
+      "assister": 11,
+      "victim": 7,
+      "weapon": "pistol_scout",
+      "tick": 55645
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 3,
+      "weapon": "tf_projectile_pipe",
+      "tick": 56902
+    },
+    {
+      "killer": 10,
+      "assister": 5,
+      "victim": 8,
+      "weapon": "tf_projectile_rocket",
+      "tick": 57415
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 5,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 57785
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 10,
+      "weapon": "tf_projectile_pipe",
+      "tick": 57963
+    },
+    {
+      "killer": 7,
+      "assister": null,
+      "victim": 13,
+      "weapon": "force_a_nature",
+      "tick": 58048
+    },
+    {
+      "killer": 4,
+      "assister": 7,
+      "victim": 11,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 58164
+    },
+    {
+      "killer": 9,
+      "assister": 12,
+      "victim": 6,
+      "weapon": "quake_rl",
+      "tick": 58395
+    },
+    {
+      "killer": 7,
+      "assister": 3,
+      "victim": 12,
+      "weapon": "force_a_nature",
+      "tick": 58756
+    },
+    {
+      "killer": 9,
+      "assister": 14,
+      "victim": 7,
+      "weapon": "quake_rl",
+      "tick": 58758
+    },
+    {
+      "killer": 9,
+      "assister": null,
+      "victim": 3,
+      "weapon": "quake_rl",
+      "tick": 59038
+    },
+    {
+      "killer": 14,
+      "assister": 9,
+      "victim": 4,
+      "weapon": "ubersaw",
+      "tick": 59157
+    },
+    {
+      "killer": 9,
+      "assister": 11,
+      "victim": 3,
+      "weapon": "quake_rl",
+      "tick": 61550
+    },
+    {
+      "killer": 12,
+      "assister": 8,
+      "victim": 4,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 61819
+    },
+    {
+      "killer": 9,
+      "assister": 8,
+      "victim": 10,
+      "weapon": "quake_rl",
+      "tick": 62325
+    },
+    {
+      "killer": 13,
+      "assister": null,
+      "victim": 7,
+      "weapon": "pistol_scout",
+      "tick": 62772
+    },
+    {
+      "killer": 6,
+      "assister": null,
+      "victim": 8,
+      "weapon": "sniperrifle",
+      "tick": 63063
+    },
+    {
+      "killer": 5,
+      "assister": null,
+      "victim": 9,
+      "weapon": "ubersaw",
+      "tick": 63337
+    },
+    {
+      "killer": 11,
+      "assister": null,
+      "victim": 6,
+      "weapon": "scattergun",
+      "tick": 63853
+    },
+    {
+      "killer": 11,
+      "assister": 13,
+      "victim": 7,
+      "weapon": "scattergun",
+      "tick": 64916
+    },
+    {
+      "killer": 13,
+      "assister": null,
+      "victim": 10,
+      "weapon": "world",
+      "tick": 65203
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 3,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 65305
+    },
+    {
+      "killer": 11,
+      "assister": 8,
+      "victim": 6,
+      "weapon": "scattergun",
+      "tick": 66212
+    },
+    {
+      "killer": 12,
+      "assister": 13,
+      "victim": 5,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 66256
+    },
+    {
+      "killer": 9,
+      "assister": 14,
+      "victim": 4,
+      "weapon": "quake_rl",
+      "tick": 66343
+    },
+    {
+      "killer": 10,
+      "assister": null,
+      "victim": 11,
+      "weapon": "tf_projectile_rocket",
+      "tick": 68654
+    },
+    {
+      "killer": 13,
+      "assister": null,
+      "victim": 10,
+      "weapon": "scattergun",
+      "tick": 68695
+    },
+    {
+      "killer": 9,
+      "assister": 13,
+      "victim": 6,
+      "weapon": "quake_rl",
+      "tick": 68952
+    },
+    {
+      "killer": 9,
+      "assister": 8,
+      "victim": 3,
+      "weapon": "quake_rl",
+      "tick": 69063
+    },
+    {
+      "killer": 5,
+      "assister": null,
+      "victim": 12,
+      "weapon": "iron_bomber",
+      "tick": 69227
+    },
+    {
+      "killer": 5,
+      "assister": null,
+      "victim": 9,
+      "weapon": "iron_bomber",
+      "tick": 71107
+    },
+    {
+      "killer": 12,
+      "assister": 14,
+      "victim": 6,
+      "weapon": "tf_projectile_pipe",
+      "tick": 72276
+    },
+    {
+      "killer": 7,
+      "assister": 3,
+      "victim": 8,
+      "weapon": "force_a_nature",
+      "tick": 73216
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 7,
+      "weapon": "tf_projectile_pipe",
+      "tick": 73641
+    },
+    {
+      "killer": 3,
+      "assister": null,
+      "victim": 11,
+      "weapon": "quake_rl",
+      "tick": 73797
+    },
+    {
+      "killer": 5,
+      "assister": null,
+      "victim": 9,
+      "weapon": "tf_projectile_pipe_remote",
+      "tick": 74070
+    },
+    {
+      "killer": 13,
+      "assister": null,
+      "victim": 3,
+      "weapon": "scattergun",
+      "tick": 74284
+    },
+    {
+      "killer": 14,
+      "assister": 12,
+      "victim": 4,
+      "weapon": "crusaders_crossbow",
+      "tick": 74355
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 5,
+      "weapon": "tf_projectile_pipe",
+      "tick": 74639
+    },
+    {
+      "killer": 12,
+      "assister": null,
+      "victim": 10,
+      "weapon": "tf_projectile_pipe",
+      "tick": 74639
+    },
+    {
+      "killer": 13,
+      "assister": 12,
+      "victim": 6,
+      "weapon": "scattergun",
+      "tick": 74679
+    },
+    {
+      "assister": null,
+      "victim": 8,
+      "weapon": "worldspawn",
+      "tick": 75044
+    }
+  ],
+  "rounds": [
+    {
+      "winner": "red",
+      "length": 73.81500244140625,
+      "end_tick": 46460
+    },
+    {
+      "winner": "red",
+      "length": 86.14501953125,
+      "end_tick": 52870
+    },
+    {
+      "winner": "red",
+      "length": 85.76995849609375,
+      "end_tick": 59255
+    },
+    {
+      "winner": "red",
+      "length": 97.02001953125,
+      "end_tick": 66390
+    },
+    {
+      "winner": "red",
+      "length": 117.405029296875,
+      "end_tick": 74884
+    }
+  ],
+  "startTick": 41206,
+  "intervalPerTick": 0.014999999664723873
+}

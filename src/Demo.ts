@@ -4,13 +4,8 @@ import {PacketTypeId} from './Data/Packet';
 import {Parser} from './Parser';
 
 export class Demo {
-	public static fromNodeBuffer(nodeBuffer) {
-		const arrayBuffer = new ArrayBuffer(nodeBuffer.length);
-		const view = new Uint8Array(arrayBuffer);
-		for (let i = 0; i < nodeBuffer.length; ++i) {
-			view[i] = nodeBuffer[i];
-		}
-		return new Demo(arrayBuffer);
+	public static fromNodeBuffer(nodeBuffer: Buffer) {
+		return new Demo(nodeBuffer.buffer as ArrayBuffer);
 	}
 
 	public stream: BitStream;

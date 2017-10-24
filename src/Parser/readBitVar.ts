@@ -52,7 +52,7 @@ export const readUBitVar = readBitVar;
 export function readVarInt(stream: BitStream, signed: boolean = false) {
 	let result = 0;
 	for (let i = 0; i < 35; i += 7) {
-		const byte = stream.readBits(8);
+		const byte = stream.readUint8();
 		result |= ((byte & 0x7F) << i);
 
 		if ((byte >> 7) === 0) {
