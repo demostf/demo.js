@@ -7,7 +7,7 @@ import {BitStream} from 'bit-buffer';
 import {EventEmitter} from 'events';
 import {Match} from './Data/Match';
 import {Parser as MessageParser} from './Parser/Message/Parser';
-import {Header} from "./Data/Header";
+import {Header} from './Data/Header';
 
 export class Parser extends EventEmitter {
 	stream: BitStream;
@@ -17,7 +17,7 @@ export class Parser extends EventEmitter {
 	constructor(stream: BitStream, skipPackets: PacketType[] = []) {
 		super();
 		this.stream = stream;
-		this.match  = new Match();
+		this.match = new Match();
 		this.on('packet', this.match.handlePacket.bind(this.match));
 		this.skipPackets = skipPackets;
 	}
@@ -28,18 +28,18 @@ export class Parser extends EventEmitter {
 
 	parseHeader(stream): Header {
 		return {
-			'type':     stream.readASCIIString(8),
-			'version':  stream.readInt32(),
+			'type': stream.readASCIIString(8),
+			'version': stream.readInt32(),
 			'protocol': stream.readInt32(),
-			'server':   stream.readASCIIString(260),
-			'nick':     stream.readASCIIString(260),
-			'map':      stream.readASCIIString(260),
-			'game':     stream.readASCIIString(260),
+			'server': stream.readASCIIString(260),
+			'nick': stream.readASCIIString(260),
+			'map': stream.readASCIIString(260),
+			'game': stream.readASCIIString(260),
 			'duration': stream.readFloat32(),
-			'ticks':    stream.readInt32(),
-			'frames':   stream.readInt32(),
-			'sigon':    stream.readInt32()
-		}
+			'ticks': stream.readInt32(),
+			'frames': stream.readInt32(),
+			'sigon': stream.readInt32()
+		};
 	}
 
 	parseBody() {
@@ -74,7 +74,7 @@ export class Parser extends EventEmitter {
 			case MessageType.StringTables:
 				return new StringTable(type, tick, data, length, match, this.skipPackets);
 			default:
-				throw new Error("unknown message type");
+				throw new Error('unknown message type');
 		}
 	}
 
@@ -90,11 +90,14 @@ export class Parser extends EventEmitter {
 		}
 	}
 
-	readMessage(stream: BitStream, match: Match): MessageParser|boolean {
+	readMessage(stream: BitStream, match: Match): MessageParser | boolean {
 		if (stream.bitsLeft < 8) {
 			return false;
 		}
 		const type: MessageType = stream.readBits(8);
+		if (type === 0) {
+			return true;
+		}
 		if (type === MessageType.Stop) {
 			return false;
 		}
@@ -137,12 +140,12 @@ export class Parser extends EventEmitter {
 }
 
 export enum MessageType {
-	Sigon        = 1,
-	Packet       = 2,
-	SyncTick     = 3,
-	ConsoleCmd   = 4,
-	UserCmd      = 5,
-	DataTables   = 6,
-	Stop         = 7,
+	Sigon = 1,
+	Packet = 2,
+	SyncTick = 3,
+	ConsoleCmd = 4,
+	UserCmd = 5,
+	DataTables = 6,
+	Stop = 7,
 	StringTables = 8
 }
