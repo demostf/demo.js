@@ -29,7 +29,7 @@ function readExtraData(stream: BitStream, codec: string, quality: number) {
 export function EncodeVoiceInit(packet: VoiceInitPacket, stream: BitStream) {
 	stream.writeASCIIString(packet.codec);
 	stream.writeUint8(packet.quality);
-	if (packet.extraData) {
+	if (packet.quality === 255) {
 		stream.writeUint16(packet.extraData);
 	}
 }
