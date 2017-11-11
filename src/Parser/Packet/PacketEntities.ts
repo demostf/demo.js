@@ -149,6 +149,7 @@ export function ParsePacketEntities(
 		for (let i = 0; i < updatedEntries; i++) {
 			const diff = readUBitVar(stream);
 			entityId += 1 + diff;
+
 			const pvs = readPVSType(stream);
 			if (pvs === PVS.ENTER) {
 				const packetEntity = readEnterPVS(stream, entityId, state, baseLine);
@@ -166,10 +167,6 @@ export function ParsePacketEntities(
 				const sendTable = state.sendTables.get(packetEntity.serverClass.dataTable);
 				if (!sendTable) {
 					throw new Error(`Unknown sendTable ${packetEntity.serverClass.dataTable}`);
-				}
-				if (entityId === 55) {
-					console.log(`decode preserve: ${entityId} = ${sendTable.name}, ${receivedEntities.length}/${i} ${stream.index} ${end} tick ${state.tick}`);
-					console.log(receivedEntities[receivedEntities.length - 1], start, entityId, diff);
 				}
 				const updatedProps = getEntityUpdate(sendTable, stream);
 				packetEntity.applyPropUpdate(updatedProps);
@@ -238,9 +235,6 @@ export function EncodePacketEntities(packet: PacketEntitiesPacket, stream: BitSt
 			writeEnterPVS(entity, stream, state, packet.baseLine);
 		} else if (entity.pvs === PVS.PRESERVE) {
 			const sendTable = getSendTable(state, entity.serverClass.dataTable);
-			if (entity.entityIndex === 55) {
-				console.log(`encode preserve: ${entity.entityIndex} = ${entity.serverClass.dataTable}`);
-			}
 			encodeEntityUpdate(entity.props, sendTable, stream);
 		}
 	}

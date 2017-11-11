@@ -72,7 +72,7 @@ export function writeVarInt(value: number, stream: BitStream, signed: boolean = 
 
 	do {
 		const byte = value & 0x7F;
-		const resumeBit = (value > 128) ? 0x80 : 0;
+		const resumeBit = (value >= 128) ? 0x80 : 0;
 		stream.writeUint8(byte | resumeBit);
 		value = value >> 7;
 	} while (value > 0);
