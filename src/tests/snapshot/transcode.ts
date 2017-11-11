@@ -7,10 +7,15 @@ import {Parser} from '../../Parser';
 import {Analyser} from '../../Analyser';
 
 function testDemo(name: string) {
-	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}.json`, 'utf8'));
 	const decodeStream = new BitStream(
 		readFileSync(`${__dirname}/../data/${name}.dem`).buffer as ArrayBuffer
 	);
+
+	const parser = new Parser(decodeStream);
+	const analyser = new Analyser(parser);
+	const original = analyser.getBody().getState();
+	decodeStream.index = 0;
+
 	const encodeStream = new DynamicBitStream(32 * 1024 * 1024);
 
 	const transformer = new Transformer(decodeStream, encodeStream);
@@ -19,17 +24,15 @@ function testDemo(name: string) {
 	const encodedLength = encodeStream.index;
 	encodeStream.index = 0;
 
-	console.log('start reparse');
-
 	const reParser = new Parser(encodeStream);
-	const analyser = new Analyser(reParser);
-	const parsed = analyser.getBody().getState();
+	const reAnalyser = new Analyser(reParser);
+	const parsed = reAnalyser.getBody().getState();
 
 	const reParsedLength = encodeStream.index;
 
 	assert.equal(reParsedLength, encodedLength, 'Unexpected number of bits used when parsing encoding stream');
 
-	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), target);
+	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), original);
 }
 
 suite('Transcode demo', () => {
