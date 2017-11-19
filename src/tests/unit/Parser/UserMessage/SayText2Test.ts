@@ -63,7 +63,8 @@ const data = [
 	0,
 	0];
 const expected = {
-	packetType: 'sayText2',
+	packetType: 'userMessage',
+	userMessageType: 'sayText2',
 	client: 3,
 	raw: 1,
 	kind: 'TF_Chat_Team_Dead',

@@ -34,7 +34,8 @@ const data = [
 	24];
 
 const expected = {
-	packetType: 'textMsg',
+	packetType: 'userMessage',
+	userMessageType: 'textMsg',
 	destType: HudTextLocation.HUD_PRINTNOTIFY,
 	text: '#Game_connected',
 	substitute1: 'sekr',
