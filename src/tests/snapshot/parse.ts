@@ -32,4 +32,8 @@ suite('Parse basic demo info', () => {
 	test('Parse post MyM pov demo', () => {
 		testDemo('pov2');
 	});
+
+	test('Parse pyro update demo', () => {
+		testDemo('pyroupdate');
+	});
 });
