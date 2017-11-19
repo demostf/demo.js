@@ -140,7 +140,7 @@ export class Match {
 		const text = `${entityId - 1}`;
 		const extraData = this.parserState.userInfoEntries.get(text);
 		if (!extraData) {
-			throw new Error(`No user info in stringable for entity id ${entityId}`);
+			throw new Error(`No user info in stringtable for entity id ${entityId}`);
 		}
 		return this.calculateUserInfoFromEntry(text, extraData);
 	}
