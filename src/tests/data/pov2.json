@@ -85,7 +85,7 @@
     "69": {
       "classes": {
         "3": 55,
-        "undefined": 1
+        "0": 1
       },
       "name": "Foz",
       "steamId": "[U:1:115748435]",
@@ -95,7 +95,7 @@
     "70": {
       "classes": {
         "3": 67,
-        "undefined": 1
+        "0": 1
       },
       "name": "Kireek",
       "steamId": "[U:1:92428736]",
@@ -505,6 +505,7 @@
     },
     {
       "assister": null,
+      "killer": 0,
       "victim": 69,
       "weapon": "worldspawn",
       "tick": 54984
