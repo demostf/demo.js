@@ -1,5 +1,3 @@
-require('source-map-support').install();
-
 const Demo = require('../index');
 const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2), {boolean: true});
