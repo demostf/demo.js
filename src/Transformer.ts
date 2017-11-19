@@ -23,7 +23,7 @@ export class Transformer extends Parser {
 	public transform(packetTransform: PacketTransform, messageTransform: MessageTransform) {
 		this.encoder.encodeHeader(this.getHeader());
 
-		for (const message of this.getMessages()) {
+		for (const message of this.iterateMessages()) {
 			this.parserState.handleMessage(message);
 			if (message.type === MessageType.Packet) {
 				for (const packet of message.packets) {

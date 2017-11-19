@@ -5,6 +5,7 @@ import {DynamicBitStream} from '../../DynamicBitStream';
 import {nullTransform, Transformer} from '../../Transformer';
 import {Parser} from '../../Parser';
 import {Analyser} from '../../Analyser';
+import {Encoder} from '../../Encoder';
 
 function testDemo(name: string) {
 	const decodeStream = new BitStream(
@@ -32,11 +33,64 @@ function testDemo(name: string) {
 
 	assert.equal(reParsedLength, encodedLength, 'Unexpected number of bits used when parsing encoding stream');
 
-	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), original);
+	assert.deepEqual(parsed, original);
 }
 
-suite('Transcode demo', () => {
+function testCompareMessages(name: string) {
+	const decodeStream = new BitStream(
+		readFileSync(`${__dirname}/../data/${name}.dem`).buffer as ArrayBuffer
+	);
+
+	const parser = new Parser(decodeStream);
+
+	const encodeBuffer = new ArrayBuffer(32 * 1024 * 1024);
+	const encodeStream = new BitStream(encodeBuffer);
+	const reParseStream = new BitStream(encodeBuffer);
+	const encoder = new Encoder(encodeStream);
+	const reParser = new Parser(reParseStream);
+
+	encoder.encodeHeader(parser.getHeader());
+
+	const messages = parser.getMessages();
+	// we always need to encode one message ahead of the re-parser
+	let lastMessage = messages.next().value;
+	encoder.writeMessage(lastMessage);
+	const reParsedMessages = reParser.getMessages();
+
+	for (const message of messages) {
+		encoder.writeMessage(message);
+		const reParsedMessage = reParsedMessages.next().value;
+		assert.deepEqual(removeBitStreams(reParsedMessage), removeBitStreams(lastMessage));
+
+		lastMessage = message;
+	}
+}
+
+// can't deep compare bitstreams properly
+function removeBitStreams(object: {}) {
+	const result = {};
+	for (const key in object) {
+		if (object.hasOwnProperty(key)) {
+			if (object[key] instanceof BitStream) {
+				//skip
+			} else if (object[key] instanceof Object) {
+				result[key] = removeBitStreams(object[key]);
+			} else {
+				result[key] = object[key];
+			}
+		}
+	}
+	return result;
+}
+
+suite('Transcode demo basic test', () => {
 	test('Noop transcode', () => {
 		testDemo('short');
+	});
+});
+
+suite('Transcode demo message compare', () => {
+	test('Noop transcode', () => {
+		testCompareMessages('short');
 	});
 });

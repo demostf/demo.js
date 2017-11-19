@@ -43,19 +43,30 @@ export class Parser {
 	public * getPackets(): IterableIterator<Packet> {
 		// ensure that we are past the header
 		this.getHeader();
-		const messages = this.getMessages();
-		for (const message of messages) {
+		for (const message of this.iterateMessages()) {
 			yield* this.handleMessage(message);
 		}
 	}
 
-	protected * getMessages(): Iterable<Message> {
+	protected * iterateMessages(): Iterable<Message> {
 		while (true) {
 			const message = this.readMessage(this.stream, this.parserState);
 			yield message;
 			if (message.type === MessageType.Stop) {
 				return;
 			}
+		}
+	}
+
+	public * getMessages(): IterableIterator<Message> {
+		// ensure that we are past the header
+		this.getHeader();
+		for (const message of this.iterateMessages()) {
+			for (const _ of this.handleMessage(message)) {
+				//noop
+			}
+			// console.log(message.type);
+			yield message;
 		}
 	}
 
