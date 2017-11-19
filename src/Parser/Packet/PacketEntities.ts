@@ -175,7 +175,7 @@ export function ParsePacketEntities(
 				const packetEntity = getPacketEntityForExisting(entityId, state, pvs);
 				receivedEntities.push(packetEntity);
 			} else {
-				throw new Error(`No existing entity to update with id ${entityId}`);
+				// throw new Error(`No existing entity to update with id ${entityId}`);
 			}
 		}
 

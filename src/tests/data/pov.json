@@ -35,7 +35,7 @@
     "3": {
       "classes": {
         "1": 55,
-        "undefined": 1
+        "0": 1
       },
       "name": "Icewind | demos.tf",
       "steamId": "[U:1:64229260]",
@@ -54,7 +54,7 @@
     "8": {
       "classes": {
         "9": 24,
-        "undefined": 1
+        "0": 1
       },
       "name": "Kireek",
       "steamId": "[U:1:92428736]",
@@ -73,9 +73,9 @@
     "19": {
       "classes": {
         "2": 2,
-        "undefined": 1
+        "0": 1
       },
-      "name": "Ice๊wind | demos.tf",
+      "name": "Here comes dat boi",
       "steamId": "[U:1:115754284]",
       "userId": 19,
       "team": "red"
@@ -95,7 +95,7 @@
     "23": {
       "classes": {
         "8": 4,
-        "undefined": 1
+        "0": 1
       },
       "name": "BaaBo",
       "steamId": "[U:1:44065750]",
@@ -106,7 +106,7 @@
       "classes": {
         "1": 25,
         "3": 1,
-        "undefined": 1
+        "0": 1
       },
       "name": "s1ck",
       "steamId": "[U:1:146390399]",
@@ -128,7 +128,7 @@
         "1": 9,
         "2": 25,
         "4": 18,
-        "undefined": 1
+        "0": 1
       },
       "name": "☺",
       "steamId": "[U:1:130774992]",
@@ -138,7 +138,7 @@
     "29": {
       "classes": {
         "7": 5,
-        "undefined": 1
+        "0": 1
       },
       "name": "Dreyk",
       "steamId": "[U:1:114808252]",
@@ -149,7 +149,7 @@
       "classes": {
         "1": 28,
         "8": 1,
-        "undefined": 1
+        "0": 1
       },
       "name": "Pyla",
       "steamId": "[U:1:157204170]",
@@ -162,7 +162,7 @@
         "3": 9,
         "6": 18,
         "9": 6,
-        "undefined": 1
+        "0": 1
       },
       "name": "[BFL] Åspiråtæur Æ Føutre",
       "steamId": "[U:1:86068441]",
@@ -172,7 +172,7 @@
     "32": {
       "classes": {
         "7": 14,
-        "undefined": 1
+        "0": 1
       },
       "name": "Dreyk",
       "steamId": "[U:1:114808252]",
@@ -182,7 +182,7 @@
     "33": {
       "classes": {
         "4": 37,
-        "undefined": 1
+        "0": 1
       },
       "name": "Old Billy Riley",
       "steamId": "[U:1:92096346]",
@@ -192,9 +192,9 @@
     "34": {
       "classes": {
         "2": 6,
-        "undefined": 1
+        "0": 1
       },
-      "name": "Ice๊wind | demos.tf",
+      "name": "Here comes dat boi",
       "steamId": "[U:1:115754284]",
       "userId": 34,
       "team": "blue"
@@ -202,7 +202,7 @@
     "35": {
       "classes": {
         "3": 8,
-        "undefined": 1
+        "0": 1
       },
       "name": "Colin McCree",
       "steamId": "[U:1:117926946]",
@@ -212,7 +212,7 @@
     "36": {
       "classes": {
         "2": 10,
-        "undefined": 1
+        "0": 1
       },
       "name": "Cronk",
       "steamId": "[U:1:73190327]",
@@ -222,7 +222,7 @@
     "37": {
       "classes": {
         "1": 9,
-        "undefined": 1
+        "0": 1
       },
       "name": "Clem",
       "steamId": "[U:1:68891230]",
@@ -233,7 +233,7 @@
       "classes": {
         "2": 11,
         "3": 9,
-        "undefined": 1
+        "0": 1
       },
       "name": "Here comes dat boi",
       "steamId": "[U:1:115754284]",

@@ -70,7 +70,7 @@ export interface SayText2Packet {
 	userMessageType: 'sayText2';
 	client: number;
 	raw: number;
-	kind: 'TF_Chat_All' | 'TF_Chat_Team' | 'TF_Chat_AllDead';
+	kind: 'TF_Chat_All' | 'TF_Chat_Team' | 'TF_Chat_AllDead' | '#TF_Name_Change';
 	from: string;
 	text: string;
 }
