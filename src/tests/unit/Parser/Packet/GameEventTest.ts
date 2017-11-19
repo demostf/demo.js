@@ -23,6 +23,7 @@ state.eventDefinitions.set(190, {
 		type: GameEventValueType.SHORT
 	}]
 });
+state.eventDefinitionTypes.set('post_inventory_application', 190);
 
 const parseEvent = (stream: BitStream) => {
 	return ParseGameEvent(stream, state);
