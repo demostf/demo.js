@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {EncodeCreateStringTable, ParseCreateStringTable} from '../../../../Parser/Packet/CreateStringTable';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const exampleData = [
 	100,
@@ -88,5 +88,9 @@ suite('CreateStringTable', () => {
 	test('Encode createStringTable', () => {
 		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket, 388);
 		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket2, 615);
+	});
+
+	test('Re-encode classInfo', () => {
+		assertReEncode(ParseCreateStringTable, EncodeCreateStringTable, getStream(exampleData));
 	});
 });

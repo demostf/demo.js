@@ -5,7 +5,7 @@ import {
 } from '../../../../Parser/Packet/BSPDecal';
 import {SendPropEncoder} from '../../../../Parser/SendPropEncoder';
 import {SendPropParser} from '../../../../Parser/SendPropParser';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, getStream, assertReEncode} from './PacketTest';
 
 const data = [239, 236, 208, 85, 33, 127, 128, 9, 8];
 
@@ -63,5 +63,9 @@ suite('BSPDecal', () => {
 			modelIndex: 0,
 			lowPriority: false
 		}, 65);
+	});
+
+	test('Re-encode bspDecal', () => {
+		assertReEncode(getVecCoord, encodeVecCoord, getStream([239, 236, 208, 85, 33, 127, 128]));
 	});
 });

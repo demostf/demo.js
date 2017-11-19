@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {EncodeSayText2, ParseSayText2} from '../../../../Parser/UserMessage/SayText2';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from '../Packet/PacketTest';
 
 const data = [
 	3,
@@ -79,5 +79,9 @@ suite('SayText2', () => {
 
 	test('Encode sayText2', () => {
 		assertEncoder(ParseSayText2, EncodeSayText2, expected, 472);
+	});
+
+	test('Re-encode sayText2', () => {
+		assertReEncode(ParseSayText2, EncodeSayText2, getStream(data));
 	});
 });

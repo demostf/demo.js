@@ -37,6 +37,23 @@ export function assertEncoder(parser: Parser, encoder: Encoder, data: any, lengt
 	assert.equal(stream.index, pos, 'Number of bits used for encoding and parsing not equal' + message);
 }
 
+export function assertReEncode(parser: Parser, encoder: Encoder, stream: BitStream) {
+	const start = stream.index;
+	const result = parser(stream);
+	const encodeStream = new BitStream(new ArrayBuffer(stream.index));
+	const end = stream.index;
+	const length = end - start;
+	stream.index = start;
+	const byteLength = Math.floor((end - start) / 8);
+	encoder(result, encodeStream);
+	assert.equal(encodeStream.index, length, 'Unexpected number of bits used for encoding');
+	encodeStream.index = 0;
+	assert.deepEqual(encodeStream.readArrayBuffer(byteLength), stream.readArrayBuffer(byteLength));
+	if (length - 8 * byteLength > 0) {
+		assert.deepEqual(encodeStream.readBits(length - 8 * byteLength), stream.readBits(length - 8 * byteLength));
+	}
+}
+
 export type Parser = (stream: BitStream, state?) => any;
 
 export function assertParser(parser: Parser, stream: BitStream, expected: any, length: number, state?: ParserState) {

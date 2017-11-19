@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {EncodeClassInfo, ParseClassInfo} from '../../../../Parser/Packet/ClassInfo';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 suite('ClassInfo', () => {
 	test('Parse classInfo', () => {
@@ -19,5 +19,9 @@ suite('ClassInfo', () => {
 			create: true,
 			entries: []
 		}, 17);
+	});
+
+	test('Re-encode classInfo', () => {
+		assertReEncode(ParseClassInfo, EncodeClassInfo, getStream([92, 1, 29]));
 	});
 });
