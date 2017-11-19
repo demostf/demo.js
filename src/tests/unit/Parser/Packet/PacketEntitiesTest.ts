@@ -219,6 +219,6 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(playerEntityData)]
-		}, 3576);
+		}, 3568);
 	});
 });

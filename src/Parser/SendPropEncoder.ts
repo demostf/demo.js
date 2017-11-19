@@ -68,9 +68,11 @@ export class SendPropEncoder {
 	}
 
 	public static writeString(value: string, stream: BitStream) {
-		// +1 for null
-		stream.writeBits(value.length + 1, 9);
-		stream.writeASCIIString(value);
+		stream.writeBits(value.length, 9);
+		if (value) {
+			// specify the length to exclude the null terminator
+			stream.writeASCIIString(value, value.length);
+		}
 	}
 
 	public static writeVector(value: Vector, propDefinition: SendPropDefinition, stream: BitStream) {

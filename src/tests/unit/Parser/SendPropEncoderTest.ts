@@ -99,8 +99,8 @@ suite('SendPropEncoder', () => {
 	});
 
 	test('string', () => {
-		assertEncoder(readString, writeString, 'foobar', (7 * 8) + 9);
-		assertEncoder(readString, writeString, '', 8 + 9);
+		assertEncoder(readString, writeString, 'foobar', (6 * 8) + 9);
+		assertEncoder(readString, writeString, '', 9);
 	});
 
 	test('array', () => {
@@ -115,7 +115,7 @@ suite('SendPropEncoder', () => {
 			[1, 2, 3, 4, 5, 6, 7, 8, 9], 5 * 9 + 4);
 		assertEncoder(arrayReader(SendPropType.DPT_String, 2),
 			arrayWriter(SendPropType.DPT_String, 2),
-			['foo', 'bar'], (4 * 8 + 9) * 2 + 2);
+			['foo', 'bar'], (3 * 8 + 9) * 2 + 2);
 	});
 
 	test('floats', () => {
