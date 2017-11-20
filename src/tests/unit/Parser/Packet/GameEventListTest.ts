@@ -3,7 +3,7 @@ import {readFileSync} from 'fs';
 import {GameEvent} from '../../../../Data/GameEventTypes';
 import {GameEventListPacket} from '../../../../Data/Packet';
 import {EncodeGameEventList, ParseGameEventList} from '../../../../Parser/Packet/GameEventList';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventListData.json', 'utf8'));
 const expectedSource = JSON.parse(readFileSync(__dirname + '/../../../data/gameEventList.json', 'utf8'));
@@ -92,5 +92,9 @@ suite('GameEventList', () => {
 
 	test('Encode gameEventList', () => {
 		assertEncoder(ParseGameEventList, EncodeGameEventList, eventList, 1245);
+	});
+
+	test('Re-encode gameEventList', () => {
+		assertReEncode(ParseGameEventList, EncodeGameEventList, getStream(data));
 	});
 });

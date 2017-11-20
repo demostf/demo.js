@@ -3,7 +3,7 @@ import {GameEventValueType} from '../../../../Data/GameEvent';
 import {GameEventPacket} from '../../../../Data/Packet';
 import {createParserState} from '../../../../Data/ParserState';
 import {EncodeGameEvent, ParseGameEvent} from '../../../../Parser/Packet/GameEvent';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = [25, 240, 149, 0, 0];
 const expected = {
@@ -40,5 +40,9 @@ suite('GameEvent', () => {
 
 	test('Encode gameEvent', () => {
 		assertEncoder(parseEvent, encodeEvent, expected, 36);
+	});
+
+	test('Re-encode gameEvent', () => {
+		assertReEncode(parseEvent, encodeEvent, getStream(data));
 	});
 });

@@ -5,7 +5,7 @@ import {createParserState} from '../../../../Data/ParserState';
 import {ServerClass} from '../../../../Data/ServerClass';
 import {EncodeTempEntities, ParseTempEntities} from '../../../../Parser/Packet/TempEntities';
 import {hydrateEntity, hydrateTable} from './hydrate';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = [
 	2,
@@ -388,5 +388,9 @@ suite('TempEntities', () => {
 
 	test('Encode tempEntities', () => {
 		assertEncoder(parse, encode, expected, 166);
+	});
+
+	test('Re-encode tempEntities', () => {
+		assertReEncode(parse, encode, getStream(data));
 	});
 });

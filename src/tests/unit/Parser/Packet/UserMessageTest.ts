@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {HudTextLocation} from '../../../../Data/UserMessage';
 import {EncodeUserMessage, ParseUserMessage} from '../../../../Parser/Packet/UserMessage';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = [
 	5,
@@ -51,5 +51,9 @@ suite('UserMessage', () => {
 
 	test('Encode userMessage', () => {
 		assertEncoder(ParseUserMessage, EncodeUserMessage, expected, 219);
+	});
+
+	test('Re-encode userMessage', () => {
+		assertReEncode(ParseUserMessage, EncodeUserMessage, getStream(data));
 	});
 });

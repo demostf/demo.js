@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
 import {EncodeParseSounds, ParseParseSounds} from '../../../../Parser/Packet/ParseSounds';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = [
 	18,
@@ -215,5 +215,9 @@ suite('ParseSounds', () => {
 			length: 15,
 			data: soundStream.readBitStream(15)
 		}, 24);
+	});
+
+	test('Re-encode parseSounds', () => {
+		assertReEncode(ParseParseSounds, EncodeParseSounds, getStream(data));
 	});
 });

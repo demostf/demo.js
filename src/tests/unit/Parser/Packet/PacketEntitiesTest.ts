@@ -8,7 +8,7 @@ import {ServerClass} from '../../../../Data/ServerClass';
 import {EncodePacketEntities, ParsePacketEntities} from '../../../../Parser/Packet/PacketEntities';
 import {deepEqual} from '../../deepEqual';
 import {hydrateEntity, hydrateTable} from './hydrate';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertReEncode, getStream} from './PacketTest';
 
 const data = JSON.parse(readFileSync(__dirname + '/../../../data/packetEntitiesData.json', 'utf8'));
 const packetData = JSON.parse(gunzipSync(readFileSync(__dirname + '/../../../data/packetEntitiesResult.json.gz')).toString('utf8'));
@@ -157,7 +157,7 @@ suite('PacketEntities', () => {
 
 	test('Encode packetEntities', () => {
 		const toEncode = {...expected};
-		assertEncoder(parse, encode, toEncode, 0);
+		assertEncoder(parse, encode, toEncode);
 	});
 
 	test('Encode small packetEntities', () => {
@@ -169,7 +169,7 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData)]
-		}, 124);
+		}, 81);
 	});
 
 	test('Encode small packetEntities with removed', () => {
@@ -181,7 +181,7 @@ suite('PacketEntities', () => {
 			delta: 1,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData)]
-		}, 181);
+		}, 138);
 	});
 
 	test('Encode packetEntities only removed', () => {
@@ -207,7 +207,7 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(sunEntityData), hydrateEntity(secondEntity)]
-		}, 195);
+		}, 109);
 	});
 
 	test('Encode player packetEntities', () => {
@@ -219,6 +219,10 @@ suite('PacketEntities', () => {
 			delta: 0,
 			maxEntries: 16,
 			entities: [hydrateEntity(playerEntityData)]
-		}, 3568);
+		}, 1845);
+	});
+
+	test('Re-encode packetEntities', () => {
+		assertReEncode(parse, encode, getStream(data));
 	});
 });
