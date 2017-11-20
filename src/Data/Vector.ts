@@ -8,4 +8,8 @@ export class Vector {
 		this.y = y;
 		this.z = z;
 	}
+
+	public static areEqual(a: Vector, b: Vector) {
+		return a.x === b.x && a.y === b.y && a.z === b.z;
+	}
 }

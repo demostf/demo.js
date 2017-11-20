@@ -77,7 +77,7 @@ export class PacketEntity {
 	public diffFromBaseLine(baselineProps: SendProp[]): SendProp[] {
 		return this.props.filter((prop) => {
 			const baseProp = PacketEntity.getPropByFullName(baselineProps, prop.definition.fullName);
-			return (!baseProp || prop.value !== baseProp.value);
+			return (!baseProp || !SendProp.areEqual(prop, baseProp));
 		});
 	}
 
