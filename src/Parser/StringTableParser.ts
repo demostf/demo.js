@@ -95,7 +95,7 @@ export function guessStringTableEntryLength(table: StringTable, entries: StringT
 	}, 1);
 }
 
-export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[]) {
+export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[], oldEntries: StringTableEntry[] = []) {
 	const entryBits = logBase2(table.maxEntries);
 	const lastIndex = -1;
 	for (let i = 0; i < entries.length; i++) {
@@ -108,7 +108,7 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 				stream.writeBoolean(true);
 			}
 
-			if (typeof entry.text !== 'undefined') {
+			if (typeof entry.text !== 'undefined' && !(oldEntries[i] && entry.text === oldEntries[i].text)) {
 				stream.writeBoolean(true);
 				// we don't encode substring optimizations
 				stream.writeBoolean(false);

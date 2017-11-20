@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {UpdateStringTablePacket} from '../../Data/Packet';
 import {ParserState} from '../../Data/ParserState';
-import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
+import {encodeStringTableEntries, parseStringTableEntries} from '../StringTableParser';
 
 export function ParseUpdateStringTable(stream: BitStream, state: ParserState): UpdateStringTablePacket { // 12: updateStringTable
 	const tableId = stream.readBits(5);
@@ -41,13 +41,17 @@ export function EncodeUpdateStringTable(packet: UpdateStringTablePacket, stream:
 	if (!state.stringTables[packet.tableId]) {
 		throw new Error(`Table not found for update: ${packet.tableId}`);
 	}
+
+	const lengthStart = stream.index;
+	stream.index += 20;
+	const lengthEnd = stream.index;
+
 	const table = state.stringTables[packet.tableId];
-	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(table, packet.entries)));
-	encodeStringTableEntries(entryData, table, packet.entries);
+	encodeStringTableEntries(stream, table, packet.entries, table.entries);
 
-	const entryLength = entryData.index;
-	entryData.index = 0;
-
+	const dataEnd = stream.index;
+	stream.index = lengthStart;
+	const entryLength = dataEnd - lengthEnd;
 	stream.writeBits(entryLength, 20);
-	stream.writeBitStream(entryData, entryLength);
+	stream.index = dataEnd;
 }

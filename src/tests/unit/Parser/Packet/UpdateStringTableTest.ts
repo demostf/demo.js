@@ -3,7 +3,7 @@ import {UpdateStringTablePacket} from '../../../../Data/Packet';
 import {createParserState} from '../../../../Data/ParserState';
 import {StringTable} from '../../../../Data/StringTable';
 import {EncodeUpdateStringTable, ParseUpdateStringTable} from '../../../../Parser/Packet/UpdateStringTable';
-import {assertEncoder, assertParser, getStream} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const exampleData = [200, 3, 0, 48, 130, 53];
 
@@ -61,7 +61,11 @@ suite('UpdateStringTable', () => {
 	});
 
 	test('Encode updateStringTable', () => {
-		assertEncoder(ParseUpdate, EncodeUpdate, examplePacket, 266);
+		assertEncoder(ParseUpdate, EncodeUpdate, examplePacket, 41);
 		assertEncoder(ParseUpdate, EncodeUpdate, examplePacket2, 299);
+	});
+
+	test('Re-encode updateStringTable', () => {
+		assertReEncode(ParseUpdate, EncodeUpdate, getStream(exampleData));
 	});
 });
