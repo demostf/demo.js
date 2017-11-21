@@ -10,6 +10,7 @@ import {StopHandler} from './Parser/Message/Stop';
 import {StringTableHandler} from './Parser/Message/StringTable';
 import {SyncTickHandler} from './Parser/Message/SyncTick';
 import {UserCmdHandler} from './Parser/Message/UserCmd';
+import {parseHeader} from './Parser/Header';
 
 export const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
@@ -35,7 +36,7 @@ export class Parser {
 
 	public getHeader() {
 		if (!this.header) {
-			this.header = this.parseHeader(this.stream);
+			this.header = parseHeader(this.stream);
 		}
 		return this.header;
 	}
@@ -68,22 +69,6 @@ export class Parser {
 			// console.log(message.type);
 			yield message;
 		}
-	}
-
-	protected parseHeader(stream): Header {
-		return {
-			type: stream.readASCIIString(8),
-			version: stream.readInt32(),
-			protocol: stream.readInt32(),
-			server: stream.readASCIIString(260),
-			nick: stream.readASCIIString(260),
-			map: stream.readASCIIString(260),
-			game: stream.readASCIIString(260),
-			duration: stream.readFloat32(),
-			ticks: stream.readInt32(),
-			frames: stream.readInt32(),
-			sigon: stream.readInt32()
-		};
 	}
 
 	protected * handleMessage(message: Message): Iterable<Packet> {
