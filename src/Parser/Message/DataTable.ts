@@ -6,8 +6,6 @@ import {ServerClass} from '../../Data/ServerClass';
 
 export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 	parseMessage: (stream: BitStream) => {
-		const s = stream.index;
-
 		const tick = stream.readInt32();
 
 		const length = stream.readInt32();
@@ -112,17 +110,6 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 		if (messageStream.bitsLeft > 7) {
 			throw new Error('unexpected remaining data in datatable (' + messageStream.bitsLeft + ' bits)');
 		}
-		//
-		// const e = stream.index;
-		// stream.index = s;
-		// const d = {
-		// 	type: MessageType.DataTables,
-		// 	tick,
-		// 	tables,
-		// 	serverClasses,
-		// };
-		// require('fs').writeFileSync('src/tests/data/dataTableResult.json.gz', require('zlib').gzipSync(JSON.stringify(d)));
-		// process.exit();
 
 		return {
 			type: MessageType.DataTables,
@@ -205,7 +192,16 @@ function encodeSendPropDefinition(stream: BitStream, definition: SendPropDefinit
 		} else {
 			stream.writeFloat32(definition.lowValue);
 			stream.writeFloat32(definition.highValue);
-			stream.writeBits(definition.bitCount, 7);
+			if (definition.hasFlag(SendPropFlag.SPROP_NOSCALE) &&
+				(
+					definition.type == SendPropType.DPT_Float ||
+					(definition.type == SendPropType.DPT_Vector && !definition.hasFlag(SendPropFlag.SPROP_NORMAL))
+				)
+			) {
+				stream.writeBits(0, 7);
+			} else {
+				stream.writeBits(definition.bitCount, 7);
+			}
 		}
 	}
 }
