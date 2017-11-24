@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
-import {readFileSync} from 'fs';
+import {readFileSync, statSync, writeFileSync} from 'fs';
 import {DynamicBitStream} from '../../DynamicBitStream';
 import {nullTransform, Transformer} from '../../Transformer';
 import {Parser} from '../../Parser';
@@ -30,6 +30,9 @@ function testDemo(name: string) {
 	const parsed = reAnalyser.getBody().getState();
 
 	const reParsedLength = encodeStream.index;
+
+	encodeStream.index = 0;
+	// writeFileSync('out.dem', encodeStream.readArrayBuffer(Math.ceil(encodedLength / 8)));
 
 	assert.equal(reParsedLength, encodedLength, 'Unexpected number of bits used when parsing encoding stream');
 

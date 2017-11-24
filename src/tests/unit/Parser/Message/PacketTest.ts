@@ -44,11 +44,10 @@ suite('Packet', () => {
 
 	test('Encode first packet message', () => {
 		const expected = parser(new BitStream(firstPacketData));
-		assertEncoder(parser, encoder, expected, 1512600, '');
+		assertEncoder(parser, encoder, expected, 1032952, '');
 	});
 
-	test('Re-encode packet message', () => {
-		// shorted since empty entity list encoded, instead of skipping over entities
+	test('Re-encode first packet message', () => {
 		assertReEncode(parser, encoder, new BitStream(firstPacketData));
 	});
 });
