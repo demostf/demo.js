@@ -3,9 +3,10 @@ import {readFileSync} from 'fs';
 import {PacketTypeId} from '../../../../Data/Packet';
 import {ParserState} from '../../../../Data/ParserState';
 import {PacketMessageHandler} from '../../../../Parser/Message/Packet';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from '../Packet/PacketTest';
 
 const data = Object.values(JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageData.json', 'utf8')));
+const firstPacketData = readFileSync(__dirname + '/../../../data/packetMessageFirst.bin');
 const expected = JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageResult.json', 'utf8'));
 
 const getParserState = (fastMode) => {
@@ -39,5 +40,15 @@ suite('Packet', () => {
 	test('Encode packet message', () => {
 		// shorted since empty entity list encoded, instead of skipping over entities
 		assertEncoder(parser, encoder, expected, 920, '');
+	});
+
+	test('Encode first packet message', () => {
+		const expected = parser(new BitStream(firstPacketData));
+		assertEncoder(parser, encoder, expected, 1512600, '');
+	});
+
+	test('Re-encode packet message', () => {
+		// shorted since empty entity list encoded, instead of skipping over entities
+		assertReEncode(parser, encoder, new BitStream(firstPacketData));
 	});
 });

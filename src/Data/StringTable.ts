@@ -7,6 +7,7 @@ export interface StringTable {
 	fixedUserDataSize?: number;
 	fixedUserDataSizeBits?: number;
 	clientEntries?: StringTableEntry[];
+	compressed: boolean;
 }
 
 export interface StringTableEntry {

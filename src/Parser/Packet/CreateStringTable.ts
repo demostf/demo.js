@@ -3,7 +3,7 @@ import {CreateStringTablePacket} from '../../Data/Packet';
 import {logBase2} from '../../Math';
 import {readVarInt, writeVarInt} from '../readBitVar';
 
-import {uncompress} from 'snappyjs';
+import {uncompress, compress} from 'snappyjs';
 import {StringTable} from '../../Data/StringTable';
 import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
 
@@ -53,7 +53,8 @@ export function ParseCreateStringTable(stream: BitStream): CreateStringTablePack
 		entries: [],
 		maxEntries,
 		fixedUserDataSize: userDataSize,
-		fixedUserDataSizeBits: userDataSizeBits
+		fixedUserDataSizeBits: userDataSizeBits,
+		compressed: isCompressed
 	};
 
 	// console.log(`${tableName} ${entityCount} ${bitCount}`);
@@ -72,9 +73,20 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 	const numEntries = packet.table.entries.filter((entry) => entry).length;
 	stream.writeBits(numEntries, encodeBits + 1);
 
-	const entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table, packet.table.entries)));
+	let entryData = new BitStream(new ArrayBuffer(guessStringTableEntryLength(packet.table, packet.table.entries)));
 	encodeStringTableEntries(entryData, packet.table, packet.table.entries);
 
+	if (packet.table.compressed) {
+		const decompressedByteLength = Math.ceil(entryData.length / 8);
+		entryData.index = 0;
+		const compressedData = compress(entryData.readArrayBuffer(decompressedByteLength));
+		entryData = new BitStream(new ArrayBuffer(decompressedByteLength));
+		entryData.writeUint32(decompressedByteLength);
+		entryData.writeUint32(compressedData.byteLength + 4); // 4 magic bytes
+		entryData.writeASCIIString('SNAP', 4);
+		let typeForce: any = compressedData.buffer;
+		entryData.writeArrayBuffer(typeForce as BitStream);
+	}
 	const entryLength = entryData.index;
 	entryData.index = 0;
 
@@ -88,8 +100,7 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 		stream.writeBoolean(false);
 	}
 
-	// we never compress table data
-	stream.writeBoolean(false);
+	stream.writeBoolean(packet.table.compressed);
 
 	if (entryLength) {
 		stream.writeBitStream(entryData, entryLength);

@@ -24,7 +24,8 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 				entries,
 				name: tableName,
 				maxEntries: entryCount,
-				clientEntries: []
+				clientEntries: [],
+				compressed: false
 			};
 
 			if (messageStream.readBoolean()) {
