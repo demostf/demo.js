@@ -23,6 +23,7 @@ export class SendPropDefinition {
 	public lowValue: number;
 	public highValue: number;
 	public bitCount: number;
+	public originalBitCount: number | null = null;
 	public table: SendTable | null;
 	public numElements: number;
 	public arrayProperty: SendPropDefinition | null;
@@ -63,7 +64,7 @@ export class SendPropDefinition {
 			data.highValue = this.highValue;
 		}
 		if (this.type === SendPropType.DPT_DataTable && this.table) {
-			data.tableName = this.table.name;
+			data.excludeDTName = this.table.name;
 		}
 
 		return data;

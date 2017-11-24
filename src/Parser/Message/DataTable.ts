@@ -1,7 +1,7 @@
 import {BitStream} from 'bit-buffer';
 import {DataTablesMessage, MessageHandler, MessageType} from '../../Data/Message';
 import {SendPropDefinition, SendPropFlag, SendPropType} from '../../Data/SendPropDefinition';
-import {SendTable} from '../../Data/SendTable';
+import {SendTable, SendTableName} from '../../Data/SendTable';
 import {ServerClass} from '../../Data/ServerClass';
 
 export const DataTableHandler: MessageHandler<DataTablesMessage> = {
@@ -15,7 +15,7 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 		// https://github.com/LestaD/SourceEngine2007/blob/43a5c90a5ada1e69ca044595383be67f40b33c61/src_main/engine/dt_recv_eng.cpp#L310
 		// https://github.com/PazerOP/DemoLib/blob/master/DemoLib/Commands/DemoDataTablesCommand.cs
 		const tables: SendTable[] = [];
-		const tableMap: {[key: string]: SendTable} = {};
+		const tableMap: Map<SendTableName, SendTable> = new Map();
 		while (messageStream.readBoolean()) {
 			const needsDecoder = messageStream.readBoolean();
 			const tableName = messageStream.readASCIIString();
@@ -47,9 +47,11 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 
 				if (prop.hasFlag(SendPropFlag.SPROP_NOSCALE)) {
 					if (prop.type === SendPropType.DPT_Float) {
+						prop.originalBitCount = prop.bitCount;
 						prop.bitCount = 32;
 					} else if (prop.type === SendPropType.DPT_Vector) {
 						if (!prop.hasFlag(SendPropFlag.SPROP_NORMAL)) {
+							prop.originalBitCount = prop.bitCount;
 							prop.bitCount = 32 * 3;
 						}
 					}
@@ -76,7 +78,7 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 				}
 			}
 			tables.push(table);
-			tableMap[table.name] = table;
+			tableMap.set(table.name, table);
 		}
 
 		// link referenced tables
@@ -84,7 +86,11 @@ export const DataTableHandler: MessageHandler<DataTablesMessage> = {
 			for (const prop of table.props) {
 				if (prop.type === SendPropType.DPT_DataTable) {
 					if (prop.excludeDTName) {
-						prop.table = tableMap[prop.excludeDTName];
+						const referencedTable = tableMap.get(prop.excludeDTName);
+						if (!referencedTable) {
+							throw new Error(`Unknown referenced table ${prop.excludeDTName}`);
+						}
+						prop.table = referencedTable;
 						prop.excludeDTName = null;
 					}
 				}
@@ -192,13 +198,23 @@ function encodeSendPropDefinition(stream: BitStream, definition: SendPropDefinit
 		} else {
 			stream.writeFloat32(definition.lowValue);
 			stream.writeFloat32(definition.highValue);
-			if (definition.hasFlag(SendPropFlag.SPROP_NOSCALE) &&
-				(
-					definition.type == SendPropType.DPT_Float ||
-					(definition.type == SendPropType.DPT_Vector && !definition.hasFlag(SendPropFlag.SPROP_NORMAL))
+
+			// if (definition.originalBitCount === null || typeof  definition.originalBitCount === 'undefined') {
+			// 	stream.writeBits(definition.bitCount, 7);
+			// } else {
+			// 	stream.writeBits(definition.originalBitCount, 7);
+			// }
+			if (
+				definition.hasFlag(SendPropFlag.SPROP_NOSCALE) && (
+					definition.type === SendPropType.DPT_Float ||
+					(definition.type === SendPropType.DPT_Vector && !definition.hasFlag(SendPropFlag.SPROP_NORMAL))
 				)
 			) {
-				stream.writeBits(0, 7);
+				if (definition.originalBitCount === null || typeof definition.originalBitCount === 'undefined') {
+					stream.writeBits(definition.bitCount / 3, 7);
+				} else {
+					stream.writeBits(definition.originalBitCount, 7);
+				}
 			} else {
 				stream.writeBits(definition.bitCount, 7);
 			}

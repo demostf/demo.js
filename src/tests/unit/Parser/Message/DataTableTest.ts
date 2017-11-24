@@ -1,13 +1,13 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
-import {readFileSync} from 'fs';
+import {readFileSync, writeFileSync} from 'fs';
 import {gunzipSync} from 'zlib';
 import {DataTablesMessage} from '../../../../Data/Message';
 import {ParserState} from '../../../../Data/ParserState';
 import {ServerClass} from '../../../../Data/ServerClass';
 import {DataTableHandler} from '../../../../Parser/Message/DataTable';
 import {hydrateTable} from '../Packet/hydrate';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from '../Packet/PacketTest';
 
 const data = Array.from(readFileSync(__dirname + '/../../../data/dataTableData.bin').values());
 const expectedRaw = JSON.parse(
@@ -46,6 +46,9 @@ suite('DataTable', () => {
 	});
 
 	test('Encode DataTable message', () => {
+		const source = getStream(data);
+		const expected = parser(source);
+
 		const length = 947888;
 		const stream = new BitStream(new ArrayBuffer(length + 64000));
 
@@ -64,10 +67,14 @@ suite('DataTable', () => {
 		assert.deepEqual(result.tick, expected.tick, 'Re-decoded value not equal to original value');
 		assert.deepEqual(result.type, expected.type, 'Re-decoded value not equal to original value');
 		for (let i = 0; i < result.tables.length; i++) {
-			const resultTable = JSON.parse(JSON.stringify(result.tables[i]));
+			const resultTable = result.tables[i];
 			const expectedTable = expectedRaw.tables[i];
 			assert.deepEqual(resultTable, expectedTable, 'Re-decoded value not equal to original value');
 		}
 		assert.equal(stream.index, pos, 'Number of bits used for encoding and parsing not equal');
+	});
+
+	test('Re-encode DataTable message', () => {
+		assertReEncode(parser, encoder, getStream(data));
 	});
 });
