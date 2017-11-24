@@ -17,16 +17,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			const tableName = messageStream.readASCIIString();
 			const entryCount = messageStream.readUint16();
 			for (let j = 0; j < entryCount; j++) {
-				const entry: StringTableEntry = {
-					text: messageStream.readUTF8String()
-				};
-				if (messageStream.readBoolean()) {
-					const extraDataLength = messageStream.readUint16();
-					if ((extraDataLength * 8) > messageStream.bitsLeft) {
-						throw new Error(`to long extraData ${tableName}[${i}]`);
-					}
-					entry.extraData = messageStream.readBitStream(extraDataLength * 8);
-				}
+				const entry = readEntry(messageStream);
 				entries.push(entry);
 			}
 			const table: StringTableObject = {
@@ -39,11 +30,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 			if (messageStream.readBoolean()) {
 				const clientEntries = messageStream.readUint16();
 				for (let j = 0; j < clientEntries; j++) {
-					const entry: StringTableEntry = {text: messageStream.readUTF8String()};
-					if (messageStream.readBoolean()) {
-						const extraDataLength = messageStream.readBits(16);
-						entry.extraData = messageStream.readBitStream(extraDataLength * 8);
-					}
+					const entry = readEntry(messageStream);
 					(table.clientEntries as StringTableEntry[]).push(entry);
 				}
 			}
@@ -74,7 +61,7 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 				writeEntry(entry, stream);
 			}
 
-			if (table.clientEntries) {
+			if (table.clientEntries && table.clientEntries.length) {
 				stream.writeBoolean(true);
 				stream.writeUint16(table.clientEntries.length);
 				for (const entry of table.clientEntries) {
@@ -97,6 +84,15 @@ export const StringTableHandler: MessageHandler<StringTablesMessage> = {
 		stream.index = dataStart + byteLength * 8;
 	}
 };
+
+function readEntry(stream: BitStream): StringTableEntry {
+	const entry: StringTableEntry = {text: stream.readUTF8String()};
+	if (stream.readBoolean()) {
+		const extraDataLength = stream.readUint16();
+		entry.extraData = stream.readBitStream(extraDataLength * 8);
+	}
+	return entry;
+}
 
 function writeEntry(entry: StringTableEntry, stream: BitStream) {
 	stream.writeUTF8String(entry.text);

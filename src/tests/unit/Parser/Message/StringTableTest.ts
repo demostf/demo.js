@@ -3,7 +3,7 @@ import {readFileSync} from 'fs';
 import {ParserState} from '../../../../Data/ParserState';
 import {StringTable, StringTableEntry} from '../../../../Data/StringTable';
 import {StringTableHandler} from '../../../../Parser/Message/StringTable';
-import {assertEncoder, assertParser, getStream} from '../Packet/PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from '../Packet/PacketTest';
 
 const encodeEntry = (entry: StringTableEntry) => {
 	const result: any = {
@@ -86,5 +86,13 @@ suite('StringTable', () => {
 
 	test('Encode StringTable message', () => {
 		assertEncoder(parser, encoder, expectedRaw, 3690024);
+	});
+
+	test('Re-encode StringTable message', () => {
+		assertReEncode(
+			(stream) => handler.parseMessage(stream, getParserState()),
+			(message, stream) => handler.encodeMessage(message, stream, getParserState()),
+			getStream(data)
+		);
 	});
 });
