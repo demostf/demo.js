@@ -61,7 +61,7 @@ export function parseStringTableEntries(
 				existingEntry.extraData = userData;
 			}
 
-			if (value) {
+			if (typeof value !== 'undefined') {
 				existingEntry.text = value;
 			}
 			entries[entryIndex] = existingEntry;
@@ -97,9 +97,11 @@ export function guessStringTableEntryLength(table: StringTable, entries: StringT
 
 export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[], oldEntries: StringTableEntry[] = []) {
 	const entryBits = logBase2(table.maxEntries);
-	const lastIndex = -1;
+	let lastIndex = -1;
+	const history: StringTableEntry[] = [];
 	for (let i = 0; i < entries.length; i++) {
 		if (entries[i]) {
+
 			const entry = entries[i];
 			if (i !== (lastIndex + 1)) {
 				stream.writeBoolean(false);
@@ -107,16 +109,25 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 			} else {
 				stream.writeBoolean(true);
 			}
+			lastIndex = i;
 
 			if (typeof entry.text !== 'undefined' && !(oldEntries[i] && entry.text === oldEntries[i].text)) {
 				stream.writeBoolean(true);
-				// we don't encode substring optimizations
-				stream.writeBoolean(false);
 
-				stream.writeASCIIString(entry.text);
+				const {index, count} = getBestPreviousString(history, entry.text);
+				if (index !== -1) {
+					stream.writeBoolean(true);
+					stream.writeBits(index, 5);
+					stream.writeBits(count, 5);
+					stream.writeASCIIString(entry.text.substr(count));
+				} else {
+					stream.writeBoolean(false);
+					stream.writeASCIIString(entry.text);
+				}
 			} else {
 				stream.writeBoolean(false);
 			}
+
 
 			if (entry.extraData) {
 				stream.writeBoolean(true);
@@ -133,6 +144,41 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 			} else {
 				stream.writeBoolean(false);
 			}
+
+
+			history.push(entry);
+			if (history.length > 32) {
+				history.shift();
+			}
 		}
 	}
+}
+
+function getBestPreviousString(history: StringTableEntry[], newString: string): {index: number, count: number} {
+	let bestIndex = -1;
+	let bestCount = 0;
+	for (let i = 0; i < history.length; i++) {
+		const prev = history[i].text;
+		const similar = countSimilarCharacters(prev, newString);
+		if (similar >= 3 && similar > bestCount) {
+			bestCount = similar;
+			bestIndex = i;
+		}
+	}
+	return {
+		index: bestIndex,
+		count: bestCount
+	};
+}
+
+const maxSimLength = 1 << 5;
+
+function countSimilarCharacters(a: string, b: string) {
+	const length = Math.min(a.length, b.length, maxSimLength);
+	for (let i = 0; i < length; i++) {
+		if (a[i] !== b[i]) {
+			return i;
+		}
+	}
+	return Math.min(length, maxSimLength - 1);
 }

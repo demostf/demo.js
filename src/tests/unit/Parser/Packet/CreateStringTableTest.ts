@@ -60,7 +60,8 @@ const examplePacket = {
 		entries: [{text: 'maps\\pl_badwater_pro_v9.bsp', extraData: undefined}],
 		maxEntries: 8192,
 		fixedUserDataSize: 0,
-		fixedUserDataSizeBits: 0
+		fixedUserDataSizeBits: 0,
+		compressed: false
 	}
 };
 
@@ -76,7 +77,8 @@ const examplePacket2 = {
 		],
 		maxEntries: 8192,
 		fixedUserDataSize: 0,
-		fixedUserDataSizeBits: 0
+		fixedUserDataSizeBits: 0,
+		compressed: false
 	}
 };
 
@@ -87,10 +89,10 @@ suite('CreateStringTable', () => {
 
 	test('Encode createStringTable', () => {
 		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket, 388);
-		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket2, 615);
+		assertEncoder(ParseCreateStringTable, EncodeCreateStringTable, examplePacket2, 562);
 	});
 
-	test('Re-encode classInfo', () => {
+	test('Re-encode createStringTable', () => {
 		assertReEncode(ParseCreateStringTable, EncodeCreateStringTable, getStream(exampleData));
 	});
 });

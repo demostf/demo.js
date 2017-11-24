@@ -48,7 +48,14 @@ export function assertReEncode(parser: Parser, encoder: Encoder, stream: BitStre
 	encoder(result, encodeStream);
 	assert.equal(encodeStream.index, length, 'Unexpected number of bits used for encoding');
 	encodeStream.index = 0;
-	assert.deepEqual(encodeStream.readArrayBuffer(byteLength), stream.readArrayBuffer(byteLength));
+	const encodeData = encodeStream.readArrayBuffer(byteLength);
+	const originalData = stream.readArrayBuffer(byteLength);
+	for (let i = 0; i < byteLength; i++) {
+		if (originalData[i] !== encodeData[i]) {
+			assert.fail(`Data differs at byte ${i} out of ${byteLength}: ${originalData[i].toString(2)} !== ${encodeData[i].toString(2)}`);
+		}
+	}
+	assert.deepEqual(encodeData, originalData);
 	if (length - 8 * byteLength > 0) {
 		assert.deepEqual(encodeStream.readBits(length - 8 * byteLength), stream.readBits(length - 8 * byteLength));
 	}
