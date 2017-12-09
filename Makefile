@@ -13,6 +13,7 @@ watch: node_modules
 .PHONY: build
 build: node_modules
 	node $(tsc)
+	node $(tsc) -p tsconfig.es6.json
 
 .PHONY: test
 test: node_modules
