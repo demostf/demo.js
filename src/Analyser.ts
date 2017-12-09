@@ -1,12 +1,12 @@
 import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
 import {Match} from './Data/Match';
-import {Parser} from './Parser';
 import {Packet} from './Data/Packet';
+import {Parser} from './Parser';
 
 export class Analyser extends EventEmitter {
-	private readonly parser: Parser;
 	public readonly match: Match;
+	private readonly parser: Parser;
 	private analysed: boolean = false;
 
 	constructor(parser: Parser) {
