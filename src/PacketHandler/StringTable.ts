@@ -1,6 +1,8 @@
 import {CreateStringTablePacket, StringTablePacket, UpdateStringTablePacket} from '../Data/Packet';
 import {ParserState} from '../Data/ParserState';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
+import {UserEntityInfo, UserInfo} from '../Data/UserInfo';
+import {BitStream} from 'bit-buffer';
 
 export function handleStringTable(packet: CreateStringTablePacket, state: ParserState) {
 	handleTable(packet.table, state);
@@ -29,7 +31,7 @@ function handleStringTableEntries(tableName: string, entries: StringTableEntry[]
 	if (tableName === 'userinfo') {
 		for (const entry of entries) {
 			if (entry && entry.extraData) {
-				state.userInfoEntries.set(entry.text, entry.extraData);
+				calculateUserInfoFromEntry(entry.text, entry.extraData, state);
 			}
 		}
 	}
@@ -38,6 +40,29 @@ function handleStringTableEntries(tableName: string, entries: StringTableEntry[]
 			if (instanceBaseLine) {
 				saveInstanceBaseLine(instanceBaseLine, state);
 			}
+		}
+	}
+}
+
+function calculateUserInfoFromEntry(text: string, extraData: BitStream, state: ParserState) {
+	if (extraData.bitsLeft > (32 * 8)) {
+		const name = extraData.readUTF8String(32);
+		const userId = extraData.readUint32();
+		const steamId = extraData.readUTF8String();
+		if (steamId) {
+			let userState = state.userInfo.get(userId);
+			if (!userState) {
+				userState = {
+					name: '',
+					userId,
+					steamId: '',
+					entityId: 0
+				};
+			}
+			userState.name = name;
+			userState.steamId = steamId;
+			userState.entityId = parseInt(text, 10) + 1;
+			state.userInfo.set(userId, userState);
 		}
 	}
 }

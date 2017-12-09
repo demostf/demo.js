@@ -27,6 +27,7 @@ export class Parser {
 	public readonly stream: BitStream;
 	public readonly parserState: ParserState;
 	private header: Header | null = null;
+	private lastMessage = -1;
 
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		this.stream = stream;
@@ -94,8 +95,10 @@ export class Parser {
 		}
 		const handler = messageHandlers.get(type);
 		if (!handler) {
-			throw new Error(`No handler for message of type ${MessageType[type]}(${type})`);
+			throw new Error(`No handler for message of type ${MessageType[type]}(${type}),
+			last message: ${MessageType[this.lastMessage]}(${this.lastMessage})`);
 		}
+		this.lastMessage = type;
 		return handler.parseMessage(this.stream, state);
 	}
 }

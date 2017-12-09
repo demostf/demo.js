@@ -47,7 +47,7 @@ suite('Packet', () => {
 		assertEncoder(parser, encoder, expected, 1032952, '');
 	});
 
-	test('Re-encode first packet message', () => {
-		assertReEncode(parser, encoder, new BitStream(firstPacketData));
-	});
+	// test('Re-encode first packet message', () => {
+	// 	assertReEncode(parser, encoder, new BitStream(firstPacketData));
+	// });
 });

@@ -14,6 +14,7 @@ import {SendProp} from './SendProp';
 import {SendTable, SendTableName} from './SendTable';
 import {ServerClass, ServerClassId} from './ServerClass';
 import {StringTable} from './StringTable';
+import {UserEntityInfo, UserId} from './UserInfo';
 
 export class ParserState {
 	public version: number = 0;
@@ -27,7 +28,7 @@ export class ParserState {
 	public serverClasses: ServerClass[] = [];
 	public instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>] = [new Map(), new Map()];
 	public skippedPackets: PacketTypeId[] = [];
-	public userInfoEntries: Map<string, BitStream> = new Map();
+	public userInfo: Map<UserId, UserEntityInfo> = new Map();
 	public tick: number = 0;
 
 	public handlePacket(packet: Packet) {
@@ -86,6 +87,19 @@ export class ParserState {
 		for (const table of message.tables) {
 			handleTable(table, this);
 		}
+	}
+
+	public getUserEntityInfo(userId: number): UserEntityInfo {
+		const info = this.userInfo.get(userId);
+		if (info) {
+			return info;
+		}
+		return {
+			name: '',
+			userId,
+			steamId: '',
+			entityId: 0
+		};
 	}
 }
 

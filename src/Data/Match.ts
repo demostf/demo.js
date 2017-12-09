@@ -1,4 +1,3 @@
-import {BitStream} from 'bit-buffer';
 import {handleGameEvent} from '../PacketHandler/GameEvent';
 import {handlePacketEntities} from '../PacketHandler/PacketEntities';
 import {handleSayText2} from '../PacketHandler/SayText2';
@@ -11,7 +10,6 @@ import {ParserState} from './ParserState';
 import {Player} from './Player';
 import {PlayerResource} from './PlayerResource';
 import {Round} from './Round';
-import {StringTableEntry} from './StringTable';
 import {Team, TeamNumber} from './Team';
 import {UserInfo} from './UserInfo';
 import {Weapon} from './Weapon';
@@ -44,6 +42,9 @@ export class Match {
 
 	public getState() {
 		const users = {};
+		for (const userEntity of this.parserState.userInfo.values()) {
+			this.getUserInfo(userEntity.userId);
+		}
 		for (const [key, user] of this.users.entries()) {
 			users[key] = {
 				classes: user.classes,
@@ -80,11 +81,6 @@ export class Match {
 			case 'serverInfo':
 				this.intervalPerTick = packet.intervalPerTick;
 				break;
-			case 'createStringTable':
-				if (packet.table.name === 'userinfo') {
-					this.calculateUserInfo();
-				}
-				break;
 			case 'userMessage':
 				switch (packet.userMessageType) {
 					case 'sayText2':
@@ -105,62 +101,33 @@ export class Match {
 			userId -= 256;
 		}
 		const user = this.users.get(userId);
-		if (!user) {
 
+		if (!user) {
+			const entityInfo = this.parserState.getUserEntityInfo(userId);
 			const newUser = {
-				name: '',
-				userId,
-				steamId: '',
 				classes: {},
-				entityId: 0,
-				team: ''
+				team: '',
+				...entityInfo
 			};
 			this.users.set(userId, newUser);
 			return newUser;
+		} else if (!user.steamId) {
+			const entityInfo = this.parserState.getUserEntityInfo(userId);
+			if (entityInfo.steamId) {
+				user.steamId = entityInfo.steamId;
+				user.entityId = entityInfo.entityId;
+				user.name = entityInfo.name;
+			}
 		}
 		return user;
 	}
 
 	public getUserInfoForEntity(entity: PacketEntity): UserInfo | null {
-		for (const user of this.users.values()) {
-			if (user && user.entityId === entity.entityIndex) {
-				return user;
+		for (const userEntity of this.parserState.userInfo.values()) {
+			if (userEntity && userEntity.entityId === entity.entityIndex) {
+				return this.getUserInfo(userEntity.userId);
 			}
 		}
-		return this.calculateUserInfoByEntityId(entity.entityIndex);
-	}
-
-	private calculateUserInfo() {
-		for (const [text, extraData] of this.parserState.userInfoEntries.entries()) {
-			this.calculateUserInfoFromEntry(text, extraData);
-		}
-	}
-
-	private calculateUserInfoByEntityId(entityId: number) {
-		const text = `${entityId - 1}`;
-		const extraData = this.parserState.userInfoEntries.get(text);
-		if (!extraData) {
-			throw new Error(`No user info in stringtable for entity id ${entityId}`);
-		}
-		return this.calculateUserInfoFromEntry(text, extraData);
-	}
-
-	private calculateUserInfoFromEntry(text: string, extraData: BitStream): UserInfo {
-		if (extraData.bitsLeft > (32 * 8)) {
-			const name = extraData.readUTF8String(32);
-			const userId = extraData.readUint32();
-			const steamId = extraData.readUTF8String();
-			if (steamId) {
-				const userState = this.getUserInfo(userId);
-				userState.name = name;
-				userState.steamId = steamId;
-				userState.entityId = parseInt(text, 10) + 1;
-				return userState;
-			} else {
-				throw new Error(`No steamid for user info ${text}`);
-			}
-		} else {
-			throw new Error();
-		}
+		return null;
 	}
 }

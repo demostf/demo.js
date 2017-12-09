@@ -2,12 +2,13 @@ import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {readFileSync, statSync, writeFileSync} from 'fs';
 import {DynamicBitStream} from '../../DynamicBitStream';
-import {nullTransform, Transformer} from '../../Transformer';
+import {MessageTransform, nullTransform, PacketTransform, Transformer} from '../../Transformer';
 import {Parser} from '../../Parser';
 import {Analyser} from '../../Analyser';
 import {Encoder} from '../../Encoder';
+import {Packet} from '../../Data/Packet';
 
-function testDemo(name: string) {
+function testDemo(name: string, packetTransform: PacketTransform, messageTransform: MessageTransform) {
 	const decodeStream = new BitStream(
 		readFileSync(`${__dirname}/../data/${name}.dem`).buffer as ArrayBuffer
 	);
@@ -20,7 +21,7 @@ function testDemo(name: string) {
 	const encodeStream = new DynamicBitStream(32 * 1024 * 1024);
 
 	const transformer = new Transformer(decodeStream, encodeStream);
-	transformer.transform(nullTransform, nullTransform);
+	transformer.transform(packetTransform, messageTransform);
 
 	const encodedLength = encodeStream.index;
 	encodeStream.index = 0;
@@ -32,7 +33,7 @@ function testDemo(name: string) {
 	const reParsedLength = encodeStream.index;
 
 	encodeStream.index = 0;
-	// writeFileSync('out.dem', encodeStream.readArrayBuffer(Math.ceil(encodedLength / 8)));
+	writeFileSync('fly.dem', encodeStream.readArrayBuffer(Math.ceil(encodedLength / 8)));
 
 	assert.equal(reParsedLength, encodedLength, 'Unexpected number of bits used when parsing encoding stream');
 
@@ -88,7 +89,7 @@ function removeBitStreams(object: {}) {
 
 suite('Transcode demo basic test', () => {
 	test('Noop transcode', () => {
-		testDemo('short');
+		testDemo('short', nullTransform, nullTransform);
 	});
 });
 
