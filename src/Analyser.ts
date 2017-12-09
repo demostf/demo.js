@@ -2,14 +2,17 @@ import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
 import {Match} from './Data/Match';
 import {Parser} from './Parser';
+import {Packet} from './Data/Packet';
 
 export class Analyser extends EventEmitter {
-	private parser: Parser;
-	private match: Match;
+	private readonly parser: Parser;
+	public readonly match: Match;
+	private analysed: boolean = false;
 
 	constructor(parser: Parser) {
 		super();
 		this.parser = parser;
+		this.match = new Match(this.parser.parserState);
 	}
 
 	public getHeader(): Header {
@@ -17,14 +20,20 @@ export class Analyser extends EventEmitter {
 	}
 
 	public getBody(): Match {
-		if (!this.match) {
-			this.match = new Match(this.parser.parserState);
-			for (const packet of this.parser.getPackets()) {
-				this.match.handlePacket(packet);
+		if (!this.analysed) {
+			for (const packet of this.getPackets()) {
 				this.emit('packet', packet);
 			}
 			this.emit('done');
 		}
+		this.analysed = true;
 		return this.match;
+	}
+
+	public * getPackets(): IterableIterator<Packet> {
+		for (const packet of this.parser.getPackets()) {
+			this.match.handlePacket(packet);
+			yield packet;
+		}
 	}
 }

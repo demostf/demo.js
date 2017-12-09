@@ -130,4 +130,10 @@ export class Match {
 		}
 		return null;
 	}
+
+	public getPlayerByUserId(userId: number): Player | null {
+		const user = this.getUserInfo(userId);
+		const player = this.playerEntityMap.get(user.entityId);
+		return player || null;
+	}
 }

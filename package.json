@@ -11,7 +11,7 @@
   "dependencies": {
     "bit-buffer": "^0.2.3",
     "snappyjs": "^0.6.0",
-    "text-encoding-shim": "^1.0.0"
+    "text-encoding-shim": "git+https://gitlab.com/hongaar/text-encoding-shim.git#83ff0f77f48d05b8ce83ddc7ca49d8df61363b31"
   },
   "devDependencies": {
     "@types/node": "^8.0.31",
