@@ -5,7 +5,7 @@ import {
 } from '../../../../Parser/Packet/BSPDecal';
 import {SendPropEncoder} from '../../../../Parser/SendPropEncoder';
 import {SendPropParser} from '../../../../Parser/SendPropParser';
-import {assertEncoder, assertParser, getStream, assertReEncode} from './PacketTest';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './PacketTest';
 
 const data = [239, 236, 208, 85, 33, 127, 128, 9, 8];
 

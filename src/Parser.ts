@@ -3,6 +3,7 @@ import {Header} from './Data/Header';
 import {Message, MessageHandler, MessageType, PacketMessage} from './Data/Message';
 import {Packet, PacketTypeId} from './Data/Packet';
 import {ParserState} from './Data/ParserState';
+import {parseHeader} from './Parser/Header';
 import {ConsoleCmdHandler} from './Parser/Message/ConsoleCmd';
 import {DataTableHandler} from './Parser/Message/DataTable';
 import {PacketMessageHandler} from './Parser/Message/Packet';
@@ -10,7 +11,6 @@ import {StopHandler} from './Parser/Message/Stop';
 import {StringTableHandler} from './Parser/Message/StringTable';
 import {SyncTickHandler} from './Parser/Message/SyncTick';
 import {UserCmdHandler} from './Parser/Message/UserCmd';
-import {parseHeader} from './Parser/Header';
 
 export const messageHandlers: Map<MessageType, MessageHandler<Message>> = new Map<MessageType, MessageHandler<Message>>([
 	[MessageType.Sigon, PacketMessageHandler],
@@ -50,6 +50,17 @@ export class Parser {
 		}
 	}
 
+	public * getMessages(): IterableIterator<Message> {
+		// ensure that we are past the header
+		this.getHeader();
+		for (const message of this.iterateMessages()) {
+			for (const _ of this.handleMessage(message)) {
+				// noop, loop needed to "drain" iterator
+			}
+			yield message;
+		}
+	}
+
 	protected * iterateMessages(): Iterable<Message> {
 		while (true) {
 			const message = this.readMessage(this.stream, this.parserState);
@@ -57,18 +68,6 @@ export class Parser {
 			if (message.type === MessageType.Stop) {
 				return;
 			}
-		}
-	}
-
-	public * getMessages(): IterableIterator<Message> {
-		// ensure that we are past the header
-		this.getHeader();
-		for (const message of this.iterateMessages()) {
-			for (const _ of this.handleMessage(message)) {
-				//noop
-			}
-			// console.log(message.type);
-			yield message;
 		}
 	}
 

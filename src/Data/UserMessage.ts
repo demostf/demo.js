@@ -66,7 +66,7 @@ export interface BaseDataUserPacket {
 }
 
 export interface SayText2Packet {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'sayText2';
 	client: number;
 	raw: number;
@@ -83,24 +83,24 @@ export enum HudTextLocation {
 }
 
 export interface TextMessagePacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'textMsg';
 	destType: HudTextLocation;
 	text: string;
 }
 
 export interface ResetHUDPacket extends BaseDataUserPacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'resetHUD';
 }
 
 export interface TrainPacket extends BaseDataUserPacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'train';
 }
 
 export interface VoiceSubtitlePacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'voiceSubtitle';
 	client: number;
 	menu: number;
@@ -108,7 +108,7 @@ export interface VoiceSubtitlePacket {
 }
 
 export interface ShakePacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'shake';
 	command: number;
 	amplitude: number;
@@ -122,12 +122,12 @@ export interface UnknownUserMessageBasePacket {
 }
 
 export interface BreakModelPumpkinPacket extends UnknownUserMessageBasePacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'breakModelPumpkin';
 }
 
 export interface GenericUnknownUserMessagePacket extends UnknownUserMessageBasePacket {
-	packetType: 'userMessage',
+	packetType: 'userMessage';
 	userMessageType: 'unknownUserMessage';
 }
 

@@ -76,19 +76,6 @@ export class ParserState {
 		return table;
 	}
 
-	private handleDataTableMessage(message: DataTablesMessage) {
-		for (const table of message.tables) {
-			this.sendTables.set(table.name, table);
-		}
-		this.serverClasses = message.serverClasses;
-	}
-
-	private handleStringTableMessage(message: StringTablesMessage) {
-		for (const table of message.tables) {
-			handleTable(table, this);
-		}
-	}
-
 	public getUserEntityInfo(userId: number): UserEntityInfo {
 		const info = this.userInfo.get(userId);
 		if (info) {
@@ -100,6 +87,19 @@ export class ParserState {
 			steamId: '',
 			entityId: 0
 		};
+	}
+
+	private handleDataTableMessage(message: DataTablesMessage) {
+		for (const table of message.tables) {
+			this.sendTables.set(table.name, table);
+		}
+		this.serverClasses = message.serverClasses;
+	}
+
+	private handleStringTableMessage(message: StringTablesMessage) {
+		for (const table of message.tables) {
+			handleTable(table, this);
+		}
 	}
 }
 

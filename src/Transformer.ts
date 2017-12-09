@@ -1,8 +1,8 @@
 import {BitStream} from 'bit-buffer';
-import {Parser} from './Parser';
-import {Encoder} from './Encoder';
-import {Packet} from './Data/Packet';
 import {Message, MessageType} from './Data/Message';
+import {Packet} from './Data/Packet';
+import {Encoder} from './Encoder';
+import {Parser} from './Parser';
 
 export type PacketTransform = (packet: Packet) => Packet;
 

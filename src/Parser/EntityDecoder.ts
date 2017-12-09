@@ -14,7 +14,7 @@ export function getEntityUpdate(sendTable: SendTable, stream: BitStream): SendPr
 		lastIndex = index;
 		index = readFieldIndex(stream, index);
 		if (index >= 4096 || index > allProps.length) {
-			throw new Error(`prop index out of bounds while applying update for ${sendTable.name} 
+			throw new Error(`prop index out of bounds while applying update for ${sendTable.name}
 			got ${index} property only has ${allProps.length} properties (lastProp: ${lastIndex})`);
 		}
 

@@ -1,6 +1,6 @@
 import {BitStream} from 'bit-buffer';
-import {assertEncoder, assertParser, assertReEncode, getStream} from './Packet/PacketTest';
 import {encodeHeader, parseHeader} from '../../../Parser/Header';
+import {assertEncoder, assertParser, assertReEncode, getStream} from './Packet/PacketTest';
 
 const data = [
 	72, 76, 50, 68,
@@ -361,38 +361,37 @@ const data = [
 	147, 25, 115, 17
 ];
 
-
 suite('Header', () => {
 	test('Parse header', () => {
 		assertParser(parseHeader, getStream(data), {
-				'type': 'HL2DEMO',
-				'version': 3,
-				'protocol': 24,
-				'server': 'FakkelBrigade #1 (#712133)',
-				'nick': 'SourceTV Demo',
-				'map': 'cp_prolands_b2c',
-				'game': 'tf',
-				'duration': 515.1900024414062,
-				'ticks': 34346,
-				'frames': 34334,
-				'sigon': 808977
+				type: 'HL2DEMO',
+				version: 3,
+				protocol: 24,
+				server: 'FakkelBrigade #1 (#712133)',
+				nick: 'SourceTV Demo',
+				map: 'cp_prolands_b2c',
+				game: 'tf',
+				duration: 515.1900024414062,
+				ticks: 34346,
+				frames: 34334,
+				sigon: 808977
 			}
 			, 8576);
 	});
 
 	test('Encode header', () => {
 		assertEncoder(parseHeader, encodeHeader, {
-				'type': 'HL2DEMO',
-				'version': 3,
-				'protocol': 24,
-				'server': 'FakkelBrigade #1 (#712133)',
-				'nick': 'SourceTV Demo',
-				'map': 'cp_prolands_b2c',
-				'game': 'tf',
-				'duration': 515.1900024414062,
-				'ticks': 34346,
-				'frames': 34334,
-				'sigon': 808977
+				type: 'HL2DEMO',
+				version: 3,
+				protocol: 24,
+				server: 'FakkelBrigade #1 (#712133)',
+				nick: 'SourceTV Demo',
+				map: 'cp_prolands_b2c',
+				game: 'tf',
+				duration: 515.1900024414062,
+				ticks: 34346,
+				frames: 34334,
+				sigon: 808977
 			}
 			, 8576);
 	});

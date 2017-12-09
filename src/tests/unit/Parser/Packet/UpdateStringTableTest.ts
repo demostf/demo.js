@@ -14,7 +14,7 @@ function getExistingParserState() {
 		maxEntries: 2048,
 		fixedUserDataSize: 1,
 		fixedUserDataSizeBits: 1,
-		compressed: false,
+		compressed: false
 	};
 	existingTable.entries[70] = {text: 'maps\\pl_badwater_pro_v9.bsp'};
 	const state = createParserState();

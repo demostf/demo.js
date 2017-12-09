@@ -3,7 +3,7 @@ import {CreateStringTablePacket} from '../../Data/Packet';
 import {logBase2} from '../../Math';
 import {readVarInt, writeVarInt} from '../readBitVar';
 
-import {uncompress, compress} from 'snappyjs';
+import {compress, uncompress} from 'snappyjs';
 import {StringTable} from '../../Data/StringTable';
 import {encodeStringTableEntries, guessStringTableEntryLength, parseStringTableEntries} from '../StringTableParser';
 
@@ -84,7 +84,7 @@ export function EncodeCreateStringTable(packet: CreateStringTablePacket, stream:
 		entryData.writeUint32(decompressedByteLength);
 		entryData.writeUint32(compressedData.byteLength + 4); // 4 magic bytes
 		entryData.writeASCIIString('SNAP', 4);
-		let typeForce: any = compressedData.buffer;
+		const typeForce: any = compressedData.buffer;
 		entryData.writeArrayBuffer(typeForce as BitStream);
 	}
 	const entryLength = entryData.index;

@@ -2,20 +2,6 @@ import {SendPropDefinition} from './SendPropDefinition';
 import {Vector} from './Vector';
 
 export class SendProp {
-	public definition: SendPropDefinition;
-	public value: SendPropValue | null;
-
-	constructor(definition: SendPropDefinition) {
-		this.definition = definition;
-		this.value = null;
-	}
-
-	public clone(): SendProp {
-		const prop = new SendProp(this.definition);
-		prop.value = this.value;
-		return prop;
-	}
-
 	public static areEqual(a: SendProp, b: SendProp) {
 		return a.definition.fullName !== b.definition.fullName ? false : SendProp.valuesAreEqual(a.value, b.value);
 	}
@@ -36,6 +22,20 @@ export class SendProp {
 		} else {
 			return a === b;
 		}
+	}
+
+	public definition: SendPropDefinition;
+	public value: SendPropValue | null;
+
+	constructor(definition: SendPropDefinition) {
+		this.definition = definition;
+		this.value = null;
+	}
+
+	public clone(): SendProp {
+		const prop = new SendProp(this.definition);
+		prop.value = this.value;
+		return prop;
 	}
 }
 

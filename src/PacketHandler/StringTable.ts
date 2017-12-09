@@ -1,8 +1,8 @@
+import {BitStream} from 'bit-buffer';
 import {CreateStringTablePacket, StringTablePacket, UpdateStringTablePacket} from '../Data/Packet';
 import {ParserState} from '../Data/ParserState';
 import {StringTable, StringTableEntry} from '../Data/StringTable';
 import {UserEntityInfo, UserInfo} from '../Data/UserInfo';
-import {BitStream} from 'bit-buffer';
 
 export function handleStringTable(packet: CreateStringTablePacket, state: ParserState) {
 	handleTable(packet.table, state);

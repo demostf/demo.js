@@ -10,7 +10,9 @@ import {
 import {EncodeSayText2, ParseSayText2} from '../UserMessage/SayText2';
 import {make, NamedPacketHandler} from './ParserGenerator';
 
-function unknownPacketHandler<T extends UnknownUserMessagePacket['userMessageType']>(userMessageType: T): NamedPacketHandler<UserMessageTypeMap[T], UserMessagePacketType> {
+type UnknownType = UnknownUserMessagePacket['userMessageType'];
+
+function unknownPacketHandler<T extends UnknownType>(userMessageType: T): NamedPacketHandler<UserMessageTypeMap[T], UserMessagePacketType> {
 	return {
 		parser: (data: BitStream) => {
 			return {

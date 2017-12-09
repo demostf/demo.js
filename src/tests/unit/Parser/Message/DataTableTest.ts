@@ -47,12 +47,12 @@ suite('DataTable', () => {
 
 	test('Encode DataTable message', () => {
 		const source = getStream(data);
-		const expected = parser(source);
+		const expectedResult = parser(source);
 
 		const length = 947888;
 		const stream = new BitStream(new ArrayBuffer(length + 64000));
 
-		encoder(expected, stream);
+		encoder(expectedResult, stream);
 
 		const pos = stream.index;
 
@@ -63,9 +63,9 @@ suite('DataTable', () => {
 		stream.index = 0;
 
 		const result = parser(stream);
-		assert.deepEqual(result.serverClasses, expected.serverClasses, 'Re-decoded value not equal to original value');
-		assert.deepEqual(result.tick, expected.tick, 'Re-decoded value not equal to original value');
-		assert.deepEqual(result.type, expected.type, 'Re-decoded value not equal to original value');
+		assert.deepEqual(result.serverClasses, expectedResult.serverClasses, 'Re-decoded value not equal to original value');
+		assert.deepEqual(result.tick, expectedResult.tick, 'Re-decoded value not equal to original value');
+		assert.deepEqual(result.type, expectedResult.type, 'Re-decoded value not equal to original value');
 		for (let i = 0; i < result.tables.length; i++) {
 			const resultTable = result.tables[i];
 			const expectedTable = expectedRaw.tables[i];

@@ -1,12 +1,12 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {readFileSync, statSync, writeFileSync} from 'fs';
-import {DynamicBitStream} from '../../DynamicBitStream';
-import {MessageTransform, nullTransform, PacketTransform, Transformer} from '../../Transformer';
-import {Parser} from '../../Parser';
 import {Analyser} from '../../Analyser';
-import {Encoder} from '../../Encoder';
 import {Packet} from '../../Data/Packet';
+import {DynamicBitStream} from '../../DynamicBitStream';
+import {Encoder} from '../../Encoder';
+import {Parser} from '../../Parser';
+import {MessageTransform, nullTransform, PacketTransform, Transformer} from '../../Transformer';
 
 function testDemo(name: string, packetTransform: PacketTransform, messageTransform: MessageTransform) {
 	const decodeStream = new BitStream(
@@ -76,7 +76,7 @@ function removeBitStreams(object: {}) {
 	for (const key in object) {
 		if (object.hasOwnProperty(key)) {
 			if (object[key] instanceof BitStream) {
-				//skip
+				// skip
 			} else if (object[key] instanceof Object) {
 				result[key] = removeBitStreams(object[key]);
 			} else {

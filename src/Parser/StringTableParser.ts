@@ -95,7 +95,12 @@ export function guessStringTableEntryLength(table: StringTable, entries: StringT
 	}, 1);
 }
 
-export function encodeStringTableEntries(stream: BitStream, table: StringTable, entries: StringTableEntry[], oldEntries: StringTableEntry[] = []) {
+export function encodeStringTableEntries(
+	stream: BitStream,
+	table: StringTable,
+	entries: StringTableEntry[],
+	oldEntries: StringTableEntry[] = []
+) {
 	const entryBits = logBase2(table.maxEntries);
 	let lastIndex = -1;
 	const history: StringTableEntry[] = [];
@@ -128,7 +133,6 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 				stream.writeBoolean(false);
 			}
 
-
 			if (entry.extraData) {
 				stream.writeBoolean(true);
 
@@ -144,7 +148,6 @@ export function encodeStringTableEntries(stream: BitStream, table: StringTable, 
 			} else {
 				stream.writeBoolean(false);
 			}
-
 
 			history.push(entry);
 			if (history.length > 32) {

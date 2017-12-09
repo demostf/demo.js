@@ -1,5 +1,5 @@
-import {Header} from '../Data/Header';
 import {BitStream} from 'bit-buffer';
+import {Header} from '../Data/Header';
 
 export function parseHeader(stream: BitStream): Header {
 	return {

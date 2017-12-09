@@ -1,13 +1,18 @@
 import {BitStream} from 'bit-buffer';
 import {Packet, PacketMapType, PacketType} from '../../Data/Packet';
-import {Encoder, PacketHandler, Parser} from './Parser';
 import {UserMessagePacketType} from '../../Data/UserMessage';
+import {Encoder, PacketHandler, Parser} from './Parser';
 
 export interface NamedPacketHandler<P extends Packet, N extends PacketType | UserMessagePacketType> extends PacketHandler<P> {
 	name: N;
 }
 
-export function make<T extends PacketType | UserMessagePacketType>(name: T, definition: string, nameKey: string = 'packetType', extraData: any = {}): NamedPacketHandler<PacketMapType[T], T> {
+export function make<T extends PacketType | UserMessagePacketType>(
+	name: T,
+	definition: string,
+	nameKey: string = 'packetType',
+	extraData: any = {}
+): NamedPacketHandler<PacketMapType[T], T> {
 	const parts = definition.split('}');
 	const items = parts.map((part) => {
 		return part.split('{');

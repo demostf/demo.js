@@ -43,8 +43,8 @@ suite('Packet', () => {
 	});
 
 	test('Encode first packet message', () => {
-		const expected = parser(new BitStream(firstPacketData));
-		assertEncoder(parser, encoder, expected, 1032952, '');
+		const expectedResult = parser(new BitStream(firstPacketData));
+		assertEncoder(parser, encoder, expectedResult, 1032952, '');
 	});
 
 	// test('Re-encode first packet message', () => {
