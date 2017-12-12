@@ -45,9 +45,8 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 	const entity = new PacketEntity(serverClass, entityId, PVS.ENTER);
 	entity.serialNumber = serial;
 	if (instanceBaseline) {
-		const result = entity.clone();
-		result.applyPropUpdate(instanceBaseline);
-		return result;
+		entity.props = instanceBaseline.map((prop) => prop.clone());
+		return entity;
 	} else {
 		const staticBaseLine = state.staticBaseLines.get(serverClass.id);
 		if (staticBaseLine) {
@@ -57,7 +56,8 @@ function readEnterPVS(stream: BitStream, entityId: EntityId, state: ParserState,
 				parsedBaseLine = getEntityUpdate(sendTable, staticBaseLine);
 				state.staticBaselineCache.set(serverClass.id, parsedBaseLine);
 			}
-			entity.applyPropUpdate(parsedBaseLine);
+			entity.props = parsedBaseLine.map((prop) => prop.clone());
+			// entity.applyPropUpdate(parsedBaseLine);
 			// if (staticBaseLine.bitsLeft > 7) {
 			// console.log(staticBaseLine.length, staticBaseLine.index);
 			// throw new Error('Unexpected data left at the end of staticBaseline, ' + staticBaseLine.bitsLeft + ' bits left');
