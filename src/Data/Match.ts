@@ -4,6 +4,7 @@ import {handleSayText2} from '../PacketHandler/SayText2';
 import {Building} from './Building';
 import {Chat} from './Chat';
 import {Death} from './Death';
+import {PacketMessage} from './Message';
 import {Packet} from './Packet';
 import {EntityId, PacketEntity} from './PacketEntity';
 import {ParserState} from './ParserState';
@@ -67,10 +68,10 @@ export class Match {
 		};
 	}
 
-	public handlePacket(packet: Packet) {
+	public handlePacket(packet: Packet, message: PacketMessage) {
 		switch (packet.packetType) {
 			case 'packetEntities':
-				handlePacketEntities(packet, this);
+				handlePacketEntities(packet, this, message);
 				break;
 			case 'netTick':
 				if (this.startTick === 0) {

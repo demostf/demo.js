@@ -1,5 +1,6 @@
 import {Building, Dispenser, Sentry, Teleporter} from '../Data/Building';
 import {Match} from '../Data/Match';
+import {PacketMessage} from '../Data/Message';
 import {PacketEntitiesPacket} from '../Data/Packet';
 import {PacketEntity, PVS} from '../Data/PacketEntity';
 import {ParserState} from '../Data/ParserState';
@@ -9,9 +10,9 @@ import {TeamNumber} from '../Data/Team';
 import {Vector} from '../Data/Vector';
 import {CWeaponMedigun, Weapon} from '../Data/Weapon';
 
-export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match) {
+export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match, message: PacketMessage) {
 	for (const entity of packet.entities) {
-		handleEntity(entity, match);
+		handleEntity(entity, match, message);
 	}
 }
 
@@ -33,7 +34,7 @@ function saveEntity(packetEntity: PacketEntity, state: ParserState) {
 	state.entityClasses.set(packetEntity.entityIndex, packetEntity.serverClass);
 }
 
-function handleEntity(entity: PacketEntity, match: Match) {
+function handleEntity(entity: PacketEntity, match: Match, message: PacketMessage) {
 	for (const prop of entity.props) {
 		if (prop.definition.ownerTableName === 'DT_AttributeContainer' && prop.definition.name === 'm_hOuter') {
 			if (!match.outerMap.has(prop.value as number)) {
@@ -119,6 +120,9 @@ function handleEntity(entity: PacketEntity, match: Match) {
 					case 'DT_TFLocalPlayerExclusive.m_vecOrigin':
 						player.position.x = (prop.value as Vector).x;
 						player.position.y = (prop.value as Vector).y;
+
+						// set the view angles for the local player since that prop isn't send
+						player.viewAngle = message.localViewAngles[0].y;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
 						player.position.x = (prop.value as Vector).x;

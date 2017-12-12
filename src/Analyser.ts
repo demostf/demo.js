@@ -1,6 +1,7 @@
 import {EventEmitter} from 'events';
 import {Header} from './Data/Header';
 import {Match} from './Data/Match';
+import {MessageType} from './Data/Message';
 import {Packet} from './Data/Packet';
 import {Parser} from './Parser';
 
@@ -31,9 +32,13 @@ export class Analyser extends EventEmitter {
 	}
 
 	public * getPackets(): IterableIterator<Packet> {
-		for (const packet of this.parser.getPackets()) {
-			this.match.handlePacket(packet);
-			yield packet;
+		for (const message of this.parser.getMessages()) {
+			if (message.type === MessageType.Packet) {
+				for (const packet of message.packets) {
+					this.match.handlePacket(packet, message);
+					yield packet;
+				}
+			}
 		}
 	}
 }

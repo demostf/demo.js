@@ -3,7 +3,7 @@ const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2), {boolean: true});
 
 if (argv._.length !== 1) {
-    console.log('Usage: "node analyse [--strings] [--dump] [--head] [--event-list] [--create-event-definitions] FILE"');
+    console.log('Usage: "node analyse [--strings] [--slow] [--dump] [--head] [--event-list] [--create-event-definitions] FILE"');
     process.exit(1);
 }
 
@@ -15,7 +15,7 @@ const echo = function (data) {
 fs.readFile(argv._[0], function (err, data) {
     if (err) throw err;
     const demo = Demo.fromNodeBuffer(data);
-    const analyser = demo.getAnalyser(true);
+    const analyser = demo.getAnalyser(!argv.slow);
     const head = analyser.getHeader();
     if (argv.head) {
         echo(head);
