@@ -42,12 +42,15 @@ export class PacketEntity {
 	}
 
 	public getProperty(originTable: string, name: string) {
-		for (const prop of this.props) {
-			if (prop.definition.ownerTableName === originTable && prop.definition.name === name) {
-				return prop;
-			}
+		const prop = PacketEntity.getPropByFullName(this.props, `${originTable}.${name}`);
+		if (prop) {
+			return prop;
 		}
 		throw new Error(`Property not found in entity (${originTable}.${name})`);
+	}
+
+	public hasProperty(originTable: string, name: string) {
+		return PacketEntity.getPropByFullName(this.props, `${originTable}.${name}`) !== null;
 	}
 
 	public clone(): PacketEntity {

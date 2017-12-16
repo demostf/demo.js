@@ -172,7 +172,7 @@ function handleEntity(entity: PacketEntity, match: Match, message: PacketMessage
 			}
 			break;
 		case'CTFTeam':
-			try {
+			if (entity.hasProperty('DT_Team', 'm_iTeamNum')) {
 				const teamId = entity.getProperty('DT_Team', 'm_iTeamNum').value as TeamNumber;
 				if (!match.teams.has(teamId)) {
 					const team = {
@@ -185,7 +185,7 @@ function handleEntity(entity: PacketEntity, match: Match, message: PacketMessage
 					match.teams.set(teamId, team);
 					match.teamEntityMap.set(entity.entityIndex, team);
 				}
-			} catch (e) {
+			} else {
 				const team = match.teamEntityMap.get(entity.entityIndex);
 				if (!team) {
 					throw new Error(`No team with entity id: ${entity.entityIndex}`);
@@ -208,7 +208,6 @@ function handleEntity(entity: PacketEntity, match: Match, message: PacketMessage
 
 					}
 				}
-				// process.exit();
 			}
 			break;
 		case 'CObjectSentrygun':
