@@ -6,7 +6,7 @@ Parsing of TF2 demo files in node.js and the browser
 
 ## usage
 
-###cli
+### cli
 
 ```
 node bin/analyse demo.dem
@@ -15,7 +15,7 @@ node bin/analyse demo.dem
 ### api
 
 ```js
-var Demo = require('tf2-demo');
+var Demo = require('@demostf/demo.js');
 var fs = require('fs');
 
 fs.readFile("example.dem", function (err, data) {
@@ -35,7 +35,7 @@ Using the javascript api it's possible to get far more information out of a demo
 file than the basic state provided by the cli interface.
 
 ```js
-var Demo = require('tf2-demo');
+var Demo = require('@demostf/demo.js');
 var fs = require('fs');
 
 fs.readFile("example.dem", function (err, data) {
