@@ -32,7 +32,9 @@ export function ParseTempEntities(stream: BitStream, state: ParserState, skip: b
 				if (entity) {
 					const sendTable = getSendTable(state, entity.serverClass.dataTable);
 					const updatedProps = getEntityUpdate(sendTable, entityData);
+					entity = entity.clone();
 					entity.applyPropUpdate(updatedProps);
+					entities.push(entity);
 				} else {
 					throw new Error('no entity set to update');
 				}
