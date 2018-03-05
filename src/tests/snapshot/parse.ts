@@ -1,13 +1,13 @@
 import * as assert from 'assert';
 import {BitStream} from 'bit-buffer';
 import {readFileSync} from 'fs';
-import {Demo} from '../../Demo';
+import {Demo, ParseMode} from '../../Demo';
 
 function testDemo(name: string, fastMode: boolean = false) {
 	const target = JSON.parse(readFileSync(`${__dirname}/../data/${name}.json`, 'utf8'));
 	const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 	const demo = Demo.fromNodeBuffer(source);
-	const analyser = demo.getAnalyser(fastMode);
+	const analyser = demo.getAnalyser(fastMode ? ParseMode.MINIMAL : ParseMode.COMPLETE);
 	const parsed = analyser.getBody().getState();
 	assert.deepEqual(JSON.parse(JSON.stringify(parsed)), target);
 }

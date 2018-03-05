@@ -1,3 +1,5 @@
+import {ParseMode} from "../src/Demo";
+
 const Demo = require('../index');
 const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2), {boolean: true});
@@ -15,7 +17,7 @@ const echo = function (data) {
 fs.readFile(argv._[0], function (err, data) {
     if (err) throw err;
     const demo = Demo.fromNodeBuffer(data);
-    const analyser = demo.getAnalyser(!argv.slow);
+    const analyser = demo.getAnalyser(argv.slow ? ParseMode.ENTITIES : ParseMode.MINIMAL);
     const head = analyser.getHeader();
     if (argv.head) {
         echo(head);

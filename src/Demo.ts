@@ -3,6 +3,12 @@ import {Analyser} from './Analyser';
 import {PacketTypeId} from './Data/Packet';
 import {Parser} from './Parser';
 
+export enum ParseMode {
+	MINIMAL,
+	ENTITIES,
+	COMPLETE
+}
+
 export class Demo {
 	public static fromNodeBuffer(nodeBuffer: Buffer) {
 		return new Demo(nodeBuffer.buffer as ArrayBuffer);
@@ -16,19 +22,31 @@ export class Demo {
 		this.stream = new BitStream(arrayBuffer);
 	}
 
-	public getParser(fastMode: boolean = false) {
+	public getParser(mode: ParseMode = ParseMode.ENTITIES) {
 		if (!this.parser) {
-			const skippedPackets = fastMode ? [
-				PacketTypeId.packetEntities,
-				PacketTypeId.tempEntities,
-				PacketTypeId.entityMessage
-			] : [];
-			this.parser = new Parser(this.stream, skippedPackets);
+			this.parser = new Parser(this.stream, this.getSkippedPackets(mode));
 		}
 		return this.parser;
 	}
 
-	public getAnalyser(fastMode: boolean = false) {
-		return new Analyser(this.getParser(fastMode));
+	public getAnalyser(mode: ParseMode = ParseMode.ENTITIES) {
+		return new Analyser(this.getParser(mode));
+	}
+
+	private getSkippedPackets(mode: ParseMode) {
+		switch (mode) {
+			case ParseMode.MINIMAL:
+				return [
+					PacketTypeId.packetEntities,
+					PacketTypeId.tempEntities,
+					PacketTypeId.entityMessage
+				];
+			case ParseMode.ENTITIES:
+				return [
+					PacketTypeId.tempEntities
+				];
+			case ParseMode.COMPLETE:
+				return [];
+		}
 	}
 }

@@ -7,7 +7,7 @@ import {createGunzip, createUnzip} from 'zlib';
 import {Packet} from '../../Data/Packet';
 import {EntityId, PVS} from '../../Data/PacketEntity';
 import {SendPropValue} from '../../Data/SendProp';
-import {Demo} from '../../Demo';
+import {Demo, ParseMode} from '../../Demo';
 
 interface ResultData {
 	tick: number;
@@ -21,7 +21,7 @@ function writeEntities(name: string) {
 	const targetFile = `${__dirname}/../data/${name}_entities.json`;
 	const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 	const demo = Demo.fromNodeBuffer(source);
-	const parser = demo.getParser(false);
+	const parser = demo.getParser(ParseMode.COMPLETE);
 
 	const resultData = getResultData(parser.getPackets());
 
@@ -64,7 +64,7 @@ function testEntities(name: string, entityCount: number) {
 		const targetFile = `${__dirname}/../data/${name}_entities.json.gz`;
 		const source = readFileSync(`${__dirname}/../data/${name}.dem`);
 		const demo = Demo.fromNodeBuffer(source);
-		const parser = demo.getParser(false);
+		const parser = demo.getParser(ParseMode.COMPLETE);
 
 		const resultData = getResultData(parser.getPackets());
 
