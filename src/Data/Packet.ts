@@ -11,6 +11,7 @@ import {
 	UserMessageType, UserMessageTypeMap, VoiceSubtitlePacket
 } from './UserMessage';
 import {Vector} from './Vector';
+import {Game} from './ParserState';
 
 export interface StringTablePacket {
 	packetType: 'stringTable';
@@ -179,7 +180,7 @@ export interface ServerInfoPacket {
 	maxPlayerCount: number;
 	intervalPerTick: number;
 	platform: string;
-	game: string;
+	game: Game;
 	skybox: string;
 	serverName: string;
 	replay: boolean;

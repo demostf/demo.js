@@ -47,22 +47,28 @@ function handleStringTableEntries(tableName: string, entries: StringTableEntry[]
 function calculateUserInfoFromEntry(text: string, extraData: BitStream, state: ParserState) {
 	if (extraData.bitsLeft > (32 * 8)) {
 		const name = extraData.readUTF8String(32);
-		const userId = extraData.readUint32();
+		let userId = extraData.readUint32();
+		while (userId > 256) {
+			userId -= 256;
+		}
 		const steamId = extraData.readUTF8String();
 		if (steamId) {
+			const entityId = parseInt(text, 10) + 1;
 			let userState = state.userInfo.get(userId);
+
 			if (!userState) {
 				userState = {
 					name: '',
 					userId,
 					steamId: '',
-					entityId: 0
+					entityId: entityId
 				};
+
+				state.userInfo.set(userState.userId, userState);
 			}
+
 			userState.name = name;
 			userState.steamId = steamId;
-			userState.entityId = parseInt(text, 10) + 1;
-			state.userInfo.set(userId, userState);
 		}
 	}
 }

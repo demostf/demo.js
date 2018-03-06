@@ -102,6 +102,9 @@ export class Match {
 			userId -= 256;
 		}
 		const user = this.users.get(userId);
+		if (user && user.userId !== userId) {
+			throw new Error(`Invalid user info id`);
+		}
 
 		if (!user) {
 			const entityInfo = this.parserState.getUserEntityInfo(userId);

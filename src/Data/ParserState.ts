@@ -16,6 +16,8 @@ import {ServerClass, ServerClassId} from './ServerClass';
 import {StringTable} from './StringTable';
 import {UserEntityInfo, UserId} from './UserInfo';
 
+export type Game = 'tf' | 'hl2mp';
+
 export class ParserState {
 	public version: number = 0;
 	public staticBaseLines: Map<ServerClassId, BitStream> = new Map();
@@ -30,6 +32,7 @@ export class ParserState {
 	public skippedPackets: PacketTypeId[] = [];
 	public userInfo: Map<UserId, UserEntityInfo> = new Map();
 	public tick: number = 0;
+	public game: Game;
 
 	public handlePacket(packet: Packet) {
 		switch (packet.packetType) {
@@ -38,6 +41,7 @@ export class ParserState {
 				break;
 			case 'serverInfo':
 				this.version = packet.version;
+				this.game = packet.game;
 				break;
 			case 'stringTable':
 				handleStringTables(packet, this);
@@ -77,7 +81,7 @@ export class ParserState {
 	}
 
 	public getUserEntityInfo(userId: number): UserEntityInfo {
-		const info = this.userInfo.get(userId);
+		const info = this.userInfo.get(JSON.parse(JSON.stringify(userId)));
 		if (info) {
 			return info;
 		}
