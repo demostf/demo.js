@@ -16,7 +16,7 @@ const echo = function (data) {
 fs.readFile(argv._[0], function (err, data) {
     if (err) throw err;
     const demo = Demo.fromNodeBuffer(data);
-    const analyser = demo.getAnalyser(argv.slow ? ParseMode.ENTITIES : Demo.ParseMode.MINIMAL);
+    const analyser = demo.getAnalyser(argv.slow ? 1 : 0);
     const head = analyser.getHeader();
     if (argv.head) {
         echo(head);
