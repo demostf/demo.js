@@ -154,22 +154,19 @@
       "classes": {},
       "name": " eFPS | SourceTV | NA #1",
       "steamId": "BOT",
-      "userId": 2,
-      "team": "blue"
+      "userId": 2
     },
     "115": {
       "classes": {},
       "name": "[VDuS] Carbon",
       "steamId": "[U:1:52900516]",
-      "userId": 115,
-      "team": "blue"
+      "userId": 115
     },
     "116": {
       "classes": {},
       "name": "SE.Hammarn",
       "steamId": "[U:1:10585582]",
-      "userId": 116,
-      "team": "blue"
+      "userId": 116
     }
   },
   "deaths": [

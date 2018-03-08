@@ -36,7 +36,7 @@ export function handleHL2DMEntity(entity: PacketEntity, match: Match, message: P
 				const propName = prop.definition.ownerTableName + '.' + prop.definition.name;
 				switch (propName) {
 					case 'DT_BaseEntity.m_iTeamNum':
-						if (!player.user.team) {
+						if (!player.user.team && (prop.value === 2 || prop.value === 3)) {
 							player.user.team = prop.value === 2 ? 'red' : 'blue';
 						}
 					case 'DT_BasePlayer.m_iHealth':
