@@ -58,8 +58,10 @@ export class PacketEntity {
 		for (const prop of this.props) {
 			result.props.push(prop.clone());
 		}
-		result.serialNumber = this.serialNumber;
-		if (this.delay) {
+		if (this.serialNumber) {
+			result.serialNumber = this.serialNumber;
+		}
+		if (typeof this.delay !== 'undefined') {
 			result.delay = this.delay;
 		}
 		result.inPVS = this.inPVS;
