@@ -16,8 +16,14 @@ import {handleBaseEntity} from './BaseEntityHandler';
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match, message: PacketMessage) {
 	for (const entity of packet.entities) {
 		handleBaseEntity(entity, match, message);
-		handleTFEntity(entity, match, message);
-		handleHL2DMEntity(entity, match, message);
+		switch (match.parserState.game) {
+			case 'tf':
+				handleTFEntity(entity, match, message);
+				break;
+			case 'hl2mp':
+				handleHL2DMEntity(entity, match, message);
+				break;
+		}
 	}
 }
 
