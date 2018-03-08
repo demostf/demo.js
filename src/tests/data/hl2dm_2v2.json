@@ -1,0 +1,863 @@
+{
+  "chat": [
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  hs",
+      "tick": 10027
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ok",
+      "tick": 11471
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  lOL",
+      "tick": 11503
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  nice",
+      "tick": 14251
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  wow",
+      "tick": 15183
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  shotty spammer",
+      "tick": 15315
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  nice rge",
+      "tick": 16303
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  reg",
+      "tick": 16379
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ok",
+      "tick": 23759
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  thru the wall amg",
+      "tick": 23919
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  mag",
+      "tick": 23971
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  xD",
+      "tick": 29011
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ucking lame",
+      "tick": 29455
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  lol",
+      "tick": 31851
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  :D",
+      "tick": 37007
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  fuck you",
+      "tick": 39139
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ok.",
+      "tick": 43307
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  definitelt shot your ass in the head",
+      "tick": 43951
+    },
+    {
+      "text": "Player leonov.pitbull <STEAM_0:0:244364199> connected from country The Russian Federation (RU)",
+      "tick": 48391
+    },
+    {
+      "text": "[•everythingFPS] leonov.pitbull has joined team: Spectator.",
+      "tick": 48447
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  makes",
+      "tick": 49867
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  no",
+      "tick": 49907
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  sense.",
+      "tick": 49975
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  i had 100-100",
+      "tick": 50775
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  stfu",
+      "tick": 50907
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  lol",
+      "tick": 51307
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  skill",
+      "tick": 52139
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  wow",
+      "tick": 54319
+    },
+    {
+      "text": "Player leonov.pitbull <STEAM_0:0:244364199> from country The Russian Federation (RU) disconnected  Reason: Disconnect by user.",
+      "tick": 54435
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ok???",
+      "tick": 54735
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  catch",
+      "tick": 56319
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ?!?!!?!?!?",
+      "tick": 57043
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  xd",
+      "tick": 57227
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  nice hs reg",
+      "tick": 58103
+    },
+    {
+      "text": "[Platinum IV] SE.Hammarn :  try",
+      "tick": 58367
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  nice fucking reg",
+      "tick": 59383
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  FUCK",
+      "tick": 59635
+    },
+    {
+      "text": "[Cobalt 3,790] carbon the loner :  ok",
+      "tick": 62811
+    }
+  ],
+  "users": {
+    "2": {
+      "classes": {},
+      "name": " eFPS | SourceTV | NA #3",
+      "steamId": "BOT",
+      "userId": 2,
+      "team": "blue"
+    },
+    "23": {
+      "classes": {},
+      "name": "carbon the loner",
+      "steamId": "[U:1:52900516]",
+      "userId": 23,
+      "team": "blue"
+    },
+    "26": {
+      "classes": {},
+      "name": "SE.Hammarn",
+      "steamId": "[U:1:10585582]",
+      "userId": 26,
+      "team": "red"
+    },
+    "31": {
+      "classes": {},
+      "name": "Blasphemy",
+      "steamId": "[U:1:22086862]",
+      "userId": 31,
+      "team": "blue"
+    },
+    "33": {
+      "classes": {},
+      "name": "§pÐ|McGee",
+      "steamId": "[U:1:40735905]",
+      "userId": 33,
+      "team": "red"
+    },
+    "36": {
+      "classes": {},
+      "name": "leonov.pitbull",
+      "steamId": "[U:1:488728398]",
+      "userId": 36,
+      "team": "blue"
+    }
+  },
+  "deaths": [
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "combine_ball",
+      "tick": 7251
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 7271
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "grenade_frag",
+      "tick": 7275
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 7699
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 8315
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "crossbow_bolt",
+      "tick": 8931
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 9279
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 9919
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 23,
+      "weapon": "grenade_frag",
+      "tick": 11379
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 11751
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "smg1",
+      "tick": 12063
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "pistol",
+      "tick": 13375
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 14107
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 15079
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun",
+      "tick": 15487
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 16187
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 33,
+      "weapon": "combine_ball",
+      "tick": 16259
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "physics",
+      "tick": 16435
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 17095
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 18959
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 33,
+      "weapon": "combine_ball",
+      "tick": 19379
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 20163
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 21143
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "combine_ball",
+      "tick": 22259
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun",
+      "tick": 22283
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 23167
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 23675
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 24899
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 26403
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 26943
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 27519
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 27783
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "physics",
+      "tick": 28163
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "combine_ball",
+      "tick": 28927
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 29383
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "357",
+      "tick": 30811
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "shotgun",
+      "tick": 31747
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "combine_ball",
+      "tick": 32531
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "combine_ball",
+      "tick": 32571
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 33599
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "crossbow_bolt",
+      "tick": 34619
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 34679
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 35059
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "combine_ball",
+      "tick": 35599
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 36823
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "physics",
+      "tick": 36871
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 37419
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 38107
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 39019
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 39451
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "combine_ball",
+      "tick": 39939
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "crossbow_bolt",
+      "tick": 40227
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 40463
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "ar2",
+      "tick": 41483
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 42567
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 43179
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 43679
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 44479
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 45579
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 45875
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun",
+      "tick": 46471
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 46483
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "grenade_frag",
+      "tick": 46919
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 47887
+    },
+    {
+      "killer": 36,
+      "assister": null,
+      "victim": 36,
+      "weapon": "physcannon",
+      "tick": 48447
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "shotgun",
+      "tick": 49035
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 49687
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "357",
+      "tick": 50387
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "combine_ball",
+      "tick": 51187
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "physics",
+      "tick": 52003
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "grenade_frag",
+      "tick": 52835
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "combine_ball",
+      "tick": 53359
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 53727
+    },
+    {
+      "killer": 31,
+      "assister": null,
+      "victim": 26,
+      "weapon": "grenade_frag",
+      "tick": 54143
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "grenade_frag",
+      "tick": 54611
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "grenade_frag",
+      "tick": 55015
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 55867
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 26,
+      "weapon": "grenade_frag",
+      "tick": 56223
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 31,
+      "weapon": "grenade_frag",
+      "tick": 56823
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "smg1",
+      "tick": 56907
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "smg1_grenade",
+      "tick": 57899
+    },
+    {
+      "killer": 33,
+      "assister": null,
+      "victim": 23,
+      "weapon": "crossbow_bolt",
+      "tick": 59211
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 60335
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 60691
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 61263
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 62707
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 63059
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "smg1",
+      "tick": 63639
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun",
+      "tick": 64195
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 64355
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "357",
+      "tick": 64407
+    },
+    {
+      "killer": 23,
+      "assister": null,
+      "victim": 33,
+      "weapon": "shotgun",
+      "tick": 65087
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 23,
+      "weapon": "shotgun",
+      "tick": 65499
+    },
+    {
+      "killer": 26,
+      "assister": null,
+      "victim": 31,
+      "weapon": "357",
+      "tick": 65675
+    }
+  ],
+  "rounds": [],
+  "startTick": 6506,
+  "intervalPerTick": 0.01515151560306549
+}

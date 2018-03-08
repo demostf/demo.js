@@ -36,4 +36,12 @@ suite('Parse basic demo info', () => {
 	test('Parse pyro update demo', () => {
 		testDemo('pyroupdate');
 	});
+
+	test('Parse hl2dm ffa demo', () => {
+		testDemo('hl2dm_ffa');
+	});
+
+	test('Parse hl2dm 2v2 demo', () => {
+		testDemo('hl2dm_2v2');
+	});
 });

@@ -32,7 +32,12 @@ export class Parser {
 	constructor(stream: BitStream, skipPackets: PacketTypeId[] = []) {
 		this.stream = stream;
 		this.parserState = new ParserState();
-		this.parserState.skippedPackets = skipPackets;
+		if (this.getHeader().game === 'hl2mp') {
+			// for hl2dm we always need packet entities for team info and never tempEntities since it crashes the parser
+			this.parserState.skippedPackets = [PacketTypeId.tempEntities];
+		} else {
+			this.parserState.skippedPackets = skipPackets;
+		}
 	}
 
 	public getHeader() {

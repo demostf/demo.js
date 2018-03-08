@@ -1,0 +1,397 @@
+{
+  "chat": [
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  n1",
+      "tick": 41180
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  ty",
+      "tick": 41296
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  aw ncie",
+      "tick": 49664
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  ty",
+      "tick": 49888
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 53404
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  xD",
+      "tick": 53528
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  ns",
+      "tick": 54896
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  aw",
+      "tick": 56016
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  xd",
+      "tick": 61304
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  what?",
+      "tick": 62004
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 62684
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  aw",
+      "tick": 62760
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 68376
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  nooo",
+      "tick": 68444
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  lol",
+      "tick": 68508
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  Shotgun still nerfed in stock?",
+      "tick": 75048
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  no i was low",
+      "tick": 75388
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 77148
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  xd",
+      "tick": 77276
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 85236
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  :p",
+      "tick": 85356
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  lmfao",
+      "tick": 86668
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  lol",
+      "tick": 86756
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  that nade almost got u",
+      "tick": 86832
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  noooo",
+      "tick": 87828
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  w-",
+      "tick": 88100
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  wp",
+      "tick": 88160
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  hs nor eg",
+      "tick": 91052
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  what?",
+      "tick": 92004
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  Feels like shotty does 0 dmg",
+      "tick": 92656
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  nvm",
+      "tick": 93176
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  xD",
+      "tick": 95108
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  xd",
+      "tick": 95224
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  what?*",
+      "tick": 97108
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  what",
+      "tick": 97924
+    },
+    {
+      "text": "[Platinum II] SE.Hammarn :  1 hp",
+      "tick": 98024
+    },
+    {
+      "text": "[Cobalt 3,810] [VDuS] Carbon :  ...",
+      "tick": 98284
+    }
+  ],
+  "users": {
+    "2": {
+      "classes": {},
+      "name": " eFPS | SourceTV | NA #1",
+      "steamId": "BOT",
+      "userId": 2,
+      "team": "blue"
+    },
+    "115": {
+      "classes": {},
+      "name": "[VDuS] Carbon",
+      "steamId": "[U:1:52900516]",
+      "userId": 115,
+      "team": "blue"
+    },
+    "116": {
+      "classes": {},
+      "name": "SE.Hammarn",
+      "steamId": "[U:1:10585582]",
+      "userId": 116,
+      "team": "blue"
+    }
+  },
+  "deaths": [
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "357",
+      "tick": 41064
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "combine_ball",
+      "tick": 43416
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "357",
+      "tick": 49540
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 50664
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 53292
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "357",
+      "tick": 54800
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 55920
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 58124
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "combine_ball",
+      "tick": 61160
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "shotgun",
+      "tick": 61872
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 62592
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "357",
+      "tick": 65068
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "smg1_grenade",
+      "tick": 65888
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "ar2",
+      "tick": 68292
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "357",
+      "tick": 68904
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "shotgun",
+      "tick": 70836
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 75872
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 77044
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "combine_ball",
+      "tick": 79200
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 84096
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "357",
+      "tick": 85140
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "combine_ball",
+      "tick": 86580
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "357",
+      "tick": 87716
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 88772
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 90904
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "shotgun",
+      "tick": 91896
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 93020
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 94164
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 95008
+    },
+    {
+      "killer": 115,
+      "assister": null,
+      "victim": 116,
+      "weapon": "smg1_grenade",
+      "tick": 97016
+    },
+    {
+      "killer": 116,
+      "assister": null,
+      "victim": 115,
+      "weapon": "shotgun",
+      "tick": 97828
+    }
+  ],
+  "rounds": [],
+  "startTick": 38430,
+  "intervalPerTick": 0.014999999664723873
+}
