@@ -61,7 +61,7 @@ function calculateUserInfoFromEntry(text: string, extraData: BitStream, state: P
 					name: '',
 					userId,
 					steamId: '',
-					entityId: entityId
+					entityId
 				};
 
 				state.userInfo.set(userState.userId, userState);

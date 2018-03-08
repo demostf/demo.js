@@ -2,6 +2,7 @@ import {BitStream} from 'bit-buffer';
 import {GameEventDefinition} from './GameEvent';
 import {GameEvent, GameEventType} from './GameEventTypes';
 import {EntityId, PacketEntity} from './PacketEntity';
+import {Game} from './ParserState';
 import {SendTable} from './SendTable';
 import {ServerClass} from './ServerClass';
 import {StringTable, StringTableEntry} from './StringTable';
@@ -11,7 +12,6 @@ import {
 	UserMessageType, UserMessageTypeMap, VoiceSubtitlePacket
 } from './UserMessage';
 import {Vector} from './Vector';
-import {Game} from './ParserState';
 
 export interface StringTablePacket {
 	packetType: 'stringTable';

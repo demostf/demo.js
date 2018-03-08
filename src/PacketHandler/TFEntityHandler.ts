@@ -1,12 +1,12 @@
-import {Vector} from '../Data/Vector';
-import {PacketEntity, PVS} from '../Data/PacketEntity';
-import {SendProp} from '../Data/SendProp';
 import {Building, Dispenser, Sentry, Teleporter} from '../Data/Building';
-import {CWeaponMedigun} from '../Data/Weapon';
 import {Match} from '../Data/Match';
-import {TeamNumber} from '../Data/Team';
 import {PacketMessage} from '../Data/Message';
+import {PacketEntity, PVS} from '../Data/PacketEntity';
 import {Player} from '../Data/Player';
+import {SendProp} from '../Data/SendProp';
+import {TeamNumber} from '../Data/Team';
+import {Vector} from '../Data/Vector';
+import {CWeaponMedigun} from '../Data/Weapon';
 
 export function handleTFEntity(entity: PacketEntity, match: Match, message: PacketMessage) {
 	switch (entity.serverClass.name) {

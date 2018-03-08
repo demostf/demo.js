@@ -1,21 +1,18 @@
-import {Vector} from '../Data/Vector';
-import {PacketEntity} from '../Data/PacketEntity';
 import {Match} from '../Data/Match';
-import {TeamNumber} from '../Data/Team';
 import {PacketMessage} from '../Data/Message';
+import {PacketEntity} from '../Data/PacketEntity';
 import {Player} from '../Data/Player';
+import {TeamNumber} from '../Data/Team';
+import {Vector} from '../Data/Vector';
 
 export function handleHL2DMEntity(entity: PacketEntity, match: Match, message: PacketMessage) {
 	switch (entity.serverClass.name) {
 		case 'CHL2MP_Player':
 			const userInfo = match.getUserInfoForEntity(entity);
 			if (!userInfo) {
-				console.log(match.parserState.userInfo);
 				throw new Error(`No user info for entity ${entity.entityIndex}`);
 			}
 			if (userInfo.entityId !== entity.entityIndex) {
-				console.log(match.parserState.userInfo);
-				console.log(userInfo);
 				throw new Error(`Invalid user info for entity ${entity.entityIndex} vs ${userInfo.entityId}`);
 			}
 			const player: Player = (match.playerEntityMap.has(entity.entityIndex)) ?

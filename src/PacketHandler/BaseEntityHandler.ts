@@ -1,7 +1,7 @@
-import {Vector} from '../Data/Vector';
-import {PacketEntity} from '../Data/PacketEntity';
 import {Match} from '../Data/Match';
 import {PacketMessage} from '../Data/Message';
+import {PacketEntity} from '../Data/PacketEntity';
+import {Vector} from '../Data/Vector';
 
 export function handleBaseEntity(entity: PacketEntity, match: Match, message: PacketMessage) {
 	for (const prop of entity.props) {

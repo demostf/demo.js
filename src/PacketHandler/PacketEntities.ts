@@ -9,9 +9,9 @@ import {SendProp} from '../Data/SendProp';
 import {TeamNumber} from '../Data/Team';
 import {Vector} from '../Data/Vector';
 import {CWeaponMedigun, Weapon} from '../Data/Weapon';
-import {handleTFEntity} from './TFEntityHandler';
-import {handleHL2DMEntity} from './HL2DMEntityHandler';
 import {handleBaseEntity} from './BaseEntityHandler';
+import {handleHL2DMEntity} from './HL2DMEntityHandler';
+import {handleTFEntity} from './TFEntityHandler';
 
 export function handlePacketEntities(packet: PacketEntitiesPacket, match: Match, message: PacketMessage) {
 	for (const entity of packet.entities) {
