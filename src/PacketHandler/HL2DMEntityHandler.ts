@@ -39,6 +39,8 @@ export function handleHL2DMEntity(entity: PacketEntity, match: Match, message: P
 						if (!player.user.team && (prop.value === 2 || prop.value === 3)) {
 							player.user.team = prop.value === 2 ? 'red' : 'blue';
 						}
+						player.team = prop.value as number;
+						break;
 					case 'DT_BasePlayer.m_iHealth':
 						player.health = prop.value as number;
 						break;
