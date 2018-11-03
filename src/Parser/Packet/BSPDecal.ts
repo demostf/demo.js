@@ -39,7 +39,7 @@ export function ParseBSPDecal(stream: BitStream): BSPDecalPacket { // 21: ParseB
 	const textureIndex = stream.readBits(9);
 	if (stream.readBoolean()) {
 		entIndex = stream.readBits(11);
-		modelIndex = stream.readBits(12);
+		modelIndex = stream.readBits(13);
 	}
 	const lowPriority = stream.readBoolean();
 
