@@ -9,18 +9,19 @@
   "jsnext:main": "build/es6/index.js",
   "module": "build/es6/index.js",
   "dependencies": {
-    "bit-buffer": "^0.2.3",
+    "bit-buffer": "^0.2.4",
     "snappyjs": "^0.6.0",
     "text-encoding-shim": "git+https://gitlab.com/hongaar/text-encoding-shim.git#83ff0f77f48d05b8ce83ddc7ca49d8df61363b31"
   },
   "devDependencies": {
-    "@types/node": "^8.0.31",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.24",
     "minimist": "^1.2.0",
-    "mocha": "^3.5.3",
-    "split2": "^2.2.0",
-    "ts-node": "^3.3.0",
+    "mocha": "^5.2.0",
+    "split2": "^3.1.0",
+    "ts-node": "^8.0.2",
     "tsconfig": "^7.0.0",
-    "tslint": "^5.7.0",
-    "typescript": "^2.5.2"
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
   }
 }

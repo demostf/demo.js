@@ -7,7 +7,7 @@ import {deepEqual} from '../../deepEqual';
 
 export function getStream(data: string | number[]) {
 	if (typeof data === 'string') {
-		const buffer = new Buffer(data + '\0remaining dummy data');
+		const buffer = Buffer.from(data + '\0remaining dummy data');
 		return new BitStream(buffer);
 	} else {
 		const array = new Uint8Array(data as number[]);

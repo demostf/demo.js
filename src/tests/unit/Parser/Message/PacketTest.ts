@@ -5,7 +5,7 @@ import {ParserState} from '../../../../Data/ParserState';
 import {PacketMessageHandler} from '../../../../Parser/Message/Packet';
 import {assertEncoder, assertParser, assertReEncode, getStream} from '../Packet/PacketTest';
 
-const data = Object.values(JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageData.json', 'utf8')));
+const data = Object.values(JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageData.json', 'utf8'))) as number[];
 const firstPacketData = readFileSync(__dirname + '/../../../data/packetMessageFirst.bin');
 const expected = JSON.parse(readFileSync(__dirname + '/../../../data/packetMessageResult.json', 'utf8'));
 
