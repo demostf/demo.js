@@ -23,15 +23,24 @@ fs.readFile(argv._[0], function (err, data) {
         return;
     }
     const match = analyser.getBody();
+    const state = demo.getParser().parserState;
     if (argv['create-event-definitions']) {
-        const definitions = Array.from(match.eventDefinitions.values());
+        const definitions = Array.from(state.eventDefinitions.values());
         const definition = definitions
                 .map(createEventDefinition)
                 .join('\n\n')
             + '\n\n' + createEventDefinitionUnion(definitions) + '\n\n'
             + 'export type GameEventType = GameEvent[\'name\'];\n\n'
             + createEventTypeMap(definitions) + '\n\n'
-            + createEventTypeIdMap(match.eventDefinitions) + '\n';
+            + createEventTypeIdMap(state.eventDefinitions) + '\n';
+        console.log(definition);
+    } else if (argv['create-event-definitions-rs']) {
+        const definitions = Array.from(state.eventDefinitions.values());
+        const definition = 'pub enum GameEvent {'
+            + definitions
+                .map(createEventDefinitionRS)
+                .join(',\n')
+            + '\n}';
         console.log(definition);
     } else if (argv['event-list']) {
         echo(Array.from(match.eventDefinitions.values()));
@@ -92,6 +101,22 @@ function getEntryTypeDefinition(typeId) {
     }
 }
 
+function getEntryTypeDefinitionRS(typeId) {
+    switch (typeId) {
+        case 1:
+            return 'String';
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            return 'u32';
+        case 6:
+            return 'bool';
+        case 7:
+            return 'null';
+    }
+}
+
 function createEventDefinition(definition) {
     return `
 export interface ${getEventTypeName(definition.name)}Event {
@@ -100,6 +125,13 @@ export interface ${getEventTypeName(definition.name)}Event {
 ${definition.entries.map(entry => `		${entry.name}: ${getEntryTypeDefinition(entry.type)};`).join('\n')}
 	};
 }`.trim()
+}
+
+function createEventDefinitionRS(definition) {
+    return `	#[event_type(name = "${definition.name}")]
+	${getEventTypeName(definition.name)} {
+${definition.entries.map(entry => `\t\t${entry.name}: ${getEntryTypeDefinitionRS(entry.type)};`).join('\n')}
+	}`
 }
 
 function createEventDefinitionUnion(definitions) {
