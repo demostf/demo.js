@@ -35,12 +35,58 @@ fs.readFile(argv._[0], function (err, data) {
             + createEventTypeIdMap(state.eventDefinitions) + '\n';
         console.log(definition);
     } else if (argv['create-event-definitions-rs']) {
-        const definitions = Array.from(state.eventDefinitions.values());
-        const definition = 'pub enum GameEvent {'
+        const definitions = Array.from(state.eventDefinitions.values()).map(definition => {
+            definition.entries = definition.entries.map(entry => {
+                if (entry.name === "type") {
+                    entry.name = "kind";
+                }
+                return entry;
+            });
+            return definition;
+        });
+        const definition = 'use std::collections::HashMap;\n' +
+            'use crate::{Result, ParseError};\n' +
+            'use super::gamevent::{FromGameEventValue, GameEventValue, FromRawGameEvent, RawGameEvent};\n' +
+            'use bitstream_reader::BitRead;\n\n' +
+            '// auto generated, nobody in their right mind would write this manually\n\n'
+            + definitions
+            .map(createEventStructRS)
+            .join('\n') + '\n\n'
+            + '#[derive(Debug)]\n'
+            + 'pub enum GameEvent {\n'
             + definitions
                 .map(createEventDefinitionRS)
                 .join(',\n')
-            + '\n}';
+            + ',\n\tUnknown(RawGameEvent),'
+            + '\n}\n\n'
+            + '#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]\n'
+            + 'pub enum GameEventType {\n'
+            + definitions
+                .map(createEventTypeDefinitionRS)
+                .join(',\n')
+            + ',\n\t'
+            + '\n\tUnknown,'
+            + '\n}'
+            + '\n\nimpl GameEventType {'
+            + '\n\tpub fn from_type_name(name: &str) -> Self {\n'
+            + '\t\tmatch name {\n'
+            + definitions
+                .map(createEventTypeDefinitionMatchRS)
+                .join(',\n')
+            + ',\n\t\t\t_ => GameEventType::Unknown\n'
+            + '\t\t}\n'
+            + '\t}\n'
+            + '}\n'
+            + '\n\nimpl GameEvent {'
+            + '\n\tpub fn from_raw_event(event: RawGameEvent) -> Result<Self> {\n'
+            + '\t\tOk(match event.event_type {\n'
+            + definitions
+                .map(createEventDefinitionMatch)
+                .join(',\n') + ',\n'
+            + '\t\t\tGameEventType::Unknown => GameEvent::Unknown(event),\n'
+            + '\t\t})\n'
+            + '\t}\n'
+            + '}\n';
         console.log(definition);
     } else if (argv['event-list']) {
         echo(Array.from(match.eventDefinitions.values()));
@@ -52,6 +98,10 @@ fs.readFile(argv._[0], function (err, data) {
         echo(match.getState());
     }
 });
+
+function getEventTypeNameRS(s) {
+    return getEventTypeName(s) + 'Event';
+}
 
 function getEventTypeName(s) {
     const name = s.replace(/(\_\w)/g, function (m) {
@@ -81,7 +131,17 @@ function getEventTypeName(s) {
             .replace('Localplayer', 'LocalPlayer')
             .replace('Minigame', 'MiniGame')
             .replace('Winlimit', 'WinLimit')
+            .replace('Skillrating', 'SkillRating')
+            .replace('Directhit', 'DirectHit')
+            .replace('Chargedeployed', 'ChargeDeployed')
+            .replace('Winddown', 'WindDown')
+            .replace('Stealsandvich', 'StealSandvich')
+            .replace('Pricesheet', 'PriceSheet')
+            .replace('Teambalanced', 'TeamBalanced')
+            .replace('Highfive', 'HighFive')
+            .replace('Powerup', 'PowerUp')
             .replace('Hltv', 'HLTV');
+
     }
 }
 
@@ -106,10 +166,13 @@ function getEntryTypeDefinitionRS(typeId) {
         case 1:
             return 'String';
         case 2:
+            return 'f32';
         case 3:
-        case 4:
-        case 5:
             return 'u32';
+        case 4:
+            return 'u16';
+        case 5:
+            return 'u8';
         case 6:
             return 'bool';
         case 7:
@@ -127,11 +190,110 @@ ${definition.entries.map(entry => `		${entry.name}: ${getEntryTypeDefinition(ent
 }`.trim()
 }
 
+function createEventStructRS(definition) {
+    let structName = getEventTypeNameRS(definition.name);
+    return `#[derive(Debug)]\npub struct ${structName} {
+${definition.entries.map(entry => `\tpub ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)},`).join('\n')}
+}
+impl FromRawGameEvent for ${getEventTypeNameRS(definition.name)} {
+    fn from_raw_event(values: Vec<GameEventValue>) -> Result<Self> {
+${definition.entries.map((entry, index) => `\t\tlet ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)} = {
+\t\t\tlet value = values.get(${index}).ok_or_else(|| ParseError::UnknownGameEvent("${getEntryNameRS(entry.name)}".to_string()))?;
+\t\t\t${getEntryTypeDefinitionRS(entry.type)}::from_value(value.clone(), "${getEntryNameRS(entry.name)}")?
+\t\t};`).join('\n')}
+        Ok(${structName} {
+${definition.entries.map(entry => `\t\t\t${getEntryNameRS(entry.name)}`).join(',\n')}
+        })
+    }
+}
+`
+}
+
+function camelToSnake(str) {
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
+
+function getEntryNameRS(name) {
+    return camelToSnake(name)
+        .replace('mapname', 'map_name')
+        .replace('cvarname', 'cvar_name')
+        .replace('cvarvalue', 'cvar_value')
+        .replace('userid', 'user_id')
+        .replace('networkid', 'network_id')
+        .replace('teamid', 'team_id')
+        .replace('teamname', 'team_name')
+        .replace('oldteam', 'old_team')
+        .replace('autoteam', 'auto_team')
+        .replace('entindex', 'ent_index')
+        .replace('weaponid', 'weapon_id')
+        .replace('damagebit', 'damage_bit')
+        .replace('customkill', 'custom_kill')
+        .replace('logclassname', 'log_class_name')
+        .replace('playerpenetratecount', 'player_penetrate_count')
+        .replace('damageamount', 'damage_amount')
+        .replace('showdisguisedcrit', 'show_disguised_crit')
+        .replace('minicrit', 'mini_crit')
+        .replace('allseecrit', 'all_see_crit')
+        .replace('weaponid', 'weapon_id')
+        .replace('bonuseffect', 'bonus_effect')
+        .replace('teamonly', 'team_only')
+        .replace('oldname', 'old_name')
+        .replace('newname', 'new_name')
+        .replace('hintmessage', 'hint_message')
+        .replace('roundslimit', 'rounds_limit')
+        .replace('timelimit', 'time_limit')
+        .replace('fraglimit', 'frag_limit')
+        .replace('numadvanced', 'num_advanced')
+        .replace('numbronze', 'num_bronze')
+        .replace('numsilver', 'num_silver')
+        .replace('numgold', 'num_gold')
+        .replace('oldmode', 'old_mode')
+        .replace('newmode', 'new_mode')
+        .replace('entityid', 'entity_id')
+        .replace('winreason', 'win_reason')
+        .replace('flagcaplimit', 'flag_cap_limit')
+        .replace('cpname', 'cp_name')
+        .replace('capteam', 'cap_team')
+        .replace('captime', 'cap_time')
+        .replace('eventtype', 'event_type')
+        .replace('killstreak', 'kill_stream')
+        .replace('forceupload', 'force_upload')
+        .replace('targetid', 'target_id')
+        .replace('isbuilder', 'is_builder')
+        .replace('objecttype', 'object_type')
+        .replace('namechange', 'name_change')
+        .replace('readystate', 'ready_state')
+        .replace('builderid', 'builder_id')
+        .replace('recedetime', 'recede_time')
+        .replace('ownerid', 'owner_id')
+        .replace('sapperid', 'sapper_id')
+        .replace('itemdef', 'item_def')
+        .replace('bitfield', 'bit_field')
+        .replace('playsound', 'play_sound')
+        .replace('totalhits', 'total_hits')
+        .replace('posx', 'pos_x')
+        .replace('posy', 'pos_y')
+        .replace('posz', 'pos_z')
+        .replace('ineye', 'in_eye')
+        .replace('maxplayers', 'max_players');
+}
+
+function createEventTypeDefinitionRS(definition) {
+    return `\t${getEventTypeName(definition.name)} = ${definition.id}`
+}
+
 function createEventDefinitionRS(definition) {
-    return `	#[event_type(name = "${definition.name}")]
-	${getEventTypeName(definition.name)} {
-${definition.entries.map(entry => `\t\t${entry.name}: ${getEntryTypeDefinitionRS(entry.type)};`).join('\n')}
-	}`
+    return `\t${getEventTypeName(definition.name)}(${getEventTypeName(definition.name)}Event)`
+}
+
+function createEventDefinitionMatch(definition) {
+    let structName = getEventTypeName(definition.name);
+    return `\t\t\tGameEventType::${structName} => GameEvent::${structName}(${structName}Event::from_raw_event(event.values)?)`
+}
+
+function createEventTypeDefinitionMatchRS(definition) {
+    let structName = getEventTypeName(definition.name);
+    return `\t\t\t"${definition.name}" => GameEventType::${structName}`
 }
 
 function createEventDefinitionUnion(definitions) {
@@ -176,7 +338,7 @@ const EventNameReplace = new Map([
     ['ControlpointEndtouch', 'ControlPointEndTouch'],
     ['ControlpointPulseElement', 'ControlPointPulseElement'],
     ['ControlpointFakeCapture', 'ControlPointFakeCapture'],
-    ['ControlpointFakeCaptureMult', 'ControlPointFakeCaptureMult'],
+    ['ControlpointFakeCaptureMult', 'ControlPointFakeCaptureMultiplier'],
     ['TeamplayWaitingAbouttoend', 'TeamPlayWaitingAboutToEnd'],
     ['TeamplayPointStartcapture', 'TeamPlayPointStartCapture'],
     ['FreezecamStarted', 'FreezeCamStarted'],

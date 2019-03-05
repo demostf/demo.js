@@ -8,6 +8,7 @@ export function handleSayText2(packet: SayText2Packet, match: Match) {
 				user.name = packet.text;
 			}
 		}
+		return;
 	}
 
 	match.chat.push({
