@@ -44,10 +44,9 @@ fs.readFile(argv._[0], function (err, data) {
             });
             return definition;
         });
-        const definition = 'use std::collections::HashMap;\n' +
-            'use crate::{Result, ParseError};\n' +
+        const definition = 'use crate::{Result, ParseError};\n' +
             'use super::gamevent::{FromGameEventValue, GameEventValue, FromRawGameEvent, RawGameEvent};\n' +
-            'use bitstream_reader::BitRead;\n\n' +
+            '\n\n' +
             '// auto generated, nobody in their right mind would write this manually\n\n'
             + definitions
             .map(createEventStructRS)
@@ -196,7 +195,7 @@ function createEventStructRS(definition) {
 ${definition.entries.map(entry => `\tpub ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)},`).join('\n')}
 }
 impl FromRawGameEvent for ${getEventTypeNameRS(definition.name)} {
-    fn from_raw_event(values: Vec<GameEventValue>) -> Result<Self> {
+    fn from_raw_event(${definition.entries.length ? '' : '_'}values: Vec<GameEventValue>) -> Result<Self> {
 ${definition.entries.map((entry, index) => `\t\tlet ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)} = {
 \t\t\tlet value = values.get(${index}).ok_or_else(|| ParseError::UnknownGameEvent("${getEntryNameRS(entry.name)}".to_string()))?;
 \t\t\t${getEntryTypeDefinitionRS(entry.type)}::from_value(value.clone(), "${getEntryNameRS(entry.name)}")?
