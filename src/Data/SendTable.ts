@@ -28,7 +28,7 @@ export class SendTable {
 
 	public getAllPropsIteratorProps(excludes: SendPropDefinition[], props: SendPropDefinition[], childProps: SendPropDefinition[]) {
 		for (const prop of this.props) {
-			if (prop.hasFlag(SendPropFlag.SPROP_EXCLUDE) || excludes.indexOf(prop) !== -1) {
+			if (prop.hasFlag(SendPropFlag.SPROP_EXCLUDE)) {
 				continue;
 			}
 			if (excludes.filter((exclude) => {

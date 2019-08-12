@@ -13,6 +13,13 @@ const echo = function (data) {
     console.log(string);
 };
 
+const mapToObj = m => {
+    return Array.from(m).reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+    }, {});
+};
+
 fs.readFile(argv._[0], function (err, data) {
     if (err) throw err;
     const demo = Demo.fromNodeBuffer(data);
@@ -24,7 +31,13 @@ fs.readFile(argv._[0], function (err, data) {
     }
     const match = analyser.getBody();
     const state = demo.getParser().parserState;
-    if (argv['create-event-definitions']) {
+    if (argv['dump-props']) {
+        let props = Array.from(
+            demo.getParser().parserState.sendTables
+            .entries()
+        ).map(([key, sendTable]) => [key, sendTable.flattenedProps.map(prop => prop.fullName)]);
+        echo(mapToObj(new Map(props)));
+    } else if (argv['create-event-definitions']) {
         const definitions = Array.from(state.eventDefinitions.values());
         const definition = definitions
                 .map(createEventDefinition)
@@ -44,7 +57,7 @@ fs.readFile(argv._[0], function (err, data) {
             });
             return definition;
         });
-        const definition = 'use crate::{Result, ParseError};\n' +
+        const definition = 'use crate::{Result, ParseError, GameEventError};\n' +
             'use super::gamevent::{FromGameEventValue, GameEventValue, FromRawGameEvent, RawGameEvent};\n' +
             '\n\n' +
             '// auto generated, nobody in their right mind would write this manually\n\n'
@@ -191,15 +204,16 @@ ${definition.entries.map(entry => `		${entry.name}: ${getEntryTypeDefinition(ent
 
 function createEventStructRS(definition) {
     let structName = getEventTypeNameRS(definition.name);
+    let reverseEntries = ([].concat(definition.entries)).reverse();
     return `#[derive(Debug)]\npub struct ${structName} {
 ${definition.entries.map(entry => `\tpub ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)},`).join('\n')}
 }
 impl FromRawGameEvent for ${getEventTypeNameRS(definition.name)} {
-    fn from_raw_event(${definition.entries.length ? '' : '_'}values: Vec<GameEventValue>) -> Result<Self> {
-${definition.entries.map((entry, index) => `\t\tlet ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)} = {
-\t\t\tlet value = values.get(${index}).ok_or_else(|| ParseError::UnknownGameEvent("${getEntryNameRS(entry.name)}".to_string()))?;
-\t\t\t${getEntryTypeDefinitionRS(entry.type)}::from_value(value.clone(), "${getEntryNameRS(entry.name)}")?
-\t\t};`).join('\n')}
+    fn from_raw_event(mut ${definition.entries.length ? '' : '_'}values: Vec<GameEventValue>) -> Result<Self> {
+        ${definition.entries.length ? `if values.len() < ${definition.entries.length} {
+            return Err(ParseError::MalformedGameEvent(GameEventError::IncorrectValueCount));
+        }\n\t\tvalues.truncate(${definition.entries.length});`: ''}
+${reverseEntries.map((entry, index) => `\t\tlet ${getEntryNameRS(entry.name)}: ${getEntryTypeDefinitionRS(entry.type)} = ${getEntryTypeDefinitionRS(entry.type)}::from_value(values.pop().ok_or(ParseError::MalformedGameEvent(GameEventError::IncorrectValueCount))?, "${getEntryNameRS(entry.name)}")?;`).join('\n')}
         Ok(${structName} {
 ${definition.entries.map(entry => `\t\t\t${getEntryNameRS(entry.name)}`).join(',\n')}
         })
