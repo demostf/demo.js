@@ -1,5 +1,5 @@
 {
-  "name": "@demostf/demo.js",
+  "name": "@bryjch/demo.js",
   "description": "A parser for TF2 demo files",
   "version": "2.1.1",
   "bin": {
