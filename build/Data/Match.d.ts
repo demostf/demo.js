@@ -1,0 +1,45 @@
+import { Building } from './Building';
+import { Chat } from './Chat';
+import { Death } from './Death';
+import { PacketMessage } from './Message';
+import { Packet } from './Packet';
+import { EntityId, PacketEntity } from './PacketEntity';
+import { ParserState } from './ParserState';
+import { Player } from './Player';
+import { PlayerResource } from './PlayerResource';
+import { Round } from './Round';
+import { Team, TeamNumber } from './Team';
+import { UserInfo } from './UserInfo';
+import { Weapon } from './Weapon';
+import { World } from './World';
+export declare class Match {
+    tick: number;
+    chat: Chat[];
+    users: Map<number, UserInfo>;
+    deaths: Death[];
+    rounds: Round[];
+    startTick: number;
+    intervalPerTick: number;
+    world: World;
+    playerEntityMap: Map<EntityId, Player>;
+    weaponMap: Map<EntityId, Weapon>;
+    outerMap: Map<number, EntityId>;
+    teams: Map<TeamNumber, Team>;
+    teamEntityMap: Map<EntityId, Team>;
+    buildings: Map<EntityId, Building>;
+    playerResources: PlayerResource[];
+    readonly parserState: ParserState;
+    constructor(parserState: ParserState);
+    getState(): {
+        chat: Chat[];
+        users: {};
+        deaths: Death[];
+        rounds: Round[];
+        startTick: number;
+        intervalPerTick: number;
+    };
+    handlePacket(packet: Packet, message: PacketMessage): void;
+    getUserInfo(userId: number): UserInfo;
+    getUserInfoForEntity(entity: PacketEntity): UserInfo | null;
+    getPlayerByUserId(userId: number): Player | null;
+}

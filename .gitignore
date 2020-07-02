@@ -1,5 +1,6 @@
 node_modules
-build
+build/tests/
+build/es6/
 *.dem
 *.txt
 *.lock

@@ -1,0 +1,33 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var PacketTypeId;
+(function (PacketTypeId) {
+    PacketTypeId[PacketTypeId["file"] = 2] = "file";
+    PacketTypeId[PacketTypeId["netTick"] = 3] = "netTick";
+    PacketTypeId[PacketTypeId["stringCmd"] = 4] = "stringCmd";
+    PacketTypeId[PacketTypeId["setConVar"] = 5] = "setConVar";
+    PacketTypeId[PacketTypeId["sigOnState"] = 6] = "sigOnState";
+    PacketTypeId[PacketTypeId["print"] = 7] = "print";
+    PacketTypeId[PacketTypeId["serverInfo"] = 8] = "serverInfo";
+    PacketTypeId[PacketTypeId["classInfo"] = 10] = "classInfo";
+    PacketTypeId[PacketTypeId["setPause"] = 11] = "setPause";
+    PacketTypeId[PacketTypeId["createStringTable"] = 12] = "createStringTable";
+    PacketTypeId[PacketTypeId["updateStringTable"] = 13] = "updateStringTable";
+    PacketTypeId[PacketTypeId["voiceInit"] = 14] = "voiceInit";
+    PacketTypeId[PacketTypeId["voiceData"] = 15] = "voiceData";
+    PacketTypeId[PacketTypeId["parseSounds"] = 17] = "parseSounds";
+    PacketTypeId[PacketTypeId["setView"] = 18] = "setView";
+    PacketTypeId[PacketTypeId["fixAngle"] = 19] = "fixAngle";
+    PacketTypeId[PacketTypeId["bspDecal"] = 21] = "bspDecal";
+    PacketTypeId[PacketTypeId["userMessage"] = 23] = "userMessage";
+    PacketTypeId[PacketTypeId["entityMessage"] = 24] = "entityMessage";
+    PacketTypeId[PacketTypeId["gameEvent"] = 25] = "gameEvent";
+    PacketTypeId[PacketTypeId["packetEntities"] = 26] = "packetEntities";
+    PacketTypeId[PacketTypeId["tempEntities"] = 27] = "tempEntities";
+    PacketTypeId[PacketTypeId["preFetch"] = 28] = "preFetch";
+    PacketTypeId[PacketTypeId["menu"] = 29] = "menu";
+    PacketTypeId[PacketTypeId["gameEventList"] = 30] = "gameEventList";
+    PacketTypeId[PacketTypeId["getCvarValue"] = 31] = "getCvarValue";
+    PacketTypeId[PacketTypeId["cmdKeyValues"] = 32] = "cmdKeyValues";
+})(PacketTypeId = exports.PacketTypeId || (exports.PacketTypeId = {}));
+//# sourceMappingURL=Packet.js.map

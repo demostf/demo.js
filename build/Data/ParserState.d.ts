@@ -1,0 +1,37 @@
+import { BitStream } from 'bit-buffer';
+import { GameEventDefinition } from './GameEvent';
+import { GameEventType } from './GameEventTypes';
+import { Message } from './Message';
+import { Packet, PacketTypeId } from './Packet';
+import { EntityId } from './PacketEntity';
+import { SendProp } from './SendProp';
+import { SendTable, SendTableName } from './SendTable';
+import { ServerClass, ServerClassId } from './ServerClass';
+import { StringTable } from './StringTable';
+import { UserEntityInfo, UserId } from './UserInfo';
+export declare type Game = 'tf' | 'hl2mp';
+export declare class ParserState {
+    version: number;
+    staticBaseLines: Map<ServerClassId, BitStream>;
+    staticBaselineCache: Map<ServerClassId, SendProp[]>;
+    eventDefinitions: Map<number, GameEventDefinition<GameEventType>>;
+    eventDefinitionTypes: Map<GameEventType, number>;
+    entityClasses: Map<EntityId, ServerClass>;
+    sendTables: Map<SendTableName, SendTable>;
+    stringTables: StringTable[];
+    serverClasses: ServerClass[];
+    instanceBaselines: [Map<EntityId, SendProp[]>, Map<EntityId, SendProp[]>];
+    skippedPackets: PacketTypeId[];
+    userInfo: Map<UserId, UserEntityInfo>;
+    tick: number;
+    game: Game;
+    handlePacket(packet: Packet): void;
+    handleMessage(message: Message): void;
+    getStringTable(name: string): StringTable | null;
+    getUserEntityInfo(userId: number): UserEntityInfo;
+    private handleDataTableMessage;
+    private handleStringTableMessage;
+}
+export declare function getClassBits(state: ParserState): number;
+export declare function getSendTable(state: ParserState, dataTable: string): SendTable;
+export declare function createParserState(): ParserState;
