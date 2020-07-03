@@ -12,6 +12,7 @@ export declare class Player {
     match: Match;
     user: UserInfo;
     position: Vector;
+    viewAngles: Vector;
     health: number;
     maxHealth: number;
     classId: number;

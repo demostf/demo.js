@@ -66,6 +66,9 @@ function handleTFEntity(entity, match, message) {
                         player.position.y = prop.value.y;
                         // set the view angles for the local player since that prop isn't send
                         player.viewAngle = message.localViewAngles[0].y;
+                        player.viewAngles.x = message.localViewAngles[0].x;
+                        player.viewAngles.y = message.localViewAngles[0].y;
+                        player.viewAngles.z = message.localViewAngles[0].z;
                         break;
                     case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
                         player.position.x = prop.value.x;
@@ -77,11 +80,19 @@ function handleTFEntity(entity, match, message) {
                     case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
                         player.position.z = prop.value;
                         break;
+                    case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[0]':
+                        player.viewAngles.y = prop.value;
+                        break;
                     case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
                         player.viewAngle = prop.value;
+                        player.viewAngles.x = prop.value;
+                        break;
+                    case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[0]':
+                        player.viewAngles.y = prop.value;
                         break;
                     case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[1]':
                         player.viewAngle = prop.value;
+                        player.viewAngles.x = prop.value;
                         break;
                     case 'DT_BasePlayer.m_lifeState':
                         player.lifeState = prop.value;

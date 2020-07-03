@@ -74,6 +74,9 @@ export function handleTFEntity(entity: PacketEntity, match: Match, message: Pack
 
 						// set the view angles for the local player since that prop isn't send
 						player.viewAngle = message.localViewAngles[0].y;
+						player.viewAngles.x = message.localViewAngles[0].x;
+						player.viewAngles.y = message.localViewAngles[0].y;
+						player.viewAngles.z = message.localViewAngles[0].z;
 						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin':
 						player.position.x = (prop.value as Vector).x;
@@ -85,11 +88,19 @@ export function handleTFEntity(entity: PacketEntity, match: Match, message: Pack
 					case 'DT_TFNonLocalPlayerExclusive.m_vecOrigin[2]':
 						player.position.z = prop.value as number;
 						break;
+					case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[0]':
+						player.viewAngles.y = prop.value as number;
+						break;
 					case 'DT_TFNonLocalPlayerExclusive.m_angEyeAngles[1]':
 						player.viewAngle = prop.value as number;
+						player.viewAngles.x = prop.value as number;
+						break;
+					case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[0]':
+						player.viewAngles.y = prop.value as number;
 						break;
 					case 'DT_TFLocalPlayerExclusive.m_angEyeAngles[1]':
 						player.viewAngle = prop.value as number;
+						player.viewAngles.x = prop.value as number;
 						break;
 					case 'DT_BasePlayer.m_lifeState':
 						player.lifeState = prop.value as number;

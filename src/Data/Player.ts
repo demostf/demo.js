@@ -16,6 +16,7 @@ export class Player {
 	public match: Match;
 	public user: UserInfo;
 	public position: Vector = new Vector(0, 0, 0);
+	public viewAngles: Vector = new Vector(0, 0, 0);
 	public health: number = 0;
 	public maxHealth: number = 0;
 	public classId: number = 0;

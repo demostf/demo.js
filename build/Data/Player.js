@@ -11,6 +11,7 @@ var LifeState;
 class Player {
     constructor(match, userInfo) {
         this.position = new Vector_1.Vector(0, 0, 0);
+        this.viewAngles = new Vector_1.Vector(0, 0, 0);
         this.health = 0;
         this.maxHealth = 0;
         this.classId = 0;
