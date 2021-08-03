@@ -4,6 +4,8 @@
 
 Parsing of TF2 demo files in node.js and the browser
 
+Note that this isn't actively maintained anymore, consider using the [rust parser](github.com/demostf/parser) instead, which is much faster, more correct and can be compiled to wasm for use in browsers.
+
 ## usage
 
 ### cli
