@@ -17,7 +17,7 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.24",
     "minimist": "^1.2.0",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "split2": "^3.1.0",
     "ts-node": "^8.0.2",
     "tsconfig": "^7.0.0",
